@@ -7,35 +7,36 @@ namespace DS4Windows
     public partial class X360Device : ScpDevice
     {
         private const string DS3_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
-        private const int CONTROLLER_OFFSET = 1; // Device 0 is the virtual USB hub itself, and we leave devices 1-10 available for other software (like the Scarlet.Crush DualShock driver itself)
 
-        private int firstController = 1;
-        // Device 0 is the virtual USB hub itself, and we can leave more available for other software (like the Scarlet.Crush DualShock driver)
+        // Device 0 is the virtual USB hub itself, and we leave devices 1-10 available for other software (like the Scarlet.Crush DualShock driver itself)
+        private const int CONTROLLER_OFFSET = 1;
+
+        private int _firstController = 1;
         public int FirstController
         {
-            get { return firstController; }
-            set { firstController = value > 0 ? value : 1; }
+            get { return _firstController; }
+            set { _firstController = value > 0 ? value : 1; }
         }
 
-        protected int Scale(int Value, bool Flip)
+        protected int Scale(int value, bool flip)
         {
-            Value -= 0x80;
+            value -= 0x80;
 
-            if (Value == -128) Value = -127;
-            if (Flip) Value *= -1;
+            if (value == -128)
+                value = -127;
 
-            return (int)((float)Value * 258.00787401574803149606299212599f);
+            if (flip)
+                value *= -1;
+
+            return (int)(value * 258.00787401574803149606299212599f);
         }
-
-
-        public X360Device()
-            : base(DS3_BUS_CLASS_GUID)
+        
+        public X360Device() : base(DS3_BUS_CLASS_GUID)
         {
             InitializeComponent();
         }
 
-        public X360Device(IContainer container)
-            : base(DS3_BUS_CLASS_GUID)
+        public X360Device(IContainer container) : base(DS3_BUS_CLASS_GUID)
         {
             container.Add(this);
 
@@ -58,9 +59,7 @@ namespace DS4Windows
             m_WinUsbHandle = (IntPtr)INVALID_HANDLE_VALUE;
 
             if (GetDeviceHandle(m_Path))
-            {
                 m_IsActive = true;
-            }
 
             return true;
         }
@@ -98,7 +97,7 @@ namespace DS4Windows
         public void Parse(State state, byte[] Output, int device)
         {
             Output[0] = 0x1C;
-            Output[4] = (byte)(device + firstController);
+            Output[4] = (byte)(device + _firstController);
             Output[9] = 0x14;
 
             for (var i = 10; i < Output.Length; i++)
@@ -133,7 +132,7 @@ namespace DS4Windows
             var ThumbRX = Scale(state.RX, false);
             var ThumbRY = -Scale(state.RY, false);
             Output[14] = (byte)((ThumbLX >> 0) & 0xFF); // LX
-            Output[15] = (byte)((ThumbLX >> 8) & 0xFF);            
+            Output[15] = (byte)((ThumbLX >> 8) & 0xFF);
             Output[16] = (byte)((ThumbLY >> 0) & 0xFF); // LY
             Output[17] = (byte)((ThumbLY >> 8) & 0xFF);
             Output[18] = (byte)((ThumbRX >> 0) & 0xFF); // RX
@@ -154,7 +153,7 @@ namespace DS4Windows
                 Buffer[2] = 0x00;
                 Buffer[3] = 0x00;
 
-                Serial += firstController;
+                Serial += _firstController;
                 Buffer[4] = (byte)((Serial >> 0) & 0xFF);
                 Buffer[5] = (byte)((Serial >> 8) & 0xFF);
                 Buffer[6] = (byte)((Serial >> 16) & 0xFF);
@@ -178,7 +177,7 @@ namespace DS4Windows
                 Buffer[2] = 0x00;
                 Buffer[3] = 0x00;
 
-                Serial += firstController;
+                Serial += _firstController;
                 Buffer[4] = (byte)((Serial >> 0) & 0xFF);
                 Buffer[5] = (byte)((Serial >> 8) & 0xFF);
                 Buffer[6] = (byte)((Serial >> 16) & 0xFF);
@@ -215,7 +214,8 @@ namespace DS4Windows
             {
                 var Transfered = 0;
 
-                return DeviceIoControl(m_FileHandle, 0x2A400C, Input, Input.Length, Output, Output.Length, ref Transfered, IntPtr.Zero) && Transfered > 0;
+                return DeviceIoControl(m_FileHandle, 0x2A400C, Input, Input.Length, Output, Output.Length, ref Transfered, IntPtr.Zero) &&
+                       Transfered > 0;
             }
 
             return false;

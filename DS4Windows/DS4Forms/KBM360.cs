@@ -212,7 +212,7 @@ namespace DS4Windows
                 {
                     int key;
                     if (int.TryParse(button.Tag.ToString(), out key))
-                        button.Text = ((Keys)key).ToString() +
+                        button.Text = ((Keys)key) +
                             (cBScanCode.Checked ? " (SC)" : "") +
                             (cBToggle.Checked ? " (Toggle)" : "");
                 }
@@ -373,7 +373,7 @@ namespace DS4Windows
             if (sender is Color && device < 4)
             {
                 var color = (Color)sender;
-                var dcolor = new DS4Colour { Red = color.R, Green = color.G, Blue = color.B };
+                var dcolor = new LightBarColour { Red = color.R, Green = color.G, Blue = color.B };
                 DS4LightBar.forcedColor[device] = dcolor;
                 DS4LightBar.forcedFlash[device] = 0;
                 DS4LightBar.forcelight[device] = true;

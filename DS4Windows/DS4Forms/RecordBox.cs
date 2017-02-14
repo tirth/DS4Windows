@@ -509,7 +509,7 @@ namespace DS4Windows
                 if (macros.Count == 0 || recordAfter && macrosAfter.Count == 0)
                 {
                     AddMacroValue(value);
-                    lVMacros.Items.Add(e.Button.ToString() + " Mouse Button", 0);
+                    lVMacros.Items.Add(e.Button + " Mouse Button", 0);
                     if (cBRecordDelays.Checked)
                     {
                         sw.Reset();
@@ -526,7 +526,7 @@ namespace DS4Windows
                         sw.Start();
                     }
                     AddMacroValue(value);
-                    lVMacros.Items.Add(e.Button.ToString() + " Mouse Button", 0);
+                    lVMacros.Items.Add(e.Button + " Mouse Button", 0);
                 }
                 if (e.Button == MouseButtons.XButton1)
                     lVMacros.Items[lVMacros.Items.Count - 1].Text = "4th Mouse Button";
@@ -559,7 +559,7 @@ namespace DS4Windows
                     sw.Start();
                 }
                 AddMacroValue(value);
-                lVMacros.Items.Add(e.Button.ToString() + " Mouse Button", 1);
+                lVMacros.Items.Add(e.Button + " Mouse Button", 1);
                 if (e.Button == MouseButtons.XButton1)
                     lVMacros.Items[lVMacros.Items.Count - 1].Text = "4th Mouse Button";
                 if (e.Button == MouseButtons.XButton2)
@@ -1227,7 +1227,7 @@ namespace DS4Windows
             if (sender is Color && Program.rootHub.Controllers[0] != null)
             {
                 var color = (Color)sender;
-                var dcolor = new DS4Colour { Red = color.R, Green = color.G, Blue = color.B };
+                var dcolor = new LightBarColour { Red = color.R, Green = color.G, Blue = color.B };
                 DS4LightBar.forcedColor[0] = dcolor;
                 DS4LightBar.forcedFlash[0] = 0;
                 DS4LightBar.forcelight[0] = true;

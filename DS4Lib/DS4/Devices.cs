@@ -8,43 +8,45 @@ using DS4Lib.Hid;
 
 namespace DS4Lib.DS4
 {
-    public class Devices
+    public static class Devices
     {
         private static readonly Dictionary<string, Device> DS4s = new Dictionary<string, Device>();
         private static readonly HashSet<string> DevicePaths = new HashSet<string>();
-        public static bool isExclusiveMode = false;
+        public static bool IsExclusiveMode = false;
 
-        private static string devicePathToInstanceId(string devicePath)
+        private static string DevicePathToInstanceId(string devicePath)
         {
             var deviceInstanceId = devicePath;
             deviceInstanceId = deviceInstanceId.Remove(0, deviceInstanceId.LastIndexOf('\\') + 1);
             deviceInstanceId = deviceInstanceId.Remove(deviceInstanceId.LastIndexOf('{'));
             deviceInstanceId = deviceInstanceId.Replace('#', '\\');
             if (deviceInstanceId.EndsWith("\\"))
-            {
                 deviceInstanceId = deviceInstanceId.Remove(deviceInstanceId.Length - 1);
-            }
+
             return deviceInstanceId;
         }
 
-        //enumerates ds4 controllers in the system
-        public static void findControllers()
+        // enumerates DS4 controllers in the system
+        public static void FindControllers()
         {
+            Trace.WriteLine($"Finding controllers");
+
             lock (DS4s)
             {
-                int[] pid = { 0xBA0, 0x5C4, 0x09CC };
-                var hDevices = HidDevices.Enumerate(0x054C, pid);
+                int[] pid = {0xBA0, 0x5C4, 0x09CC};
+
                 // Sort Bluetooth first in case USB is also connected on the same controller.
-                hDevices = hDevices.OrderBy(Device.HidConnectionType);
+                var hDevices = HidDevices.Enumerate(0x054C, pid).OrderBy(Device.HidConnectionType);
 
                 foreach (var hDevice in hDevices)
                 {
                     if (DevicePaths.Contains(hDevice.DevicePath))
                         continue; // BT/USB endpoint already open once
+
                     if (!hDevice.IsOpen)
                     {
-                        hDevice.OpenDevice(isExclusiveMode);
-                        if (!hDevice.IsOpen && isExclusiveMode)
+                        hDevice.OpenDevice(IsExclusiveMode);
+                        if (!hDevice.IsOpen && IsExclusiveMode)
                         {
                             try
                             {
@@ -52,13 +54,15 @@ namespace DS4Lib.DS4
                                 var principal = new WindowsPrincipal(identity);
                                 var elevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
 
+                                Trace.WriteLine($"We elevated? {elevated}");
+
                                 if (!elevated)
                                 {
                                     // Launches an elevated child process to re-enable device
                                     var exeName = Process.GetCurrentProcess().MainModule.FileName;
                                     var startInfo = new ProcessStartInfo(exeName);
                                     startInfo.Verb = "runas";
-                                    startInfo.Arguments = "re-enabledevice " + devicePathToInstanceId(hDevice.DevicePath);
+                                    startInfo.Arguments = "re-enabledevice " + DevicePathToInstanceId(hDevice.DevicePath);
                                     var child = Process.Start(startInfo);
                                     if (!child.WaitForExit(5000))
                                     {
@@ -66,20 +70,22 @@ namespace DS4Lib.DS4
                                     }
                                     else if (child.ExitCode == 0)
                                     {
-                                        hDevice.OpenDevice(isExclusiveMode);
+                                        hDevice.OpenDevice(IsExclusiveMode);
                                     }
                                 }
                                 else
                                 {
-                                    reEnableDevice(devicePathToInstanceId(hDevice.DevicePath));
-                                    hDevice.OpenDevice(isExclusiveMode);
+                                    ReEnableDevice(DevicePathToInstanceId(hDevice.DevicePath));
+                                    hDevice.OpenDevice(IsExclusiveMode);
                                 }
                             }
-                            catch (Exception) { }
+                            catch (Exception)
+                            {
+                            }
                         }
-                        
+
                         // TODO in exclusive mode, try to hold both open when both are connected
-                        if (isExclusiveMode && !hDevice.IsOpen)
+                        if (IsExclusiveMode && !hDevice.IsOpen)
                             hDevice.OpenDevice(false);
                     }
                     if (hDevice.IsOpen)
@@ -96,13 +102,12 @@ namespace DS4Lib.DS4
                         }
                     }
                 }
-                
             }
         }
 
         //allows to get DS4Device by specifying unique MAC address
         //format for MAC address is XX:XX:XX:XX:XX:XX
-        public static Device getDS4Controller(string mac)
+        public static Device GetController(string mac)
         {
             lock (DS4s)
             {
@@ -111,13 +116,15 @@ namespace DS4Lib.DS4
                 {
                     DS4s.TryGetValue(mac, out device);
                 }
-                catch (ArgumentNullException) { }
+                catch (ArgumentNullException)
+                {
+                }
                 return device;
             }
         }
-        
+
         //returns DS4 controllers that were found and are running
-        public static IEnumerable<Device> getDS4Controllers()
+        public static IEnumerable<Device> GetControllers()
         {
             lock (DS4s)
             {
@@ -127,11 +134,11 @@ namespace DS4Lib.DS4
             }
         }
 
-        public static void stopControllers()
+        public static void StopControllers()
         {
             lock (DS4s)
             {
-                var devices = getDS4Controllers();
+                var devices = GetControllers();
                 foreach (var device in devices)
                 {
                     device.StopUpdate();
@@ -155,24 +162,26 @@ namespace DS4Lib.DS4
         }
 
         // TODO: NativeMethods stuff, HidLib extension
-        public static void reEnableDevice(string deviceInstanceId)
+        public static void ReEnableDevice(string deviceInstanceId)
         {
             bool success;
+
             var hidGuid = new Guid();
             NativeMethods.HidD_GetHidGuid(ref hidGuid);
-            var deviceInfoSet = NativeMethods.SetupDiGetClassDevs(ref hidGuid, deviceInstanceId, 0, NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_DEVICEINTERFACE);
+
+            var deviceInfoSet = NativeMethods.SetupDiGetClassDevs(ref hidGuid, deviceInstanceId, 0,
+                NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_DEVICEINTERFACE);
+
             var deviceInfoData = new NativeMethods.SP_DEVINFO_DATA();
             deviceInfoData.cbSize = Marshal.SizeOf(deviceInfoData);
+
             success = NativeMethods.SetupDiEnumDeviceInfo(deviceInfoSet, 0, ref deviceInfoData);
             if (!success)
-            {
                 throw new Exception("Error getting device info data, error code = " + Marshal.GetLastWin32Error());
-            }
+
             success = NativeMethods.SetupDiEnumDeviceInfo(deviceInfoSet, 1, ref deviceInfoData); // Checks that we have a unique device
             if (success)
-            {
                 throw new Exception("Can't find unique device");
-            }
 
             var propChangeParams = new NativeMethods.SP_PROPCHANGE_PARAMS();
             propChangeParams.classInstallHeader.cbSize = Marshal.SizeOf(propChangeParams.classInstallHeader);
@@ -180,27 +189,25 @@ namespace DS4Lib.DS4
             propChangeParams.stateChange = NativeMethods.DICS_DISABLE;
             propChangeParams.scope = NativeMethods.DICS_FLAG_GLOBAL;
             propChangeParams.hwProfile = 0;
-            success = NativeMethods.SetupDiSetClassInstallParams(deviceInfoSet, ref deviceInfoData, ref propChangeParams, Marshal.SizeOf(propChangeParams));
+
+            success = NativeMethods.SetupDiSetClassInstallParams(deviceInfoSet, ref deviceInfoData, ref propChangeParams,
+                Marshal.SizeOf(propChangeParams));
             if (!success)
-            {
                 throw new Exception("Error setting class install params, error code = " + Marshal.GetLastWin32Error());
-            }
+
             success = NativeMethods.SetupDiCallClassInstaller(NativeMethods.DIF_PROPERTYCHANGE, deviceInfoSet, ref deviceInfoData);
             if (!success)
-            {
                 throw new Exception("Error disabling device, error code = " + Marshal.GetLastWin32Error());
-            }
+
             propChangeParams.stateChange = NativeMethods.DICS_ENABLE;
-            success = NativeMethods.SetupDiSetClassInstallParams(deviceInfoSet, ref deviceInfoData, ref propChangeParams, Marshal.SizeOf(propChangeParams));
+            success = NativeMethods.SetupDiSetClassInstallParams(deviceInfoSet, ref deviceInfoData, ref propChangeParams,
+                Marshal.SizeOf(propChangeParams));
             if (!success)
-            {
                 throw new Exception("Error setting class install params, error code = " + Marshal.GetLastWin32Error());
-            }
+
             success = NativeMethods.SetupDiCallClassInstaller(NativeMethods.DIF_PROPERTYCHANGE, deviceInfoSet, ref deviceInfoData);
             if (!success)
-            {
                 throw new Exception("Error enabling device, error code = " + Marshal.GetLastWin32Error());
-            }
 
             NativeMethods.SetupDiDestroyDeviceInfoList(deviceInfoSet);
         }

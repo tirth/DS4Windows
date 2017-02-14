@@ -6,6 +6,7 @@ namespace DS4Windows
     class MouseWheel
     {
         private readonly int deviceNumber;
+
         public MouseWheel(int deviceNum)
         {
             deviceNumber = deviceNum;
@@ -14,16 +15,17 @@ namespace DS4Windows
         // Keep track of remainders when performing scrolls or we lose fractional parts.
         private double horizontalRemainder, verticalRemainder;
 
-        public void touchesBegan(TouchpadEventArgs arg)
+        public void TouchesBegan(TouchpadEventArgs arg)
         {
             if (arg.TouchReadings.Length == 2)
                 horizontalRemainder = verticalRemainder = 0.0;
         }
 
-        public void touchesMoved(TouchpadEventArgs arg, bool dragging)
+        public void TouchesMoved(TouchpadEventArgs arg, bool dragging)
         {
             if (arg.TouchReadings.Length != 2 || dragging)
                 return;
+
             var lastT0 = arg.TouchReadings[0].PreviousTouchReadings;
             var lastT1 = arg.TouchReadings[1].PreviousTouchReadings;
             var T0 = arg.TouchReadings[0];

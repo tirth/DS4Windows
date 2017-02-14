@@ -34,8 +34,8 @@ namespace DS4Windows
         string oldappdatapath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\DS4Tool";
         string tempProfileProgram = "null";
         float dpix, dpiy;
-        List<string> profilenames = new List<string>();
-        List<string> programpaths = new List<string>();
+        List<string> profileNames = new List<string>();
+        List<string> programPaths = new List<string>();
         List<string>[] proprofiles;
         List<bool> turnOffTempProfiles;
         private static int WM_QUERYENDSESSION = 0x11;
@@ -207,7 +207,7 @@ namespace DS4Windows
             cBDisconnectBT.Checked = DCBTatStop;
             cBQuickCharge.Checked = QuickCharge;
             nUDXIPorts.Value = FirstXinputPort;
-            Program.rootHub.x360Bus.FirstController = FirstXinputPort;
+            Program.rootHub.X360Bus.FirstController = FirstXinputPort;
             // New settings
             Width = FormWidth;
             Height = FormHeight;
@@ -491,9 +491,9 @@ namespace DS4Windows
 
             //Check for process for auto profiles
             if (tempProfileProgram == "null")
-                for (var i = 0; i < programpaths.Count; i++)
+                for (var i = 0; i < programPaths.Count; i++)
                 {
-                    var name = programpaths[i].ToLower().Replace('/', '\\');
+                    var name = programPaths[i].ToLower().Replace('/', '\\');
                     if (name == GetTopWindowName().ToLower().Replace('/', '\\'))
                     {
                         for (var j = 0; j < 4; j++)
@@ -547,25 +547,26 @@ namespace DS4Windows
         public void LoadP()
         {
             var doc = new XmlDocument();
-            proprofiles = new List<string>[4] { new List<string>(), new List<string>(),
-                new List<string>(), new List<string>() };
+
+            proprofiles = new[] { new List<string>(), new List<string>(), new List<string>(), new List<string>() };
             turnOffTempProfiles = new List<bool>();
-            programpaths.Clear();
+            programPaths.Clear();
             if (!File.Exists(appdatapath + "\\Auto Profiles.xml"))
                 return;
             doc.Load(appdatapath + "\\Auto Profiles.xml");
-            var programslist = doc.SelectNodes("Programs/Program");
-            foreach (XmlNode x in programslist)
-                programpaths.Add(x.Attributes["path"].Value);
-            foreach (var s in programpaths)
+
+            var programs = doc.SelectNodes("Programs/Program");
+
+            foreach (XmlNode x in programs)
+                programPaths.Add(x.Attributes["path"].Value);
+
+            foreach (var s in programPaths)
             {
                 for (var i = 0; i < 4; i++)
-                {
-                    proprofiles[i].Add(doc.SelectSingleNode("/Programs/Program[@path=\"" + s + "\"]"
-                        + "/Controller" + (i + 1)).InnerText);
-                }
-                var item = doc.SelectSingleNode("/Programs/Program[@path=\"" + s + "\"]"
-                        + "/TurnOff");
+                    proprofiles[i].Add(doc.SelectSingleNode($"/Programs/Program[@path=\"{s}\"]/Controller{i + 1}")?.InnerText);
+
+                var item = doc.SelectSingleNode($"/Programs/Program[@path=\"{s}\"]/TurnOff");
+
                 bool turnOff;
                 if (item != null && bool.TryParse(item.InnerText, out turnOff))
                     turnOffTempProfiles.Add(turnOff);
@@ -655,13 +656,13 @@ namespace DS4Windows
         {
             try
             {
-                profilenames.Clear();
+                profileNames.Clear();
                 var profiles = Directory.GetFiles(appdatapath + @"\Profiles\");
                 foreach (var s in profiles)
                     if (s.EndsWith(".xml"))
-                        profilenames.Add(Path.GetFileNameWithoutExtension(s));
+                        profileNames.Add(Path.GetFileNameWithoutExtension(s));
                 lBProfiles.Items.Clear();
-                lBProfiles.Items.AddRange(profilenames.ToArray());
+                lBProfiles.Items.AddRange(profileNames.ToArray());
                 if (lBProfiles.Items.Count == 0)
                 {
                     SaveProfile(0, "Default");
@@ -673,8 +674,8 @@ namespace DS4Windows
                 {
                     cbs[i].Items.Clear();
                     shortcuts[i].DropDownItems.Clear();
-                    cbs[i].Items.AddRange(profilenames.ToArray());
-                    foreach (var s in profilenames)
+                    cbs[i].Items.AddRange(profileNames.ToArray());
+                    foreach (var s in profileNames)
                         shortcuts[i].DropDownItems.Add(s);
                     for (var j = 0; j < cbs[i].Items.Count; j++)
                         if (cbs[i].Items[j].ToString() == Path.GetFileNameWithoutExtension(ProfilePath[i]))
@@ -721,7 +722,7 @@ namespace DS4Windows
         public void RefreshAutoProfilesPage()
         {
             tabAutoProfiles.Controls.Clear();
-            WP = new WinProgs(profilenames.ToArray(), this);
+            WP = new WinProgs(profileNames.ToArray(), this);
             WP.TopLevel = false;
             WP.FormBorderStyle = FormBorderStyle.None;
             WP.Visible = true;
@@ -1046,7 +1047,7 @@ namespace DS4Windows
             if (lBProfiles.SelectedIndex >= 0)
             {
                 Stream stream;
-                var profile = new StreamReader(appdatapath + "\\Profiles\\" + lBProfiles.SelectedItem.ToString() + ".xml").BaseStream;                
+                var profile = new StreamReader(appdatapath + "\\Profiles\\" + lBProfiles.SelectedItem + ".xml").BaseStream;                
                 if (saveProfiles.ShowDialog() == DialogResult.OK)
                     if ((stream = saveProfiles.OpenFile()) != null)
                     {
@@ -1667,7 +1668,7 @@ namespace DS4Windows
             {
                 oldxiport = (int)Math.Round(nUDXIPorts.Value, 0);
                 FirstXinputPort = oldxiport;
-                Program.rootHub.x360Bus.FirstController = oldxiport;
+                Program.rootHub.X360Bus.FirstController = oldxiport;
                 btnStartStop_Click(sender, e);
                 btnStartStop_Click(sender, e);
             }
@@ -1737,8 +1738,8 @@ namespace DS4Windows
             advColorDialog.Color = CustomColour[currentCustomLed].ToColor;
             if (advColorDialog.ShowDialog() == DialogResult.OK)
             {
-                lights[currentCustomLed].BackColor = new DS4Colour(advColorDialog.Color).ToColorA;
-                CustomColour[currentCustomLed] = new DS4Colour(advColorDialog.Color);
+                lights[currentCustomLed].BackColor = new LightBarColour(advColorDialog.Color).ToColorA;
+                CustomColour[currentCustomLed] = new LightBarColour(advColorDialog.Color);
                 UseCustomLed[currentCustomLed] = true;
                 Save();
             }
@@ -1757,7 +1758,7 @@ namespace DS4Windows
             if (sender is Color)
             {
                 var color = (Color)sender;
-                var dcolor = new DS4Colour(color);
+                var dcolor = new LightBarColour(color);
                 Console.WriteLine(dcolor);
                 DS4LightBar.forcedColor[currentCustomLed] = dcolor;
                 DS4LightBar.forcedFlash[currentCustomLed] = 0;

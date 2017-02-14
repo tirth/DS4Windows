@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 namespace DS4Windows
 {
-    class InputMethods
+    static class InputMethods
     {
         private static INPUT[] sendInputs = new INPUT[2]; // will allow for keyboard + mouse/tablet input within one SendInput call, or two mouse events
         private static object lockob = new object();

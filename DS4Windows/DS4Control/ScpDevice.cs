@@ -12,7 +12,7 @@ namespace DS4Windows
             get { return m_IsActive; }
         }
 
-        public virtual string Path 
+        protected virtual string Path 
         {
             get { return m_Path; }
         }
@@ -36,8 +36,7 @@ namespace DS4Windows
 
             m_Class = new Guid(Class);
         }
-
-
+        
         public virtual bool Open(int Instance = 0) 
         {
             var DevicePath = string.Empty;

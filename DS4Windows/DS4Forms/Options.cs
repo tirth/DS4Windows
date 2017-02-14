@@ -170,7 +170,7 @@ namespace DS4Windows
                 else
                     cBFlashType.SelectedIndex = FlashType[device];
                 var fColor = FlashColour[device];
-                if (fColor.Equals(new DS4Colour { Red = 0, Green = 0, Blue = 0 }))
+                if (fColor.Equals(new LightBarColour { Red = 0, Green = 0, Blue = 0 }))
                     if (Rainbow[device] == 0)
                         btnFlashColor.BackColor = main;
                     else
@@ -494,7 +494,7 @@ namespace DS4Windows
                     case "Macro": lvi.SubItems.Add(Properties.Resources.Macro + (action.keyType.HasFlag(DS4KeyType.ScanCode) ? " (" + Properties.Resources.ScanCode + ")" : "")); break;
                     case "Program": lvi.SubItems.Add(Properties.Resources.LaunchProgram.Replace("*program*", Path.GetFileNameWithoutExtension(action.details))); break;
                     case "Profile": lvi.SubItems.Add(Properties.Resources.LoadProfile.Replace("*profile*", action.details)); break;
-                    case "Key": lvi.SubItems.Add(((Keys)int.Parse(action.details)).ToString() + (action.uTrigger.Count > 0 ? " (Toggle)" : "")); break;
+                    case "Key": lvi.SubItems.Add(((Keys)int.Parse(action.details)) + (action.uTrigger.Count > 0 ? " (Toggle)" : "")); break;
                     case "DisconnectBT":
                         lvi.SubItems.Add(Properties.Resources.DisconnectBT);
                         break;
@@ -998,14 +998,14 @@ namespace DS4Windows
         {
             pnlLowBattery.Visible = cBLightbyBattery.Checked;
             lbFull.Text = cBLightbyBattery.Checked ? Properties.Resources.Full + ":": Properties.Resources.Color + ":";
-            MainColour[device] = new DS4Colour((byte)tBRedBar.Value, (byte)tBGreenBar.Value, (byte)tBBlueBar.Value);
-            LowColour[device] = new DS4Colour((byte)tBLowRedBar.Value, (byte)tBLowGreenBar.Value, (byte)tBLowBlueBar.Value);
-            ChargingColour[device] = new DS4Colour(btnChargingColor.BackColor);
+            MainColour[device] = new LightBarColour((byte)tBRedBar.Value, (byte)tBGreenBar.Value, (byte)tBBlueBar.Value);
+            LowColour[device] = new LightBarColour((byte)tBLowRedBar.Value, (byte)tBLowGreenBar.Value, (byte)tBLowBlueBar.Value);
+            ChargingColour[device] = new LightBarColour(btnChargingColor.BackColor);
             FlashType[device] = (byte)cBFlashType.SelectedIndex;
             if (btnFlashColor.BackColor != main)
-                FlashColour[device] = new DS4Colour(btnFlashColor.BackColor);
+                FlashColour[device] = new LightBarColour(btnFlashColor.BackColor);
             else
-                FlashColour[device] = new DS4Colour(Color.Black);
+                FlashColour[device] = new LightBarColour(Color.Black);
             L2Deadzone[device] = (byte)Math.Round(nUDL2.Value * 255, 0);
             R2Deadzone[device] = (byte)Math.Round(nUDR2.Value * 255, 0);
             RumbleBoost[device] = (byte)nUDRumbleBoost.Value;
@@ -1133,7 +1133,7 @@ namespace DS4Windows
             {
                 main = advColorDialog.Color;
                 btnLightbar.BackgroundImage = RecolorImage((Bitmap)btnLightbar.BackgroundImage, main);
-                if (FlashColour[device].Equals(new DS4Colour { Red = 0, Green = 0, Blue = 0 }))
+                if (FlashColour[device].Equals(new LightBarColour { Red = 0, Green = 0, Blue = 0 }))
                     btnFlashColor.BackColor = main;
                 btnFlashColor.BackgroundImage = nUDRainbow.Enabled ? rainbowImg : null;
                 tBRedBar.Value = advColorDialog.Color.R;
@@ -1170,14 +1170,14 @@ namespace DS4Windows
             }
             if (device < 4)
                 DS4LightBar.forcelight[device] = false;
-            ChargingColour[device] = new DS4Colour(btnChargingColor.BackColor);
+            ChargingColour[device] = new LightBarColour(btnChargingColor.BackColor);
         }
         private void advColorDialog_OnUpdateColor(object sender, EventArgs e)
         {
             if (sender is Color && device < 4)
             {
                 var color = (Color)sender;
-                var dcolor = new DS4Colour { Red = color.R, Green = color.G, Blue = color.B };
+                var dcolor = new LightBarColour { Red = color.R, Green = color.G, Blue = color.B };
                 DS4LightBar.forcedColor[device] = dcolor;
                 DS4LightBar.forcedFlash[device] = 0;
                 DS4LightBar.forcelight[device] = true;
@@ -1199,10 +1199,10 @@ namespace DS4Windows
                 full = HuetoRGB(reg.GetHue(), reg.GetBrightness(), reg);
                 main = Color.FromArgb(alphacolor > 205 ? 255 : alphacolor + 50, full);
                 btnLightbar.BackgroundImage = RecolorImage((Bitmap)btnLightbar.BackgroundImage, main);
-                if (FlashColour[device].Equals(new DS4Colour { Red = 0, Green = 0, Blue = 0 }))
+                if (FlashColour[device].Equals(new LightBarColour { Red = 0, Green = 0, Blue = 0 }))
                     btnFlashColor.BackColor = main;
                 btnFlashColor.BackgroundImage = nUDRainbow.Enabled ? rainbowImg : null;
-                MainColour[device] = new DS4Colour((byte)tBRedBar.Value, (byte)tBGreenBar.Value, (byte)tBBlueBar.Value);
+                MainColour[device] = new LightBarColour((byte)tBRedBar.Value, (byte)tBGreenBar.Value, (byte)tBBlueBar.Value);
             }
             else if (type == 1)
             {
@@ -1210,7 +1210,7 @@ namespace DS4Windows
                 reg = Color.FromArgb(tBLowRedBar.Value, tBLowGreenBar.Value, tBLowBlueBar.Value);
                 full = HuetoRGB(reg.GetHue(), reg.GetBrightness(), reg);
                 lowColorChooserButton.BackColor = Color.FromArgb(alphacolor > 205 ? 255 : alphacolor + 50, full);
-                LowColour[device] = new DS4Colour((byte)tBLowRedBar.Value, (byte)tBLowGreenBar.Value, (byte)tBLowBlueBar.Value);
+                LowColour[device] = new LightBarColour((byte)tBLowRedBar.Value, (byte)tBLowGreenBar.Value, (byte)tBLowBlueBar.Value);
             }
             if (!saving && !loading && tb != null)
                 tp.Show(tb.Value.ToString(), tb, (int)(dpix * 100), 0, 2000);
@@ -1593,7 +1593,7 @@ namespace DS4Windows
                 btnLightbar.BackgroundImage = RecolorImage((Bitmap)btnLightbar.BackgroundImage, main);
                 cBLightbyBattery.Text = Properties.Resources.ColorByBattery.Replace("*nl*", "\n");
             }
-            if (FlashColour[device].Equals(new DS4Colour { Red = 0, Green = 0, Blue = 0 }))
+            if (FlashColour[device].Equals(new LightBarColour { Red = 0, Green = 0, Blue = 0 }))
                 btnFlashColor.BackColor = main;
             btnFlashColor.BackgroundImage = nUDRainbow.Enabled ? rainbowImg : null;
             lbspc.Enabled = on;
@@ -2261,7 +2261,7 @@ namespace DS4Windows
                     btnFlashColor.BackColor = advColorDialog.Color;
                 else
                     btnFlashColor.BackColor = main;
-                FlashColour[device] = new DS4Colour(advColorDialog.Color);
+                FlashColour[device] = new LightBarColour(advColorDialog.Color);
             }
             if (device < 4)
                 DS4LightBar.forcelight[device] = false;

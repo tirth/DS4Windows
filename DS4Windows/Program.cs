@@ -49,7 +49,7 @@ namespace DS4Windows
                     {
                         i++;
                         var deviceInstanceId = args[i];
-                        Devices.reEnableDevice(deviceInstanceId);
+                        Devices.ReEnableDevice(deviceInstanceId);
                         Environment.ExitCode = 0;
                         return;
                     }
@@ -100,10 +100,12 @@ namespace DS4Windows
 
         private static void CreateInterAppComThread()
         {
-            singleAppComThread = new BackgroundWorker();
-            singleAppComThread.WorkerReportsProgress = false;
-            singleAppComThread.WorkerSupportsCancellation = true;
-            singleAppComThread.DoWork += new DoWorkEventHandler(singleAppComThread_DoWork);
+            singleAppComThread = new BackgroundWorker
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = true
+            };
+            singleAppComThread.DoWork += singleAppComThread_DoWork;
             singleAppComThread.RunWorkerAsync();
         }
 

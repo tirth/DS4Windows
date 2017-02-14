@@ -95,7 +95,7 @@ namespace DS4Windows
                 case "Key":
                     cBActions.SelectedIndex = 4;
                     var key = int.Parse(act.details);
-                    btnSelectKey.Text = ((Keys)key).ToString() +
+                    btnSelectKey.Text = ((Keys)key) +
                         (act.keyType.HasFlag(DS4KeyType.ScanCode) ? " (SC)" : "") + 
                         (!string.IsNullOrEmpty(act.ucontrols) ? " (Toggle)" : "");
                     btnSelectKey.Tag = key;
@@ -264,7 +264,7 @@ namespace DS4Windows
                         if (btnSelectKey.Tag != null &&
                             (!btnSelectKey.Text.Contains("(Toggle)") || btnSelectKey.Text.Contains("(Toggle)") && ucontrols.Count > 0))
                         {
-                            action = ((Keys)int.Parse(btnSelectKey.Tag.ToString())).ToString() + (btnSelectKey.Text.Contains("(Toggle)") ? " (Toggle)" : "");
+                            action = ((Keys)int.Parse(btnSelectKey.Tag.ToString())) + (btnSelectKey.Text.Contains("(Toggle)") ? " (Toggle)" : "");
                             actRe = true;
                             if (!string.IsNullOrEmpty(oldprofilename) && oldprofilename != tBName.Text)
                                 Global.RemoveAction(oldprofilename);
@@ -275,11 +275,11 @@ namespace DS4Windows
                                     uaction = "Release";
                                 else
                                     uaction = "Press";
-                                Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, btnSelectKey.Tag.ToString() + (btnSelectKey.Text.Contains("(SC)") ? " Scan Code" : ""),
+                                Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, btnSelectKey.Tag + (btnSelectKey.Text.Contains("(SC)") ? " Scan Code" : ""),
                                     edit, uaction + '\n' + string.Join("/", ucontrols));
                             }
                             else
-                                Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, btnSelectKey.Tag.ToString() + (btnSelectKey.Text.Contains("(SC)") ? " Scan Code" : ""), edit);
+                                Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, btnSelectKey.Tag + (btnSelectKey.Text.Contains("(SC)") ? " Scan Code" : ""), edit);
                         }
                         else if (btnSelectKey.Tag == null)
                             btnSelectKey.ForeColor = Color.Red;
@@ -300,7 +300,7 @@ namespace DS4Windows
                             actRe = true;
                             if (!string.IsNullOrEmpty(oldprofilename) && oldprofilename != tBName.Text)
                                 Global.RemoveAction(oldprofilename);
-                            dets = Math.Round(nUDDCBatt.Value, 1).ToString() + "|" + cBNotificationBatt.Checked + "|" + cbLightbarBatt.Checked + "|" +
+                            dets = Math.Round(nUDDCBatt.Value, 1) + "|" + cBNotificationBatt.Checked + "|" + cbLightbarBatt.Checked + "|" +
                                 bnEmptyColor.BackColor.R + "|" + bnEmptyColor.BackColor.G + "|" + bnEmptyColor.BackColor.B + "|" +
                                 bnFullColor.BackColor.R + "|" + bnFullColor.BackColor.G + "|" + bnFullColor.BackColor.B;
                             Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, dets, edit);
@@ -477,7 +477,7 @@ namespace DS4Windows
             if (sender is Color && device < 4)
             {
                 var color = (Color)sender;
-                var dcolor = new DS4Colour { Red = color.R, Green = color.G, Blue = color.B };
+                var dcolor = new LightBarColour { Red = color.R, Green = color.G, Blue = color.B };
                 DS4LightBar.forcedColor[device] = dcolor;
                 DS4LightBar.forcedFlash[device] = 0;
                 DS4LightBar.forcelight[device] = true;

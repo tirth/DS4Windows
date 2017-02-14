@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="DS4\Device.cs" />
     <Compile Include="DS4\Devices.cs" />
+    <Compile Include="DS4\LightBarColour.cs" />
     <Compile Include="DS4\SixAxis.cs" />
     <Compile Include="DS4\State.cs" />
     <Compile Include="DS4\StateExposed.cs" />

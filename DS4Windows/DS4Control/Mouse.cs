@@ -31,19 +31,19 @@ namespace DS4Windows
 
         public virtual void sixaxisMoved(object sender, SixAxisEventArgs arg)
         {
-            if (Global.UseSAforMouse[deviceNum] && Global.GyroSensitivity[deviceNum] > 0)
-            {
-                var triggeractivated = true;
-                var i = 0;
-                var ss = Global.SATriggers[deviceNum].Split(',');
-                if (!string.IsNullOrEmpty(ss[0]))
-                    foreach (var s in ss)
-                        if (!(int.TryParse(s, out i) && getDS4ControlsByName(i)))
-                            triggeractivated = false;
-                if (triggeractivated)
-                    cursor.sixaxisMoved(arg);
-                dev.getCurrentState(s);
-            }
+            if (!Global.UseSAforMouse[deviceNum] || Global.GyroSensitivity[deviceNum] <= 0)
+                return;
+
+            var triggeractivated = true;
+            var i = 0;
+            var ss = Global.SATriggers[deviceNum].Split(',');
+            if (!string.IsNullOrEmpty(ss[0]))
+                foreach (var s in ss)
+                    if (!(int.TryParse(s, out i) && getDS4ControlsByName(i)))
+                        triggeractivated = false;
+            if (triggeractivated)
+                cursor.sixaxisMoved(arg);
+            dev.GetCurrentState(s);
         }
 
         private bool getDS4ControlsByName(int key)
@@ -79,7 +79,7 @@ namespace DS4Windows
             if (!Global.UseTPforControls[deviceNum])
             {
                 cursor.touchesMoved(arg, dragging || dragging2);
-                wheel.touchesMoved(arg, dragging || dragging2);
+                wheel.TouchesMoved(arg, dragging || dragging2);
             }
             else
             {
@@ -100,7 +100,7 @@ namespace DS4Windows
                     slideright = true;
                 else if (FirstTouchReadings.hwX - arg.TouchReadings[0].hwX > 200 && !slideright)
                     slideleft = true;
-            dev.getCurrentState(s);
+            dev.GetCurrentState(s);
             synthesizeMouseButtons();
         }
         public virtual void touchesBegan(object sender, TouchpadEventArgs arg)
@@ -108,7 +108,7 @@ namespace DS4Windows
             if (!Global.UseTPforControls[deviceNum])
             {
                 cursor.touchesBegan(arg);
-                wheel.touchesBegan(arg);
+                wheel.TouchesBegan(arg);
             }
             pastTime = arg.timeStamp;
             FirstTouchReadings = arg.TouchReadings[0];
@@ -118,7 +118,7 @@ namespace DS4Windows
                 if (test <= firstTap + TimeSpan.FromMilliseconds((double)Global.TapSensitivity[deviceNum] * 1.5) && !arg.touchButtonPressed)
                     secondtouchbegin = true;
             }
-            dev.getCurrentState(s);
+            dev.GetCurrentState(s);
             synthesizeMouseButtons();
         }
         public virtual void touchesEnded(object sender, TouchpadEventArgs arg)
@@ -146,7 +146,7 @@ namespace DS4Windows
                         else
                             Mapping.MapClick(deviceNum, Mapping.Click.Left); //this way no delay if disabled
             }
-            dev.getCurrentState(s);
+            dev.GetCurrentState(s);
             synthesizeMouseButtons();
         }
 
@@ -162,7 +162,7 @@ namespace DS4Windows
 
         public virtual void touchUnchanged(object sender, EventArgs unused)
         {
-            dev.getCurrentState(s);
+            dev.GetCurrentState(s);
             //if (s.Touch1 || s.Touch2 || s.TouchButton)
             synthesizeMouseButtons();
         }
@@ -212,8 +212,8 @@ namespace DS4Windows
         {
             pushed = DS4Controls.None;
             upperDown = leftDown = rightDown = multiDown = false;
-            dev.setRumble(0, 0);
-            dev.getCurrentState(s);
+            dev.SetRumble(0, 0);
+            dev.GetCurrentState(s);
             if (s.Touch1 || s.Touch2)
                 synthesizeMouseButtons();
         }
@@ -233,7 +233,7 @@ namespace DS4Windows
                 else if (isRight(arg.TouchReadings[0]))
                     rightDown = true;
             }
-            dev.getCurrentState(s);
+            dev.GetCurrentState(s);
             synthesizeMouseButtons();
         }
 
