@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using DS4Lib.Control;
 using DS4Lib.DS4;
 
 namespace DS4Windows

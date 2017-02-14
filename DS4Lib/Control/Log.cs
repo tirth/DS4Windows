@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DS4Windows
+namespace DS4Lib.Control
 {
     public static class Log
     {

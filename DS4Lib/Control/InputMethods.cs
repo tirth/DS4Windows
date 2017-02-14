@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-namespace DS4Windows
+
+namespace DS4Lib.Control
 {
     static class InputMethods
     {

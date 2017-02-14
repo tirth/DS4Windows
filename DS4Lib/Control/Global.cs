@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Security.Principal;
 using DS4Lib.DS4;
 
-namespace DS4Windows
+namespace DS4Lib.Control
 {
     public static class Global
     {

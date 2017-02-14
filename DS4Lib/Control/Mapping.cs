@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using DS4Lib.DS4;
-using static DS4Windows.Global;
+using static DS4Lib.Control.Global;
 
-namespace DS4Windows
+namespace DS4Lib.Control
 {
     public class Mapping
     {
@@ -1429,7 +1429,7 @@ namespace DS4Windows
                             if (bool.Parse(dets[1]) && !actionDone[index].dev[device])
                             {
                                 Log.LogToTray("Controller " + (device + 1) + ": " +
-                                              ctrl.getDS4Battery(device), true);
+                                              ctrl.GetDS4Battery(device), true);
                             }
                             if (bool.Parse(dets[2]))
                             {
@@ -1723,11 +1723,11 @@ namespace DS4Windows
                         }
                         else if (i >= 1000000)
                         {
-                            var d = Program.rootHub.Controllers[device];
-                            var r = i.ToString().Substring(1);
-                            var heavy = (byte)(int.Parse(r[0].ToString()) * 100 + int.Parse(r[1].ToString()) * 10 + int.Parse(r[2].ToString()));
-                            var light = (byte)(int.Parse(r[3].ToString()) * 100 + int.Parse(r[4].ToString()) * 10 + int.Parse(r[5].ToString()));
-                            d.SetRumble(light, heavy);
+                            //var d = Program.rootHub.Controllers[device];
+                            //var r = i.ToString().Substring(1);
+                            //var heavy = (byte)(int.Parse(r[0].ToString()) * 100 + int.Parse(r[1].ToString()) * 10 + int.Parse(r[2].ToString()));
+                            //var light = (byte)(int.Parse(r[3].ToString()) * 100 + int.Parse(r[4].ToString()) * 10 + int.Parse(r[5].ToString()));
+                            //d.SetRumble(light, heavy);
                         }
                         else if (i >= 300) //ints over 300 used to delay
                             await Task.Delay(i - 300);
@@ -1848,7 +1848,7 @@ namespace DS4Windows
                     }
                     DS4LightBar.forcedFlash[device] = 0;
                     DS4LightBar.forcelight[device] = false;
-                    Program.rootHub.Controllers[device].SetRumble(0, 0);
+                    //Program.rootHub.Controllers[device].SetRumble(0, 0);
                     if (keyType.HasFlag(DS4KeyType.HoldMacro))
                     {
                         await Task.Delay(50);

@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Xml;
 using DS4Lib.DS4;
 
-namespace DS4Windows
+namespace DS4Lib.Control
 {
     public class BackingStore
     {
@@ -1723,115 +1723,115 @@ namespace DS4Windows
             return Loaded;
         }
 
-        public void LoadButtons(System.Windows.Forms.Control[] buttons, string control, Dictionary<DS4Controls, DS4KeyType> customMapKeyTypes,
-            Dictionary<DS4Controls, ushort> customMapKeys, Dictionary<DS4Controls, X360Controls> customMapButtons,
-            Dictionary<DS4Controls, string> customMapMacros, Dictionary<DS4Controls, string> customMapExtras)
-        {
-            var rootname = "DS4Windows";
-            foreach (var button in buttons)
-                try
-                {
-                    if (m_Xdoc.SelectSingleNode(rootname) == null)
-                        rootname = "ScpControl";
+        //public void LoadButtons(System.Windows.Forms.Control[] buttons, string control, Dictionary<DS4Controls, DS4KeyType> customMapKeyTypes,
+        //    Dictionary<DS4Controls, ushort> customMapKeys, Dictionary<DS4Controls, X360Controls> customMapButtons,
+        //    Dictionary<DS4Controls, string> customMapMacros, Dictionary<DS4Controls, string> customMapExtras)
+        //{
+        //    var rootname = "DS4Windows";
+        //    foreach (var button in buttons)
+        //        try
+        //        {
+        //            if (m_Xdoc.SelectSingleNode(rootname) == null)
+        //                rootname = "ScpControl";
 
-                    //bool foundBinding = false;
-                    button.Font = new Font(button.Font, FontStyle.Regular);
+        //            //bool foundBinding = false;
+        //            button.Font = new Font(button.Font, FontStyle.Regular);
 
-                    var item = m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/KeyType/{0}", button.Name));
-                    if (item != null)
-                    {
-                        //foundBinding = true;
-                        var keyType = DS4KeyType.None;
-                        if (item.InnerText.Contains(DS4KeyType.Unbound.ToString()))
-                        {
-                            keyType = DS4KeyType.Unbound;
-                            button.Tag = "Unbound";
-                            button.Text = "Unbound";
-                        }
-                        else
-                        {
-                            var SC = item.InnerText.Contains(DS4KeyType.ScanCode.ToString());
-                            var TG = item.InnerText.Contains(DS4KeyType.Toggle.ToString());
-                            var MC = item.InnerText.Contains(DS4KeyType.Macro.ToString());
-                            var MR = item.InnerText.Contains(DS4KeyType.HoldMacro.ToString());
-                            button.Font = new Font(button.Font,
-                                (SC ? FontStyle.Bold : FontStyle.Regular) | (TG ? FontStyle.Italic : FontStyle.Regular) |
-                                (MC ? FontStyle.Underline : FontStyle.Regular) | (MR ? FontStyle.Strikeout : FontStyle.Regular));
-                            if (item.InnerText.Contains(DS4KeyType.ScanCode.ToString()))
-                                keyType |= DS4KeyType.ScanCode;
-                            if (item.InnerText.Contains(DS4KeyType.Toggle.ToString()))
-                                keyType |= DS4KeyType.Toggle;
-                            if (item.InnerText.Contains(DS4KeyType.Macro.ToString()))
-                                keyType |= DS4KeyType.Macro;
-                        }
-                        if (keyType != DS4KeyType.None)
-                            customMapKeyTypes.Add(getDS4ControlsByName(item.Name), keyType);
-                    }
-                    string extras;
-                    item = m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Extras/{0}", button.Name));
-                    if (item != null)
-                    {
-                        if (item.InnerText != string.Empty)
-                        {
-                            extras = item.InnerText;
-                            customMapExtras.Add(getDS4ControlsByName(button.Name), item.InnerText);
-                        }
-                        else
-                        {
-                            m_Xdoc.RemoveChild(item);
-                            extras = "0,0,0,0,0,0,0,0";
-                        }
-                    }
-                    else
-                        extras = "0,0,0,0,0,0,0,0";
-                    item = m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Macro/{0}", button.Name));
-                    if (item != null)
-                    {
-                        var splitter = item.InnerText.Split('/');
-                        var keys = new int[splitter.Length];
-                        for (var i = 0; i < keys.Length; i++)
-                        {
-                            keys[i] = int.Parse(splitter[i]);
-                            if (keys[i] < 255) splitter[i] = ((System.Windows.Forms.Keys)keys[i]).ToString();
-                            else if (keys[i] == 256) splitter[i] = "Left Mouse Button";
-                            else if (keys[i] == 257) splitter[i] = "Right Mouse Button";
-                            else if (keys[i] == 258) splitter[i] = "Middle Mouse Button";
-                            else if (keys[i] == 259) splitter[i] = "4th Mouse Button";
-                            else if (keys[i] == 260) splitter[i] = "5th Mouse Button";
-                            else if (keys[i] > 300) splitter[i] = "Wait " + (keys[i] - 300) + "ms";
-                        }
-                        button.Text = "Macro";
-                        button.Tag = new KeyValuePair<int[], string>(keys, extras);
-                        customMapMacros.Add(getDS4ControlsByName(button.Name), item.InnerText);
-                    }
-                    else if (m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Key/{0}", button.Name)) != null)
-                    {
-                        item = m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Key/{0}", button.Name));
-                        if (ushort.TryParse(item.InnerText, out ushort wvk))
-                        {
-                            //foundBinding = true;
-                            customMapKeys.Add(getDS4ControlsByName(item.Name), wvk);
-                            button.Tag = new KeyValuePair<int, string>(wvk, extras);
-                            button.Text = ((System.Windows.Forms.Keys)wvk).ToString();
-                        }
-                    }
-                    else if (m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Button/{0}", button.Name)) != null)
-                    {
-                        item = m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Button/{0}", button.Name));
-                        //foundBinding = true;
-                        button.Tag = new KeyValuePair<string, string>(item.InnerText, extras);
-                        button.Text = item.InnerText;
-                        customMapButtons.Add(getDS4ControlsByName(button.Name), getX360ControlsByName(item.InnerText));
-                    }
-                    else
-                    {
-                        button.Tag = new KeyValuePair<object, string>(null, extras);
-                    }
-                }
-                catch
-                {
-                }
-        }
+        //            var item = m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/KeyType/{0}", button.Name));
+        //            if (item != null)
+        //            {
+        //                //foundBinding = true;
+        //                var keyType = DS4KeyType.None;
+        //                if (item.InnerText.Contains(DS4KeyType.Unbound.ToString()))
+        //                {
+        //                    keyType = DS4KeyType.Unbound;
+        //                    button.Tag = "Unbound";
+        //                    button.Text = "Unbound";
+        //                }
+        //                else
+        //                {
+        //                    var SC = item.InnerText.Contains(DS4KeyType.ScanCode.ToString());
+        //                    var TG = item.InnerText.Contains(DS4KeyType.Toggle.ToString());
+        //                    var MC = item.InnerText.Contains(DS4KeyType.Macro.ToString());
+        //                    var MR = item.InnerText.Contains(DS4KeyType.HoldMacro.ToString());
+        //                    button.Font = new Font(button.Font,
+        //                        (SC ? FontStyle.Bold : FontStyle.Regular) | (TG ? FontStyle.Italic : FontStyle.Regular) |
+        //                        (MC ? FontStyle.Underline : FontStyle.Regular) | (MR ? FontStyle.Strikeout : FontStyle.Regular));
+        //                    if (item.InnerText.Contains(DS4KeyType.ScanCode.ToString()))
+        //                        keyType |= DS4KeyType.ScanCode;
+        //                    if (item.InnerText.Contains(DS4KeyType.Toggle.ToString()))
+        //                        keyType |= DS4KeyType.Toggle;
+        //                    if (item.InnerText.Contains(DS4KeyType.Macro.ToString()))
+        //                        keyType |= DS4KeyType.Macro;
+        //                }
+        //                if (keyType != DS4KeyType.None)
+        //                    customMapKeyTypes.Add(getDS4ControlsByName(item.Name), keyType);
+        //            }
+        //            string extras;
+        //            item = m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Extras/{0}", button.Name));
+        //            if (item != null)
+        //            {
+        //                if (item.InnerText != string.Empty)
+        //                {
+        //                    extras = item.InnerText;
+        //                    customMapExtras.Add(getDS4ControlsByName(button.Name), item.InnerText);
+        //                }
+        //                else
+        //                {
+        //                    m_Xdoc.RemoveChild(item);
+        //                    extras = "0,0,0,0,0,0,0,0";
+        //                }
+        //            }
+        //            else
+        //                extras = "0,0,0,0,0,0,0,0";
+        //            item = m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Macro/{0}", button.Name));
+        //            if (item != null)
+        //            {
+        //                var splitter = item.InnerText.Split('/');
+        //                var keys = new int[splitter.Length];
+        //                for (var i = 0; i < keys.Length; i++)
+        //                {
+        //                    keys[i] = int.Parse(splitter[i]);
+        //                    if (keys[i] < 255) splitter[i] = ((System.Windows.Forms.Keys)keys[i]).ToString();
+        //                    else if (keys[i] == 256) splitter[i] = "Left Mouse Button";
+        //                    else if (keys[i] == 257) splitter[i] = "Right Mouse Button";
+        //                    else if (keys[i] == 258) splitter[i] = "Middle Mouse Button";
+        //                    else if (keys[i] == 259) splitter[i] = "4th Mouse Button";
+        //                    else if (keys[i] == 260) splitter[i] = "5th Mouse Button";
+        //                    else if (keys[i] > 300) splitter[i] = "Wait " + (keys[i] - 300) + "ms";
+        //                }
+        //                button.Text = "Macro";
+        //                button.Tag = new KeyValuePair<int[], string>(keys, extras);
+        //                customMapMacros.Add(getDS4ControlsByName(button.Name), item.InnerText);
+        //            }
+        //            else if (m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Key/{0}", button.Name)) != null)
+        //            {
+        //                item = m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Key/{0}", button.Name));
+        //                if (ushort.TryParse(item.InnerText, out ushort wvk))
+        //                {
+        //                    //foundBinding = true;
+        //                    customMapKeys.Add(getDS4ControlsByName(item.Name), wvk);
+        //                    button.Tag = new KeyValuePair<int, string>(wvk, extras);
+        //                    button.Text = ((System.Windows.Forms.Keys)wvk).ToString();
+        //                }
+        //            }
+        //            else if (m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Button/{0}", button.Name)) != null)
+        //            {
+        //                item = m_Xdoc.SelectSingleNode(string.Format("/" + rootname + "/" + control + "/Button/{0}", button.Name));
+        //                //foundBinding = true;
+        //                button.Tag = new KeyValuePair<string, string>(item.InnerText, extras);
+        //                button.Text = item.InnerText;
+        //                customMapButtons.Add(getDS4ControlsByName(button.Name), getX360ControlsByName(item.InnerText));
+        //            }
+        //            else
+        //            {
+        //                button.Tag = new KeyValuePair<object, string>(null, extras);
+        //            }
+        //        }
+        //        catch
+        //        {
+        //        }
+        //}
 
         public bool Load()
         {

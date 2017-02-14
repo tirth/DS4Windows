@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-
+using DS4Lib.Control;
 
 namespace DS4Windows
 {

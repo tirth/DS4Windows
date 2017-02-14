@@ -13,8 +13,10 @@ using System.Xml;
 using System.Text;
 using System.Globalization;
 using System.Threading.Tasks;
+using DS4Lib.Control;
 using DS4Lib.DS4;
-using static DS4Windows.Global;
+using static DS4Lib.Control.Global;
+
 namespace DS4Windows
 {
     public partial class DS4Form : Form
@@ -853,20 +855,20 @@ namespace DS4Windows
             var nocontrollers = true;
             for (var Index = 0; Index < Pads.Length; Index++)
             {
-                Pads[Index].Text = Program.rootHub.getDS4MacAddress(Index);
+                Pads[Index].Text = Program.rootHub.GetDS4MacAddress(Index);
                 var d = Program.rootHub.Controllers[Index];
                 if (QuickCharge && d?.ConnectionType == ConnectionType.BT && (bool)d?.Charging)
                 {
                     d.DisconnectBT();
                     return;
                 }
-                switch (Program.rootHub.getDS4Status(Index))
+                switch (Program.rootHub.GetDS4Status(Index))
                 {
                     case "USB": statPB[Index].Visible = true; statPB[Index].Image = Properties.Resources.USB; toolTip1.SetToolTip(statPB[Index], ""); break;
                     case "BT": statPB[Index].Visible = true; statPB[Index].Image = Properties.Resources.BT; toolTip1.SetToolTip(statPB[Index], "Right click to disconnect"); break;
                     default: statPB[Index].Visible = false; toolTip1.SetToolTip(statPB[Index], ""); break;
                 }
-                Batteries[Index].Text = Program.rootHub.getDS4Battery(Index);
+                Batteries[Index].Text = Program.rootHub.GetDS4Battery(Index);
                 if (Pads[Index].Text != string.Empty)
                 {
                     if (runningBat)
@@ -894,8 +896,8 @@ namespace DS4Windows
                 }
                 //if (((Index + 1) + ": " + Program.rootHub.getShortDS4ControllerInfo(Index)).Length > 50)
                 //MessageBox.Show(((Index + 1) + ": " + Program.rootHub.getShortDS4ControllerInfo(Index)).Length.ToString());
-                if (Program.rootHub.getShortDS4ControllerInfo(Index) != Properties.Resources.NoneText)
-                    tooltip += "\n" + (Index + 1) + ": " + Program.rootHub.getShortDS4ControllerInfo(Index); // Carefully stay under the 63 character limit.
+                if (Program.rootHub.GetShortDS4ControllerInfo(Index) != Properties.Resources.NoneText)
+                    tooltip += "\n" + (Index + 1) + ": " + Program.rootHub.GetShortDS4ControllerInfo(Index); // Carefully stay under the 63 character limit.
             }
             lbNoControllers.Visible = nocontrollers;
             tLPControllers.Visible = !nocontrollers;
@@ -909,7 +911,7 @@ namespace DS4Windows
         private void pBStatus_MouseClick(object sender, MouseEventArgs e)
         {
             var i = int.Parse(((PictureBox)sender).Tag.ToString());
-            if (e.Button == MouseButtons.Right && Program.rootHub.getDS4Status(i) == "BT" && !Program.rootHub.Controllers[i].Charging)
+            if (e.Button == MouseButtons.Right && Program.rootHub.GetDS4Status(i) == "BT" && !Program.rootHub.Controllers[i].Charging)
                 Program.rootHub.Controllers[i].DisconnectBT();
         }
 

@@ -3,8 +3,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
+using DS4Lib.Control;
 using DS4Lib.DS4;
-using static DS4Windows.Global;
+using static DS4Lib.Control.Global;
 
 namespace DS4Windows
 {

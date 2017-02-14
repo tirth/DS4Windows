@@ -1,6 +1,6 @@
 ﻿using DS4Lib.DS4;
 
-namespace DS4Windows
+namespace DS4Lib.Control
 {
     class MouseCursor
     {

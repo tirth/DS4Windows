@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
+using DS4Lib.Control;
 using DS4Lib.DS4;
 
 namespace DS4Windows

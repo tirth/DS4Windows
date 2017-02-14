@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DS4Windows
+namespace DS4Lib.Control
 {
     [Flags]
     public enum DS4KeyType : byte

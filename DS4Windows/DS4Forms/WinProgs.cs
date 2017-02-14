@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 using System.Runtime.InteropServices;
+using DS4Lib.Control;
+
 //using Ookii.Dialogs;
 
 namespace DS4Windows

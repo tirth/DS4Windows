@@ -4,6 +4,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.ComponentModel;
+using DS4Lib.Control;
 using DS4Lib.DS4;
 
 namespace DS4Windows

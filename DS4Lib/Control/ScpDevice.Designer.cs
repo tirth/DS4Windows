@@ -1,6 +1,6 @@
-﻿namespace DS4Windows
+﻿namespace DS4Lib.Control
 {
-    partial class X360Device
+    partial class ScpDevice
     {
         /// <summary>
         /// Required designer variable.

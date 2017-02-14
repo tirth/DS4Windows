@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using DS4Lib.DS4;
 
-namespace DS4Windows
+namespace DS4Lib.Control
 {
     public partial class X360Device : ScpDevice
     {

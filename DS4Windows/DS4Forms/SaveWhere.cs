@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
+using DS4Lib.Control;
 
 namespace DS4Windows
 {

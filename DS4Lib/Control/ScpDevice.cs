@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace DS4Windows 
+namespace DS4Lib.Control 
 {
     public partial class ScpDevice : Component 
     {

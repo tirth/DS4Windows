@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using DS4Lib.Control;
 using DS4Lib.DS4;
 
 namespace DS4Windows
