@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using DS4Lib.DS4;
 
 namespace DS4Windows
 {
@@ -15,8 +11,8 @@ namespace DS4Windows
         }
 
         // Keep track of remainders when performing moves or we lose fractional parts.
-        private double horizontalRemainder = 0.0, verticalRemainder = 0.0;
-        private double hRemainder = 0.0, vRemainder = 0.0;
+        private double horizontalRemainder, verticalRemainder;
+        private double hRemainder, vRemainder;
         /** Indicate x/y direction for doing jitter compensation, etc. */
         public enum Direction { Negative, Neutral, Positive }
         // Track direction vector separately and very trivially for now.
@@ -25,9 +21,8 @@ namespace DS4Windows
 
         public virtual void sixaxisMoved(SixAxisEventArgs arg)
         {
-            int deltaX = 0, deltaY = 0;
-            deltaX = -arg.sixAxis.accelX;
-            deltaY = -arg.sixAxis.accelY;
+            var deltaX = -arg.SixAxisReadings.accelX;
+            var deltaY = -arg.SixAxisReadings.accelY;
             //Console.WriteLine(arg.sixAxis.deltaX);
 
             double coefficient = Global.GyroSensitivity[deviceNumber] / 100f;
@@ -55,7 +50,7 @@ namespace DS4Windows
 
         public void touchesBegan(TouchpadEventArgs arg)
         {
-            if (arg.touches.Length == 1)
+            if (arg.TouchReadings.Length == 1)
             {
                 horizontalRemainder = verticalRemainder = 0.0;
                 horizontalDirection = verticalDirection = Direction.Neutral;
@@ -65,29 +60,29 @@ namespace DS4Windows
         private byte lastTouchID;
         public void touchesMoved(TouchpadEventArgs arg, bool dragging)
         {
-            if (!dragging && arg.touches.Length != 1 || dragging && arg.touches.Length < 1)
+            if (!dragging && arg.TouchReadings.Length != 1 || dragging && arg.TouchReadings.Length < 1)
                 return;
             int deltaX, deltaY;
-            if (arg.touches[0].touchID != lastTouchID)
+            if (arg.TouchReadings[0].touchID != lastTouchID)
             {
                 deltaX = deltaY = 0;
                 horizontalRemainder = verticalRemainder = 0.0;
                 horizontalDirection = verticalDirection = Direction.Neutral;
-                lastTouchID = arg.touches[0].touchID;
+                lastTouchID = arg.TouchReadings[0].touchID;
             }
             else if (Global.TouchpadJitterCompensation[deviceNumber])
             {
                 // Often the DS4's internal jitter compensation kicks in and starts hiding changes, ironically creating jitter...
 
-                if (dragging && arg.touches.Length > 1)
+                if (dragging && arg.TouchReadings.Length > 1)
                 {
-                    deltaX = arg.touches[1].deltaX;
-                    deltaY = arg.touches[1].deltaY;
+                    deltaX = arg.TouchReadings[1].deltaX;
+                    deltaY = arg.TouchReadings[1].deltaY;
                 }
                 else
                 {
-                    deltaX = arg.touches[0].deltaX;
-                    deltaY = arg.touches[0].deltaY;
+                    deltaX = arg.TouchReadings[0].deltaX;
+                    deltaY = arg.TouchReadings[0].deltaY;
                 }
                 // allow only very fine, slow motions, when changing direction, even from neutral
                 // TODO maybe just consume it completely?
@@ -127,15 +122,15 @@ namespace DS4Windows
             }
             else
             {
-                if (dragging && arg.touches.Length > 1)
+                if (dragging && arg.TouchReadings.Length > 1)
                 {
-                    deltaX = arg.touches[1].deltaX;
-                    deltaY = arg.touches[1].deltaY;
+                    deltaX = arg.TouchReadings[1].deltaX;
+                    deltaY = arg.TouchReadings[1].deltaY;
                 }
                 else
                 {
-                    deltaX = arg.touches[0].deltaX;
-                    deltaY = arg.touches[0].deltaY;
+                    deltaX = arg.TouchReadings[0].deltaX;
+                    deltaY = arg.TouchReadings[0].deltaY;
                 }
             }
 

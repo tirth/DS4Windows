@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Forms;
-
-using System.Runtime.InteropServices;
-using Microsoft.Win32.SafeHandles;
+using DS4Lib.DS4;
 
 namespace DS4Windows
 {
     public partial class X360Device : ScpDevice
     {
-        private const String DS3_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
+        private const string DS3_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
         private const int CONTROLLER_OFFSET = 1; // Device 0 is the virtual USB hub itself, and we leave devices 1-10 available for other software (like the Scarlet.Crush DualShock driver itself)
 
         private int firstController = 1;
@@ -21,14 +17,14 @@ namespace DS4Windows
             set { firstController = value > 0 ? value : 1; }
         }
 
-        protected Int32 Scale(Int32 Value, Boolean Flip)
+        protected int Scale(int Value, bool Flip)
         {
             Value -= 0x80;
 
             if (Value == -128) Value = -127;
             if (Flip) Value *= -1;
 
-            return (Int32)((float)Value * 258.00787401574803149606299212599f);
+            return (int)((float)Value * 258.00787401574803149606299212599f);
         }
 
 
@@ -56,7 +52,7 @@ namespace DS4Windows
             return true;
         } */
 
-        public override Boolean Open(String DevicePath)
+        public override bool Open(string DevicePath)
         {
             m_Path = DevicePath;
             m_WinUsbHandle = (IntPtr)INVALID_HANDLE_VALUE;
@@ -69,7 +65,7 @@ namespace DS4Windows
             return true;
         }
 
-        public override Boolean Start()
+        public override bool Start()
         {
             if (IsActive)
             {
@@ -78,7 +74,7 @@ namespace DS4Windows
             return true;
         }
 
-        public override Boolean Stop()
+        public override bool Stop()
         {
             if (IsActive)
             {
@@ -88,7 +84,7 @@ namespace DS4Windows
             return base.Stop();
         }
 
-        public override Boolean Close()
+        public override bool Close()
         {
             if (IsActive)
             {
@@ -99,35 +95,35 @@ namespace DS4Windows
         }
 
 
-        public void Parse(DS4State state, Byte[] Output, int device)
+        public void Parse(State state, byte[] Output, int device)
         {
             Output[0] = 0x1C;
-            Output[4] = (Byte)(device + firstController);
+            Output[4] = (byte)(device + firstController);
             Output[9] = 0x14;
 
             for (var i = 10; i < Output.Length; i++)
             {
                 Output[i] = 0;
             }
-            if (state.Share) Output[10] |= (Byte)(1 << 5); // Back
-            if (state.L3) Output[10] |= (Byte)(1 << 6); // Left  Thumb
-            if (state.R3) Output[10] |= (Byte)(1 << 7); // Right Thumb
-            if (state.Options) Output[10] |= (Byte)(1 << 4); // Start
+            if (state.Share) Output[10] |= (byte)(1 << 5); // Back
+            if (state.L3) Output[10] |= (byte)(1 << 6); // Left  Thumb
+            if (state.R3) Output[10] |= (byte)(1 << 7); // Right Thumb
+            if (state.Options) Output[10] |= (byte)(1 << 4); // Start
 
-            if (state.DpadUp) Output[10] |= (Byte)(1 << 0); // Up
-            if (state.DpadRight) Output[10] |= (Byte)(1 << 3); // Down
-            if (state.DpadDown) Output[10] |= (Byte)(1 << 1); // Right
-            if (state.DpadLeft) Output[10] |= (Byte)(1 << 2); // Left
+            if (state.DpadUp) Output[10] |= (byte)(1 << 0); // Up
+            if (state.DpadRight) Output[10] |= (byte)(1 << 3); // Down
+            if (state.DpadDown) Output[10] |= (byte)(1 << 1); // Right
+            if (state.DpadLeft) Output[10] |= (byte)(1 << 2); // Left
 
-            if (state.L1) Output[11] |= (Byte)(1 << 0); // Left  Shoulder
-            if (state.R1) Output[11] |= (Byte)(1 << 1); // Right Shoulder
+            if (state.L1) Output[11] |= (byte)(1 << 0); // Left  Shoulder
+            if (state.R1) Output[11] |= (byte)(1 << 1); // Right Shoulder
 
-            if (state.Triangle) Output[11] |= (Byte)(1 << 7); // Y
-            if (state.Circle) Output[11] |= (Byte)(1 << 5); // B
-            if (state.Cross) Output[11] |= (Byte)(1 << 4); // A
-            if (state.Square) Output[11] |= (Byte)(1 << 6); // X
+            if (state.Triangle) Output[11] |= (byte)(1 << 7); // Y
+            if (state.Circle) Output[11] |= (byte)(1 << 5); // B
+            if (state.Cross) Output[11] |= (byte)(1 << 4); // A
+            if (state.Square) Output[11] |= (byte)(1 << 6); // X
 
-            if (state.PS) Output[11] |= (Byte)(1 << 2); // Guide     
+            if (state.PS) Output[11] |= (byte)(1 << 2); // Guide     
 
             Output[12] = state.L2; // Left Trigger
             Output[13] = state.R2; // Right Trigger
@@ -136,22 +132,22 @@ namespace DS4Windows
             var ThumbLY = -Scale(state.LY, false);
             var ThumbRX = Scale(state.RX, false);
             var ThumbRY = -Scale(state.RY, false);
-            Output[14] = (Byte)((ThumbLX >> 0) & 0xFF); // LX
-            Output[15] = (Byte)((ThumbLX >> 8) & 0xFF);            
-            Output[16] = (Byte)((ThumbLY >> 0) & 0xFF); // LY
-            Output[17] = (Byte)((ThumbLY >> 8) & 0xFF);
-            Output[18] = (Byte)((ThumbRX >> 0) & 0xFF); // RX
-            Output[19] = (Byte)((ThumbRX >> 8) & 0xFF);
-            Output[20] = (Byte)((ThumbRY >> 0) & 0xFF); // RY
-            Output[21] = (Byte)((ThumbRY >> 8) & 0xFF);
+            Output[14] = (byte)((ThumbLX >> 0) & 0xFF); // LX
+            Output[15] = (byte)((ThumbLX >> 8) & 0xFF);            
+            Output[16] = (byte)((ThumbLY >> 0) & 0xFF); // LY
+            Output[17] = (byte)((ThumbLY >> 8) & 0xFF);
+            Output[18] = (byte)((ThumbRX >> 0) & 0xFF); // RX
+            Output[19] = (byte)((ThumbRX >> 8) & 0xFF);
+            Output[20] = (byte)((ThumbRY >> 0) & 0xFF); // RY
+            Output[21] = (byte)((ThumbRY >> 8) & 0xFF);
         }
 
-        public Boolean Plugin(Int32 Serial)
+        public bool Plugin(int Serial)
         {
             if (IsActive)
             {
                 var Transfered = 0;
-                var Buffer = new Byte[16];
+                var Buffer = new byte[16];
 
                 Buffer[0] = 0x10;
                 Buffer[1] = 0x00;
@@ -159,10 +155,10 @@ namespace DS4Windows
                 Buffer[3] = 0x00;
 
                 Serial += firstController;
-                Buffer[4] = (Byte)((Serial >> 0) & 0xFF);
-                Buffer[5] = (Byte)((Serial >> 8) & 0xFF);
-                Buffer[6] = (Byte)((Serial >> 16) & 0xFF);
-                Buffer[7] = (Byte)((Serial >> 24) & 0xFF);
+                Buffer[4] = (byte)((Serial >> 0) & 0xFF);
+                Buffer[5] = (byte)((Serial >> 8) & 0xFF);
+                Buffer[6] = (byte)((Serial >> 16) & 0xFF);
+                Buffer[7] = (byte)((Serial >> 24) & 0xFF);
 
                 return DeviceIoControl(m_FileHandle, 0x2A4000, Buffer, Buffer.Length, null, 0, ref Transfered, IntPtr.Zero);
             }
@@ -170,12 +166,12 @@ namespace DS4Windows
             return false;
         }
 
-        public Boolean Unplug(Int32 Serial)
+        public bool Unplug(int Serial)
         {
             if (IsActive)
             {
                 var Transfered = 0;
-                var Buffer = new Byte[16];
+                var Buffer = new byte[16];
 
                 Buffer[0] = 0x10;
                 Buffer[1] = 0x00;
@@ -183,10 +179,10 @@ namespace DS4Windows
                 Buffer[3] = 0x00;
 
                 Serial += firstController;
-                Buffer[4] = (Byte)((Serial >> 0) & 0xFF);
-                Buffer[5] = (Byte)((Serial >> 8) & 0xFF);
-                Buffer[6] = (Byte)((Serial >> 16) & 0xFF);
-                Buffer[7] = (Byte)((Serial >> 24) & 0xFF);
+                Buffer[4] = (byte)((Serial >> 0) & 0xFF);
+                Buffer[5] = (byte)((Serial >> 8) & 0xFF);
+                Buffer[6] = (byte)((Serial >> 16) & 0xFF);
+                Buffer[7] = (byte)((Serial >> 24) & 0xFF);
 
                 return DeviceIoControl(m_FileHandle, 0x2A4004, Buffer, Buffer.Length, null, 0, ref Transfered, IntPtr.Zero);
             }
@@ -194,12 +190,12 @@ namespace DS4Windows
             return false;
         }
 
-        public Boolean UnplugAll() //not yet implemented, not sure if will
+        public bool UnplugAll() //not yet implemented, not sure if will
         {
             if (IsActive)
             {
                 var Transfered = 0;
-                var Buffer = new Byte[16];
+                var Buffer = new byte[16];
 
                 Buffer[0] = 0x10;
                 Buffer[1] = 0x00;
@@ -213,7 +209,7 @@ namespace DS4Windows
         }
 
 
-        public Boolean Report(Byte[] Input, Byte[] Output)
+        public bool Report(byte[] Input, byte[] Output)
         {
             if (IsActive)
             {

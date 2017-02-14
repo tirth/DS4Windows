@@ -1,14 +1,7 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -61,7 +54,7 @@ namespace DS4Windows
             Close();
         }
 
-        public bool Save(String path)
+        public bool Save(string path)
         {
             var Saved = true;
             var m_Xdoc = new XmlDocument();
@@ -71,10 +64,10 @@ namespace DS4Windows
 
                 m_Xdoc.RemoveAll();
 
-                Node = m_Xdoc.CreateXmlDeclaration("1.0", "utf-8", String.Empty);
+                Node = m_Xdoc.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
                 m_Xdoc.AppendChild(Node);
 
-                Node = m_Xdoc.CreateComment(String.Format(" Profile Configuration Data. {0} ", DateTime.Now));
+                Node = m_Xdoc.CreateComment($" Profile Configuration Data. {DateTime.Now} ");
                 m_Xdoc.AppendChild(Node);
 
                 Node = m_Xdoc.CreateWhitespace("\r\n");
@@ -93,7 +86,7 @@ namespace DS4Windows
 
         private void SaveWhere_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (String.IsNullOrEmpty(Global.appdatapath))
+            if (string.IsNullOrEmpty(Global.appdatapath))
                 if (MessageBox.Show(Properties.Resources.ALocactionNeeded, Properties.Resources.CloseDS4W,
              MessageBoxButtons.YesNo) == DialogResult.No)
                     e.Cancel = true;

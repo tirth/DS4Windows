@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Diagnostics;
+using DS4Lib.DS4;
 using static DS4Windows.Global;
+
 namespace DS4Windows
 {
     public class Mapping
@@ -31,7 +30,7 @@ namespace DS4Windows
             {
                 public KeyPress previous, current;
             }
-            public Dictionary<UInt16, KeyPresses> keyPresses = new Dictionary<UInt16, KeyPresses>();
+            public Dictionary<ushort, KeyPresses> keyPresses = new Dictionary<ushort, KeyPresses>();
 
             public void SavePrevious(bool performClear)
             {
@@ -60,8 +59,8 @@ namespace DS4Windows
 
         // TODO When we disconnect, process a null/dead state to release any keys or buttons.
         public static DateTime oldnow = DateTime.UtcNow;
-        private static bool pressagain = false;
-        private static int wheel = 0, keyshelddown = 0;
+        private static bool pressagain;
+        private static int wheel, keyshelddown;
 
         //mapcustom
         public static bool[] pressedonce = new bool[261], macrodone = new bool[34];
@@ -70,7 +69,7 @@ namespace DS4Windows
         //actions
         public static int[] fadetimer = { 0, 0, 0, 0 };
         public static int[] prevFadetimer = { 0, 0, 0, 0 };
-        public static DS4Color[] lastColor = new DS4Color[4];
+        public static DS4Colour[] LastColour = new DS4Colour[4];
         public static List<ActionState> actionDone = new List<ActionState>();
         //public static List<bool>[] actionDone = { new List<bool>(), new List<bool>(), new List<bool>(), new List<bool>() };
         //public static bool[,] actionDone = new bool[4, 50];
@@ -79,7 +78,7 @@ namespace DS4Windows
         public static DateTime[] oldnowAction = { DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue };
         public static int[] untriggerindex = { -1, -1, -1, -1 };
         public static DateTime[] oldnowKeyAct = { DateTime.MinValue, DateTime.MinValue, DateTime.MinValue, DateTime.MinValue };
-        private static bool tappedOnce = false, firstTouch = false, secondtouchbegin = false;
+        private static bool tappedOnce, firstTouch, secondtouchbegin;
         private static DateTime pastTime, firstTap, TimeofEnd;
 
         //special macros
@@ -88,9 +87,9 @@ namespace DS4Windows
 
         //mouse
         public static int mcounter = 34;
-        public static int mouseaccel = 0;
-        public static int prevmouseaccel = 0;
-        private static double horizontalRemainder = 0.0, verticalRemainder = 0.0;
+        public static int mouseaccel;
+        public static int prevmouseaccel;
+        private static double horizontalRemainder, verticalRemainder;
 
         public static void Commit(int device)
         {
@@ -375,9 +374,9 @@ namespace DS4Windows
                 return value;
         }
 
-        public static DS4State SetCurveAndDeadzone(int device, DS4State cState)
+        public static State SetCurveAndDeadzone(int device, State cState)
         {
-            var dState = new DS4State(cState);
+            var dState = new State(cState);
             int x;
             int y;
             int curve;
@@ -491,7 +490,7 @@ namespace DS4Windows
             return dState;
         }
 
-        private static bool ShiftTrigger(int trigger, int device, DS4State cState, DS4StateExposed eState, Mouse tp)
+        private static bool ShiftTrigger(int trigger, int device, State cState, StateExposed eState, Mouse tp)
         {
             switch (trigger)
             {
@@ -582,7 +581,7 @@ namespace DS4Windows
         /// </summary>
         static bool[] held = new bool[4];
         static int[] oldmouse = new int[4] { -1, -1, -1, -1 };
-        public static void MapCustom(int device, DS4State cState, DS4State MappedState, DS4StateExposed eState, Mouse tp, ControlService ctrl)
+        public static void MapCustom(int device, State cState, State MappedState, StateExposed eState, Mouse tp, ControlService ctrl)
         {
             
             MappedState.LX = 127;
@@ -595,7 +594,7 @@ namespace DS4Windows
             var deviceState = Mapping.deviceState[device];
             if (GetActions().Count > 0 && (ProfileActions[device].Count > 0 || !string.IsNullOrEmpty(tempprofilename[device])))
                 MapCustomAction(device, cState, MappedState, eState, tp, ctrl);
-            if (ctrl.DS4Controllers[device] == null) return;
+            if (ctrl.Controllers[device] == null) return;
 
             cState.CopyTo(MappedState);
 
@@ -836,7 +835,7 @@ namespace DS4Windows
                                 ctrl.setRumble((byte)extras[0], (byte)extras[1], device);
                             if (extras[2] == 1)
                             {
-                                var color = new DS4Color { red = (byte)extras[3], green = (byte)extras[4], blue = (byte)extras[5] };
+                                var color = new DS4Colour { Red = (byte)extras[3], Green = (byte)extras[4], Blue = (byte)extras[5] };
                                 DS4LightBar.forcedColor[device] = color;
                                 DS4LightBar.forcedFlash[device] = (byte)extras[6];
                                 DS4LightBar.forcelight[device] = true;
@@ -1018,7 +1017,7 @@ namespace DS4Windows
         {
             return shift ? false : GetDS4Action(device, dc.ToString(), false) == null;
         }
-        public static async void MapCustomAction(int device, DS4State cState, DS4State MappedState, DS4StateExposed eState, Mouse tp, ControlService ctrl)
+        public static async void MapCustomAction(int device, State cState, State MappedState, StateExposed eState, Mouse tp, ControlService ctrl)
         {
             try {
                 foreach (var actionname in ProfileActions[device])
@@ -1168,10 +1167,10 @@ namespace DS4Windows
                                 actionDone[index].dev[device] = true;
                                 foreach (var dc in action.trigger)
                                     resetToDefaultValue(dc, MappedState);
-                                PlayMacro(device, macroControl, String.Join("/", action.macro), DS4Controls.None, keyType);
+                                PlayMacro(device, macroControl, string.Join("/", action.macro), DS4Controls.None, keyType);
                             }
                             else
-                                EndMacro(device, macroControl, String.Join("/", action.macro), DS4Controls.None);
+                                EndMacro(device, macroControl, string.Join("/", action.macro), DS4Controls.None);
                         }
                         else if (triggeractivated && action.type == "Key")
                         {
@@ -1214,7 +1213,7 @@ namespace DS4Windows
                         }
                         else if (triggeractivated && action.type == "DisconnectBT")
                         {
-                            var d = ctrl.DS4Controllers[device];
+                            var d = ctrl.Controllers[device];
                             if (!d.Charging)
                             {
                                 d.DisconnectBT();
@@ -1248,17 +1247,17 @@ namespace DS4Windows
                             }
                             if (bool.Parse(dets[2]))
                             {
-                                var d = ctrl.DS4Controllers[device];
+                                var d = ctrl.Controllers[device];
                                 if (!actionDone[index].dev[device])
                                 {
-                                    lastColor[device] = d.LightBarColor;
+                                    LastColour[device] = d.LightBarColour;
                                     DS4LightBar.forcelight[device] = true;
                                 }
-                                var empty = new DS4Color(byte.Parse(dets[3]), byte.Parse(dets[4]), byte.Parse(dets[5]));
-                                var full = new DS4Color(byte.Parse(dets[6]), byte.Parse(dets[7]), byte.Parse(dets[8]));
+                                var empty = new DS4Colour(byte.Parse(dets[3]), byte.Parse(dets[4]), byte.Parse(dets[5]));
+                                var full = new DS4Colour(byte.Parse(dets[6]), byte.Parse(dets[7]), byte.Parse(dets[8]));
                                 var trans = getTransitionedColor(empty, full, d.Battery);
                                 if (fadetimer[device] < 100)
-                                    DS4LightBar.forcedColor[device] = getTransitionedColor(lastColor[device], trans, fadetimer[device] += 2);
+                                    DS4LightBar.forcedColor[device] = getTransitionedColor(LastColour[device], trans, fadetimer[device] += 2);
                             }
                             actionDone[index].dev[device] = true;
                         }
@@ -1287,7 +1286,7 @@ namespace DS4Windows
                             if (getCustomKey(device, action.trigger[0]) != 0)
                                 getCustomMacros(device).Remove(action.trigger[0]);*/
                             var dets = action.details.Split(',');
-                            var d = ctrl.DS4Controllers[device];
+                            var d = ctrl.Controllers[device];
                             //cus
                             if (getBoolMapping(device, action.trigger[0], cState, eState, tp) && !getBoolMapping(device, action.trigger[0], d.getPreviousState(), eState, tp))
                             {//pressed down
@@ -1491,7 +1490,7 @@ namespace DS4Windows
                                 var b = (byte)(int.Parse(lb[6].ToString()) * 100 + int.Parse(lb[7].ToString()) * 10 + int.Parse(lb[8].ToString()));
                                 DS4LightBar.forcelight[device] = true;
                                 DS4LightBar.forcedFlash[device] = 0;
-                                DS4LightBar.forcedColor[device] = new DS4Color(r, g, b);
+                                DS4LightBar.forcedColor[device] = new DS4Colour(r, g, b);
                             }
                             else
                             {
@@ -1501,7 +1500,7 @@ namespace DS4Windows
                         }
                         else if (i >= 1000000)
                         {
-                            var d = Program.rootHub.DS4Controllers[device];
+                            var d = Program.rootHub.Controllers[device];
                             var r = i.ToString().Substring(1);
                             var heavy = (byte)(int.Parse(r[0].ToString()) * 100 + int.Parse(r[1].ToString()) * 10 + int.Parse(r[2].ToString()));
                             var light = (byte)(int.Parse(r[3].ToString()) * 100 + int.Parse(r[4].ToString()) * 10 + int.Parse(r[5].ToString()));
@@ -1626,7 +1625,7 @@ namespace DS4Windows
                     }
                     DS4LightBar.forcedFlash[device] = 0;
                     DS4LightBar.forcelight[device] = false;
-                    Program.rootHub.DS4Controllers[device].setRumble(0, 0);
+                    Program.rootHub.Controllers[device].setRumble(0, 0);
                     if (keyType.HasFlag(DS4KeyType.HoldMacro))
                     {
                         await Task.Delay(50);
@@ -1675,7 +1674,7 @@ namespace DS4Windows
             }
         }
 
-        private static void getMouseWheelMapping(int device, DS4Controls control, DS4State cState, DS4StateExposed eState, Mouse tp, bool down)
+        private static void getMouseWheelMapping(int device, DS4Controls control, State cState, StateExposed eState, Mouse tp, bool down)
         {
             var now = DateTime.UtcNow;
             if (now >= oldnow + TimeSpan.FromMilliseconds(10) && !pressagain)
@@ -1685,7 +1684,7 @@ namespace DS4Windows
             }
         }
 
-        private static int getMouseMapping(int device, DS4Controls control, DS4State cState, DS4StateExposed eState, int mnum)
+        private static int getMouseMapping(int device, DS4Controls control, State cState, StateExposed eState, int mnum)
         {
             var controlnum = DS4ControltoInt(control);
             var SXD = SXDeadzone[device];
@@ -1815,7 +1814,7 @@ namespace DS4Windows
             return true;
         }
 
-        public static byte getByteMapping(int device, DS4Controls control, DS4State cState, DS4StateExposed eState, Mouse tp)
+        public static byte getByteMapping(int device, DS4Controls control, State cState, StateExposed eState, Mouse tp)
         {
             var SXD = SXDeadzone[device];
             var SZD = SZDeadzone[device];
@@ -1863,7 +1862,7 @@ namespace DS4Windows
             return 0;
         }
 
-        public static bool getBoolMapping(int device, DS4Controls control, DS4State cState, DS4StateExposed eState, Mouse tp)
+        public static bool getBoolMapping(int device, DS4Controls control, State cState, StateExposed eState, Mouse tp)
         {
             var sOff = UseSAforMouse[device];
             switch (control)
@@ -1909,7 +1908,7 @@ namespace DS4Windows
             return false;
         }
 
-        public static byte getXYAxisMapping(int device, DS4Controls control, DS4State cState, DS4StateExposed eState, Mouse tp, bool alt = false)
+        public static byte getXYAxisMapping(int device, DS4Controls control, State cState, StateExposed eState, Mouse tp, bool alt = false)
         {
             byte trueVal = 0;
             byte falseVal = 127;
@@ -1992,7 +1991,7 @@ namespace DS4Windows
         //Returns false for any bool, 
         //if control is one of the xy axis returns 127
         //if its a trigger returns 0
-        public static void resetToDefaultValue(DS4Controls control, DS4State cState)
+        public static void resetToDefaultValue(DS4Controls control, State cState)
         {
             switch (control)
             {

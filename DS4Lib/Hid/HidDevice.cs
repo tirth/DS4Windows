@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
-namespace DS4Windows
+
+namespace DS4Lib.Hid
 {
     public class HidDevice : IDisposable
     {
@@ -24,7 +24,7 @@ namespace DS4Windows
 
         private readonly HidDeviceCapabilities _deviceCapabilities;
         private bool _monitorDeviceEvents;
-        private string serial = null;
+        private string serial;
         internal HidDevice(string devicePath, string description = null)
         {
             _devicePath = devicePath;
@@ -42,7 +42,7 @@ namespace DS4Windows
             catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
-                throw new Exception(string.Format("Error querying HID device '{0}'.", devicePath), exception);
+                throw new Exception($"Error querying HID device '{devicePath}'.", exception);
             }
         }
 
@@ -58,11 +58,8 @@ namespace DS4Windows
 
         public override string ToString()
         {
-            return string.Format("VendorID={0}, ProductID={1}, Version={2}, DevicePath={3}",
-                                _deviceAttributes.VendorHexId,
-                                _deviceAttributes.ProductHexId,
-                                _deviceAttributes.Version,
-                                _devicePath);
+            return
+                $"VendorID={_deviceAttributes.VendorHexId}, ProductID={_deviceAttributes.ProductHexId}, Version={_deviceAttributes.Version}, DevicePath={_devicePath}";
         }
 
         public void OpenDevice(bool isExclusive)
@@ -304,7 +301,7 @@ namespace DS4Windows
 
         }
 
-        private SafeFileHandle OpenHandle(String devicePathName, Boolean isExclusive)
+        private SafeFileHandle OpenHandle(string devicePathName, bool isExclusive)
         {
             SafeFileHandle hidHandle;
 
@@ -341,7 +338,7 @@ namespace DS4Windows
                 var buffer = new byte[16];
                 buffer[0] = 18;
                 readFeatureData(buffer);                
-                serial =  String.Format("{0:X02}:{1:X02}:{2:X02}:{3:X02}:{4:X02}:{5:X02}", buffer[6], buffer[5], buffer[4], buffer[3], buffer[2], buffer[1]);
+                serial = $"{buffer[6]:X02}:{buffer[5]:X02}:{buffer[4]:X02}:{buffer[3]:X02}:{buffer[2]:X02}:{buffer[1]:X02}";
                 return serial;
             }
             else

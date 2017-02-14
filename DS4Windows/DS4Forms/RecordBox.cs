@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-
 using System.IO;
 using System.Reflection;
+using DS4Lib.DS4;
 
 namespace DS4Windows
 {
@@ -25,8 +19,8 @@ namespace DS4Windows
         SpecActions sA;
         int sAButton = -1;
         KBM360 kbm;
-        DS4State cState;
-        public bool saved = false;
+        State cState;
+        public bool saved;
         List<DS4Controls> dcs = new List<DS4Controls>();
         TextBox tb1, tb2;
         public RecordBox(KBM360 op)
@@ -124,7 +118,7 @@ namespace DS4Windows
         bool[] pTP = new bool[4];
         void ds4_Tick(object sender, EventArgs e)
         {
-            if (Program.rootHub.DS4Controllers[0] != null)
+            if (Program.rootHub.Controllers[0] != null)
             {
                 cState = Program.rootHub.getDS4State(0);
                 if (btnRecord.Text == Properties.Resources.StopText)
@@ -279,8 +273,8 @@ namespace DS4Windows
             }
             return "None";
         }
-        bool recordAfter = false;
-        int recordAfterInt = 0;
+        bool recordAfter;
+        int recordAfterInt;
         private void btnRecord_Click(object sender, EventArgs e)
         {
             if (btnRecord.Text != Properties.Resources.StopText)
@@ -1100,7 +1094,7 @@ namespace DS4Windows
             }
         }
         private int selection;
-        private bool changingDelay = false;
+        private bool changingDelay;
         private void lVMacros_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (lVMacros.SelectedIndices[0] >= 0)
@@ -1230,10 +1224,10 @@ namespace DS4Windows
 
         private void advColorDialog_OnUpdateColor(object sender, EventArgs e)
         {
-            if (sender is Color && Program.rootHub.DS4Controllers[0] != null)
+            if (sender is Color && Program.rootHub.Controllers[0] != null)
             {
                 var color = (Color)sender;
-                var dcolor = new DS4Color { red = color.R, green = color.G, blue = color.B };
+                var dcolor = new DS4Colour { Red = color.R, Green = color.G, Blue = color.B };
                 DS4LightBar.forcedColor[0] = dcolor;
                 DS4LightBar.forcedFlash[0] = 0;
                 DS4LightBar.forcelight[0] = true;

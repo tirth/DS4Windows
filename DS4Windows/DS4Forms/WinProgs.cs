@@ -1,17 +1,9 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Net;
-using System.Text.RegularExpressions;
-
 using System.Xml;
 using System.Runtime.InteropServices;
 //using Ookii.Dialogs;
@@ -25,11 +17,11 @@ namespace DS4Windows
         public DS4Form form;
         //C:\ProgramData\Microsoft\Windows\Start Menu\Programs
         string steamgamesdir, origingamesdir;
-        protected String m_Profile = Global.appdatapath + "\\Auto Profiles.xml";
+        protected string m_Profile = Global.appdatapath + "\\Auto Profiles.xml";
         protected XmlDocument m_Xdoc = new XmlDocument();
         List<string> programpaths = new List<string>();
         List<string> lodsf = new List<string>();
-        bool appsloaded = false;
+        bool appsloaded;
 
         public WinProgs(string[] oc, DS4Form main)
         {
@@ -70,10 +62,10 @@ namespace DS4Windows
             {
                 XmlNode Node;
 
-                Node = m_Xdoc.CreateXmlDeclaration("1.0", "utf-8", String.Empty);
+                Node = m_Xdoc.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
                 m_Xdoc.AppendChild(Node);
 
-                Node = m_Xdoc.CreateComment(String.Format(" Auto-Profile Configuration Data. {0} ", DateTime.Now));
+                Node = m_Xdoc.CreateComment($" Auto-Profile Configuration Data. {DateTime.Now} ");
                 m_Xdoc.AppendChild(Node);
 
                 Node = m_Xdoc.CreateWhitespace("\r\n");
@@ -181,7 +173,7 @@ namespace DS4Windows
                 bnAddPrograms.Text = Properties.Resources.AddingToList;
                 for (var i = lodsf.Count - 1; i >= 0; i--)
                     if (lodsf[i].Contains("etup") || lodsf[i].Contains("dotnet") || lodsf[i].Contains("SETUP")
-                        || lodsf[i].Contains("edist") || lodsf[i].Contains("nstall") || String.IsNullOrEmpty(lodsf[i]))
+                        || lodsf[i].Contains("edist") || lodsf[i].Contains("nstall") || string.IsNullOrEmpty(lodsf[i]))
                         lodsf.RemoveAt(i);
                 for (var i = lodsf.Count - 1; i >= 0; i--)
                     for (var j = programpaths.Count - 1; j >= 0; j--)
@@ -212,7 +204,7 @@ namespace DS4Windows
             m_Xdoc.Load(m_Profile);
             XmlNode Node;
 
-            Node = m_Xdoc.CreateComment(String.Format(" Auto-Profile Configuration Data. {0} ", DateTime.Now));
+            Node = m_Xdoc.CreateComment($" Auto-Profile Configuration Data. {DateTime.Now} ");
             foreach (XmlNode node in m_Xdoc.SelectNodes("//comment()"))
                 node.ParentNode.ReplaceChild(Node, node);
 

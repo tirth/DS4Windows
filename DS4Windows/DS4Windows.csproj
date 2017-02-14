@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DS4Windows</RootNamespace>
     <AssemblyName>DS4Windows</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -98,12 +98,6 @@
     <Compile Include="DS4Control\X360Device.designer.cs">
       <DependentUpon>X360Device.cs</DependentUpon>
     </Compile>
-    <Compile Include="DS4Library\DS4Device.cs" />
-    <Compile Include="DS4Library\DS4Devices.cs" />
-    <Compile Include="DS4Library\DS4Sixaxis.cs" />
-    <Compile Include="DS4Library\DS4State.cs" />
-    <Compile Include="DS4Library\DS4StateExposed.cs" />
-    <Compile Include="DS4Library\DS4Touchpad.cs" />
     <Compile Include="DS4Forms\AdvancedColorDialog.cs" />
     <Compile Include="DS4Forms\Alreadyrunning.cs">
       <SubType>Form</SubType>
@@ -179,12 +173,6 @@
     <Compile Include="DS4Forms\WinProgs.Designer.cs">
       <DependentUpon>WinProgs.cs</DependentUpon>
     </Compile>
-    <Compile Include="HidLibrary\Extensions.cs" />
-    <Compile Include="HidLibrary\HidDevice.cs" />
-    <Compile Include="HidLibrary\HidDeviceAttributes.cs" />
-    <Compile Include="HidLibrary\HidDeviceCapabilities.cs" />
-    <Compile Include="HidLibrary\HidDevices.cs" />
-    <Compile Include="HidLibrary\NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="DS4Forms\Alreadyrunning.resx">
       <DependentUpon>Alreadyrunning.cs</DependentUpon>
@@ -1033,7 +1021,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="HidLibrary\LICENSE.htm" />
     <Content Include="Resources\360 fades.png" />
     <None Include="Resources\360 map.png" />
     <None Include="Resources\360 highlight.png" />
@@ -1115,6 +1102,12 @@
     <Content Include="Resources\x360test.png" />
     <Content Include="Resources\xbox_360_controller.png" />
     <Content Include="Resources\Y.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DS4Lib\DS4Lib.csproj">
+      <Project>{7ff37f41-3ad7-4e4f-a13d-7565f0f2da3a}</Project>
+      <Name>DS4Lib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

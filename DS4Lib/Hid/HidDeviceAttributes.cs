@@ -1,4 +1,4 @@
-﻿namespace DS4Windows
+﻿namespace DS4Lib.Hid
 {
     public class HidDeviceAttributes
     {

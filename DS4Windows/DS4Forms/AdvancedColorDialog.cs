@@ -72,7 +72,7 @@ namespace DS4Windows
                 return GetChildWindows(hwnd);
             }
 
-            private Int32 EnumWindowProc(IntPtr hwnd, Int32 lParam)
+            private int EnumWindowProc(IntPtr hwnd, int lParam)
             {
                 if (GetParent(hwnd) == 0 && IsWindowVisible(hwnd) != 0)
                 {
@@ -85,7 +85,7 @@ namespace DS4Windows
                 return 1;
             }
 
-            private Int32 EnumChildWindowProc(IntPtr hwnd, Int32 lParam)
+            private int EnumChildWindowProc(IntPtr hwnd, int lParam)
             {
                 var window = GetWindowIdentification(hwnd);
                 if (_childClass.Length == 0 || window.ClassName.ToLower() == _childClass.ToLower())
@@ -129,7 +129,7 @@ namespace DS4Windows
         private const int WM_LBUTTONDOWN = 0x0201;
         private const int WM_INITDIALOG = 0x0110;
 
-        private List<ApiWindow> EditWindows = null;
+        private List<ApiWindow> EditWindows;
         public delegate void ColorUpdateHandler(object sender, EventArgs e);
         public event ColorUpdateHandler OnUpdateColor;
 
@@ -157,9 +157,9 @@ namespace DS4Windows
                 if (EditWindows != null && EditWindows.Count == 6)
                 {
                     byte red = 0, green = 0, blue = 0;
-                    if (Byte.TryParse(WindowsEnumerator.WindowText(EditWindows[3].hWnd), out red))
-                        if (Byte.TryParse(WindowsEnumerator.WindowText(EditWindows[4].hWnd), out green))
-                            if (Byte.TryParse(WindowsEnumerator.WindowText(EditWindows[5].hWnd), out blue))
+                    if (byte.TryParse(WindowsEnumerator.WindowText(EditWindows[3].hWnd), out red))
+                        if (byte.TryParse(WindowsEnumerator.WindowText(EditWindows[4].hWnd), out green))
+                            if (byte.TryParse(WindowsEnumerator.WindowText(EditWindows[5].hWnd), out blue))
                                 OnUpdateColor(Color.FromArgb(red, green, blue), EventArgs.Empty);
                 }
             }

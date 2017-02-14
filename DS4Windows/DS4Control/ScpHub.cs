@@ -6,13 +6,13 @@ namespace DS4Windows
     public partial class ScpHub : Component 
     {
         protected IntPtr m_Reference = IntPtr.Zero;
-        protected volatile Boolean m_Started = false;
+        protected volatile bool m_Started = false;
 
-        public event EventHandler<DebugEventArgs>   Debug   = null;
+        public event EventHandler<DebugEventArgs>   Debug;
        
-        public event EventHandler<ReportEventArgs>  Report  = null;
+        public event EventHandler<ReportEventArgs>  Report;
 
-        protected virtual Boolean LogDebug(String Data, bool warning) 
+        protected virtual bool LogDebug(string Data, bool warning) 
         {
             var args = new DebugEventArgs(Data, warning);
 
@@ -21,7 +21,7 @@ namespace DS4Windows
             return true;
         }
 
-        public Boolean Active 
+        public bool Active 
         {
             get { return m_Started; }
         }
@@ -40,22 +40,22 @@ namespace DS4Windows
         }
 
 
-        public virtual Boolean Open()  
+        public virtual bool Open()  
         {
             return true;
         }
 
-        public virtual Boolean Start() 
+        public virtual bool Start() 
         {
             return m_Started;
         }
 
-        public virtual Boolean Stop()  
+        public virtual bool Stop()  
         {
             return !m_Started;
         }
 
-        public virtual Boolean Close() 
+        public virtual bool Close() 
         {
             if (m_Reference != IntPtr.Zero) ScpDevice.UnregisterNotify(m_Reference);
 
@@ -63,12 +63,12 @@ namespace DS4Windows
         }
 
 
-        public virtual Boolean Suspend() 
+        public virtual bool Suspend() 
         {
             return true;
         }
 
-        public virtual Boolean Resume()  
+        public virtual bool Resume()  
         {
             return true;
         }

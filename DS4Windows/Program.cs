@@ -4,7 +4,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.ComponentModel;
-using System.Globalization;
+using DS4Lib.DS4;
 
 namespace DS4Windows
 {
@@ -21,8 +21,8 @@ namespace DS4Windows
         // into view, of course. 
         private const string SingleAppComEventName = "{a52b5b20-d9ee-4f32-8518-307fa14aa0c6}";
         private static readonly Mutex Mutex = new Mutex(true, "{FI329DM2-DS4W-J2K2-HYES-92H21B3WJARG}");
-        private static BackgroundWorker singleAppComThread = null;
-        private static EventWaitHandle threadComEvent = null;
+        private static BackgroundWorker singleAppComThread;
+        private static EventWaitHandle threadComEvent;
         public static ControlService rootHub;
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace DS4Windows
                     {
                         i++;
                         var deviceInstanceId = args[i];
-                        DS4Devices.reEnableDevice(deviceInstanceId);
+                        Devices.reEnableDevice(deviceInstanceId);
                         Environment.ExitCode = 0;
                         return;
                     }

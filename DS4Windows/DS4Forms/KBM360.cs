@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using DS4Lib.DS4;
 
 namespace DS4Windows
 {
@@ -376,7 +373,7 @@ namespace DS4Windows
             if (sender is Color && device < 4)
             {
                 var color = (Color)sender;
-                var dcolor = new DS4Color { red = color.R, green = color.G, blue = color.B };
+                var dcolor = new DS4Colour { Red = color.R, Green = color.G, Blue = color.B };
                 DS4LightBar.forcedColor[device] = dcolor;
                 DS4LightBar.forcedFlash[device] = 0;
                 DS4LightBar.forcelight[device] = true;

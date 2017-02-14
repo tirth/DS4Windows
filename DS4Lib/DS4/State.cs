@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace DS4Windows
+namespace DS4Lib.DS4
 {
-    public class DS4State
+    public class State
     {
         public DateTime ReportTimeStamp;
         public bool Square, Triangle, Circle, Cross;
@@ -18,7 +15,7 @@ namespace DS4Windows
         public byte TouchPacketCounter; // we break these out automatically
         public byte Battery; // 0 for charging, 10/20/30/40/50/60/70/80/90/100 for percentage of full
 
-        public DS4State()
+        public State()
         {
             Square = Triangle = Circle = Cross = false;
             DpadUp = DpadDown = DpadLeft = DpadRight = false;
@@ -31,7 +28,7 @@ namespace DS4Windows
             Battery = 0;
         }
 
-        public DS4State(DS4State state)
+        public State(State state)
         {
             ReportTimeStamp = state.ReportTimeStamp;
             Square = state.Square;
@@ -67,12 +64,12 @@ namespace DS4Windows
             Battery = state.Battery;
         }
 
-        public DS4State Clone()
+        public State Clone()
         {
-            return new DS4State(this);
+            return new State(this);
         }
 
-        public void CopyTo(DS4State state)
+        public void CopyTo(State state)
         {
             state.ReportTimeStamp = ReportTimeStamp;
             state.Square = Square;

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Forms;
-
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
@@ -10,12 +7,12 @@ namespace DS4Windows
 {
     public partial class ScpDevice : Component 
     {
-        public virtual Boolean IsActive 
+        public virtual bool IsActive 
         {
             get { return m_IsActive; }
         }
 
-        public virtual String Path 
+        public virtual string Path 
         {
             get { return m_Path; }
         }
@@ -33,7 +30,7 @@ namespace DS4Windows
             InitializeComponent();
         }
 
-        public ScpDevice(String Class) 
+        public ScpDevice(string Class) 
         {
             InitializeComponent();
 
@@ -41,9 +38,9 @@ namespace DS4Windows
         }
 
 
-        public virtual Boolean Open(Int32 Instance = 0) 
+        public virtual bool Open(int Instance = 0) 
         {
-            var DevicePath = String.Empty;
+            var DevicePath = string.Empty;
             m_WinUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
 
             if (Find(m_Class, ref DevicePath, Instance))
@@ -54,7 +51,7 @@ namespace DS4Windows
             return m_IsActive;
         }
 
-        public virtual Boolean Open(String DevicePath)  
+        public virtual bool Open(string DevicePath)  
         {
             m_Path = DevicePath.ToUpper();
             m_WinUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
@@ -82,12 +79,12 @@ namespace DS4Windows
             return m_IsActive;
         }
 
-        public virtual Boolean Start() 
+        public virtual bool Start() 
         {
             return m_IsActive;
         }
 
-        public virtual Boolean Stop()  
+        public virtual bool Stop()  
         {
             m_IsActive = false;
 
@@ -110,34 +107,34 @@ namespace DS4Windows
             return true;
         }
 
-        public virtual Boolean Close() 
+        public virtual bool Close() 
         {
             return Stop();
         }
 
 
-        public virtual Boolean ReadIntPipe  (Byte[] Buffer, Int32 Length, ref Int32 Transfered) 
+        public virtual bool ReadIntPipe  (byte[] Buffer, int Length, ref int Transfered) 
         {
             if (!m_IsActive) return false;
 
             return WinUsb_ReadPipe(m_WinUsbHandle, m_IntIn, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
-        public virtual Boolean ReadBulkPipe (Byte[] Buffer, Int32 Length, ref Int32 Transfered) 
+        public virtual bool ReadBulkPipe (byte[] Buffer, int Length, ref int Transfered) 
         {
             if (!m_IsActive) return false;
 
             return WinUsb_ReadPipe(m_WinUsbHandle, m_BulkIn, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
-        public virtual Boolean WriteIntPipe (Byte[] Buffer, Int32 Length, ref Int32 Transfered) 
+        public virtual bool WriteIntPipe (byte[] Buffer, int Length, ref int Transfered) 
         {
             if (!m_IsActive) return false;
 
             return WinUsb_WritePipe(m_WinUsbHandle, m_IntOut, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
-        public virtual Boolean WriteBulkPipe(Byte[] Buffer, Int32 Length, ref Int32 Transfered) 
+        public virtual bool WriteBulkPipe(byte[] Buffer, int Length, ref int Transfered) 
         {
             if (!m_IsActive) return false;
 
@@ -145,7 +142,7 @@ namespace DS4Windows
         }
 
 
-        public virtual Boolean SendTransfer(Byte RequestType, Byte Request, UInt16 Value, Byte[] Buffer, ref Int32 Transfered) 
+        public virtual bool SendTransfer(byte RequestType, byte Request, ushort Value, byte[] Buffer, ref int Transfered) 
         {
             if (!m_IsActive) return false;
 
@@ -155,89 +152,89 @@ namespace DS4Windows
             Setup.Request     = Request;
             Setup.Value       = Value;
             Setup.Index       = 0;
-            Setup.Length      = (UInt16) Buffer.Length;
+            Setup.Length      = (ushort) Buffer.Length;
 
             return WinUsb_ControlTransfer(m_WinUsbHandle, Setup, Buffer, Buffer.Length, ref Transfered, IntPtr.Zero);
         }
 
 
         #region Constant and Structure Definitions
-        public const Int32 SERVICE_CONTROL_STOP                 = 0x00000001;
-        public const Int32 SERVICE_CONTROL_SHUTDOWN             = 0x00000005;
-        public const Int32 SERVICE_CONTROL_DEVICEEVENT          = 0x0000000B;
-        public const Int32 SERVICE_CONTROL_POWEREVENT           = 0x0000000D;
+        public const int SERVICE_CONTROL_STOP                 = 0x00000001;
+        public const int SERVICE_CONTROL_SHUTDOWN             = 0x00000005;
+        public const int SERVICE_CONTROL_DEVICEEVENT          = 0x0000000B;
+        public const int SERVICE_CONTROL_POWEREVENT           = 0x0000000D;
 
-        public const Int32 DBT_DEVICEARRIVAL                    = 0x8000;
-        public const Int32 DBT_DEVICEQUERYREMOVE                = 0x8001;
-        public const Int32 DBT_DEVICEREMOVECOMPLETE             = 0x8004;
-        public const Int32 DBT_DEVTYP_DEVICEINTERFACE           = 0x0005;
-        public const Int32 DBT_DEVTYP_HANDLE                    = 0x0006;
+        public const int DBT_DEVICEARRIVAL                    = 0x8000;
+        public const int DBT_DEVICEQUERYREMOVE                = 0x8001;
+        public const int DBT_DEVICEREMOVECOMPLETE             = 0x8004;
+        public const int DBT_DEVTYP_DEVICEINTERFACE           = 0x0005;
+        public const int DBT_DEVTYP_HANDLE                    = 0x0006;
 
-        public const Int32 PBT_APMRESUMEAUTOMATIC               = 0x0012;
-        public const Int32 PBT_APMSUSPEND                       = 0x0004;
+        public const int PBT_APMRESUMEAUTOMATIC               = 0x0012;
+        public const int PBT_APMSUSPEND                       = 0x0004;
 
-        public const Int32 DEVICE_NOTIFY_WINDOW_HANDLE          = 0x0000;
-        public const Int32 DEVICE_NOTIFY_SERVICE_HANDLE         = 0x0001;
-        public const Int32 DEVICE_NOTIFY_ALL_INTERFACE_CLASSES  = 0x0004;
+        public const int DEVICE_NOTIFY_WINDOW_HANDLE          = 0x0000;
+        public const int DEVICE_NOTIFY_SERVICE_HANDLE         = 0x0001;
+        public const int DEVICE_NOTIFY_ALL_INTERFACE_CLASSES  = 0x0004;
 
-        public const Int32 WM_DEVICECHANGE                      = 0x0219;
+        public const int WM_DEVICECHANGE                      = 0x0219;
 
-        public const Int32 DIGCF_PRESENT                        = 0x0002;
-        public const Int32 DIGCF_DEVICEINTERFACE                = 0x0010;
+        public const int DIGCF_PRESENT                        = 0x0002;
+        public const int DIGCF_DEVICEINTERFACE                = 0x0010;
 
-        public delegate Int32 ServiceControlHandlerEx(Int32 Control, Int32 Type, IntPtr Data, IntPtr Context);
+        public delegate int ServiceControlHandlerEx(int Control, int Type, IntPtr Data, IntPtr Context);
 
         [StructLayout(LayoutKind.Sequential)]
         public class DEV_BROADCAST_DEVICEINTERFACE 
         {
-            internal Int32 dbcc_size;
-            internal Int32 dbcc_devicetype;
-            internal Int32 dbcc_reserved;
+            internal int dbcc_size;
+            internal int dbcc_devicetype;
+            internal int dbcc_reserved;
             internal Guid  dbcc_classguid;
-            internal Int16 dbcc_name;
+            internal short dbcc_name;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class DEV_BROADCAST_DEVICEINTERFACE_M 
         {
-            public Int32 dbcc_size;
-            public Int32 dbcc_devicetype;
-            public Int32 dbcc_reserved;
+            public int dbcc_size;
+            public int dbcc_devicetype;
+            public int dbcc_reserved;
 
             [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 16)]
-            public Byte[] dbcc_classguid;
+            public byte[] dbcc_classguid;
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 255)]
-            public Char[] dbcc_name;
+            public char[] dbcc_name;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         public class DEV_BROADCAST_HDR 
         {
-            public Int32 dbch_size;
-            public Int32 dbch_devicetype;
-            public Int32 dbch_reserved;
+            public int dbch_size;
+            public int dbch_devicetype;
+            public int dbch_reserved;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         protected struct SP_DEVICE_INTERFACE_DATA 
         {
-            internal Int32  cbSize;
+            internal int  cbSize;
             internal Guid   InterfaceClassGuid;
-            internal Int32  Flags;
+            internal int  Flags;
             internal IntPtr Reserved;
         }
 
-        protected const UInt32 FILE_ATTRIBUTE_NORMAL        = 0x80;
-        protected const UInt32 FILE_FLAG_OVERLAPPED         = 0x40000000;
-        protected const UInt32 FILE_SHARE_READ              = 1;
-        protected const UInt32 FILE_SHARE_WRITE             = 2;
-        protected const UInt32 GENERIC_READ                 = 0x80000000;
-        protected const UInt32 GENERIC_WRITE                = 0x40000000;
-        protected const  Int32 INVALID_HANDLE_VALUE         = -1;
-        protected const UInt32 OPEN_EXISTING                = 3;
-        protected const UInt32 DEVICE_SPEED                 = 1;
-        protected const Byte   USB_ENDPOINT_DIRECTION_MASK  = 0x80;
+        protected const uint FILE_ATTRIBUTE_NORMAL        = 0x80;
+        protected const uint FILE_FLAG_OVERLAPPED         = 0x40000000;
+        protected const uint FILE_SHARE_READ              = 1;
+        protected const uint FILE_SHARE_WRITE             = 2;
+        protected const uint GENERIC_READ                 = 0x80000000;
+        protected const uint GENERIC_WRITE                = 0x40000000;
+        protected const  int INVALID_HANDLE_VALUE         = -1;
+        protected const uint OPEN_EXISTING                = 3;
+        protected const uint DEVICE_SPEED                 = 1;
+        protected const byte   USB_ENDPOINT_DIRECTION_MASK  = 0x80;
 
         protected enum POLICY_TYPE 
         {
@@ -268,91 +265,91 @@ namespace DS4Windows
         [StructLayout(LayoutKind.Sequential)]
         protected struct USB_CONFIGURATION_DESCRIPTOR 
         {
-            internal Byte   bLength;
-            internal Byte   bDescriptorType;
-            internal UInt16 wTotalLength;
-            internal Byte   bNumInterfaces;
-            internal Byte   bConfigurationValue;
-            internal Byte   iConfiguration;
-            internal Byte   bmAttributes;
-            internal Byte   MaxPower;
+            internal byte   bLength;
+            internal byte   bDescriptorType;
+            internal ushort wTotalLength;
+            internal byte   bNumInterfaces;
+            internal byte   bConfigurationValue;
+            internal byte   iConfiguration;
+            internal byte   bmAttributes;
+            internal byte   MaxPower;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         protected struct USB_INTERFACE_DESCRIPTOR 
         {
-            internal Byte bLength;
-            internal Byte bDescriptorType;
-            internal Byte bInterfaceNumber;
-            internal Byte bAlternateSetting;
-            internal Byte bNumEndpoints;
-            internal Byte bInterfaceClass;
-            internal Byte bInterfaceSubClass;
-            internal Byte bInterfaceProtocol;
-            internal Byte iInterface;
+            internal byte bLength;
+            internal byte bDescriptorType;
+            internal byte bInterfaceNumber;
+            internal byte bAlternateSetting;
+            internal byte bNumEndpoints;
+            internal byte bInterfaceClass;
+            internal byte bInterfaceSubClass;
+            internal byte bInterfaceProtocol;
+            internal byte iInterface;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         protected struct WINUSB_PIPE_INFORMATION 
         {
             internal USBD_PIPE_TYPE PipeType;
-            internal Byte           PipeId;
-            internal UInt16         MaximumPacketSize;
-            internal Byte           Interval;
+            internal byte           PipeId;
+            internal ushort         MaximumPacketSize;
+            internal byte           Interval;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         protected struct WINUSB_SETUP_PACKET 
         {
-            internal Byte   RequestType;
-            internal Byte   Request;
-            internal UInt16 Value;
-            internal UInt16 Index;
-            internal UInt16 Length;
+            internal byte   RequestType;
+            internal byte   Request;
+            internal ushort Value;
+            internal ushort Index;
+            internal ushort Length;
         }
 
-        protected const Int32 DIF_PROPERTYCHANGE = 0x12;
-        protected const Int32 DICS_ENABLE        = 1;
-        protected const Int32 DICS_DISABLE       = 2;
-        protected const Int32 DICS_PROPCHANGE    = 3;
-        protected const Int32 DICS_FLAG_GLOBAL   = 1;
+        protected const int DIF_PROPERTYCHANGE = 0x12;
+        protected const int DICS_ENABLE        = 1;
+        protected const int DICS_DISABLE       = 2;
+        protected const int DICS_PROPCHANGE    = 3;
+        protected const int DICS_FLAG_GLOBAL   = 1;
 
         [StructLayout(LayoutKind.Sequential)]
         protected struct SP_CLASSINSTALL_HEADER 
         {
-            internal Int32 cbSize;
-            internal Int32 InstallFunction;
+            internal int cbSize;
+            internal int InstallFunction;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         protected struct SP_PROPCHANGE_PARAMS 
         {
             internal SP_CLASSINSTALL_HEADER ClassInstallHeader;
-            internal Int32 StateChange;
-            internal Int32 Scope;
-            internal Int32 HwProfile;
+            internal int StateChange;
+            internal int Scope;
+            internal int HwProfile;
         }
         #endregion
 
         #region Protected Data Members
         protected Guid   m_Class = Guid.Empty;
-        protected String m_Path  = String.Empty;
+        protected string m_Path  = string.Empty;
 
-        protected SafeFileHandle m_FileHandle = null;
+        protected SafeFileHandle m_FileHandle;
         protected IntPtr m_WinUsbHandle = IntPtr.Zero;
 
-        protected Byte m_IntIn   = 0xFF;
-        protected Byte m_IntOut  = 0xFF;
-        protected Byte m_BulkIn  = 0xFF;
-        protected Byte m_BulkOut = 0xFF;
+        protected byte m_IntIn   = 0xFF;
+        protected byte m_IntOut  = 0xFF;
+        protected byte m_BulkIn  = 0xFF;
+        protected byte m_BulkOut = 0xFF;
 
-        protected Boolean m_IsActive = false;
+        protected bool m_IsActive;
         #endregion
 
         #region Static Helper Methods
         public enum Notified { Ignore = 0x0000, Arrival = 0x8000, QueryRemove = 0x8001, Removal = 0x8004 };
 
-        public static Boolean RegisterNotify(IntPtr Form, Guid Class, ref IntPtr Handle, Boolean Window = true) 
+        public static bool RegisterNotify(IntPtr Form, Guid Class, ref IntPtr Handle, bool Window = true) 
         {
             var devBroadcastDeviceInterfaceBuffer = IntPtr.Zero;
 
@@ -389,7 +386,7 @@ namespace DS4Windows
             }
         }
 
-        public static Boolean UnregisterNotify(IntPtr Handle) 
+        public static bool UnregisterNotify(IntPtr Handle) 
         {
             try
             {
@@ -404,7 +401,7 @@ namespace DS4Windows
         #endregion
 
         #region Protected Methods
-        protected virtual Boolean Find(Guid Target, ref String Path, Int32 Instance = 0) 
+        protected virtual bool Find(Guid Target, ref string Path, int Instance = 0) 
         {
             var detailDataBuffer = IntPtr.Zero;
             var deviceInfoSet    = IntPtr.Zero;
@@ -412,7 +409,7 @@ namespace DS4Windows
             try
             {
                 SP_DEVICE_INTERFACE_DATA DeviceInterfaceData = new SP_DEVICE_INTERFACE_DATA(), da = new SP_DEVICE_INTERFACE_DATA();
-                Int32 bufferSize = 0, memberIndex = 0;
+                int bufferSize = 0, memberIndex = 0;
 
                 deviceInfoSet = SetupDiGetClassDevs(ref Target, IntPtr.Zero, IntPtr.Zero, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
@@ -457,7 +454,7 @@ namespace DS4Windows
             return false;
         }
 
-        protected virtual Boolean GetDeviceInstance(ref String Instance) 
+        protected virtual bool GetDeviceInstance(ref string Instance) 
         {
             var detailDataBuffer = IntPtr.Zero;
             var deviceInfoSet    = IntPtr.Zero;
@@ -465,7 +462,7 @@ namespace DS4Windows
             try
             {
                 SP_DEVICE_INTERFACE_DATA DeviceInterfaceData = new SP_DEVICE_INTERFACE_DATA(), da = new SP_DEVICE_INTERFACE_DATA();
-                Int32 bufferSize = 0, memberIndex = 0;
+                int bufferSize = 0, memberIndex = 0;
 
                 deviceInfoSet = SetupDiGetClassDevs(ref m_Class, IntPtr.Zero, IntPtr.Zero, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
@@ -520,24 +517,24 @@ namespace DS4Windows
             return false;
         }
 
-        protected virtual Boolean GetDeviceHandle(String Path) 
+        protected virtual bool GetDeviceHandle(string Path) 
         {
             m_FileHandle = CreateFile(Path, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, 0);
 
             return !m_FileHandle.IsInvalid;
         }
 
-        protected virtual Boolean UsbEndpointDirectionIn(Int32 addr) 
+        protected virtual bool UsbEndpointDirectionIn(int addr) 
         {
             return (addr & 0x80) == 0x80;
         }
 
-        protected virtual Boolean UsbEndpointDirectionOut(Int32 addr) 
+        protected virtual bool UsbEndpointDirectionOut(int addr) 
         {
             return (addr & 0x80) == 0x00;
         }
 
-        protected virtual Boolean InitializeDevice() 
+        protected virtual bool InitializeDevice() 
         {
             try
             {
@@ -584,7 +581,7 @@ namespace DS4Windows
             }
         }
 
-        protected virtual Boolean RestartDevice(String InstanceId) 
+        protected virtual bool RestartDevice(string InstanceId) 
         {
             var deviceInfoSet = IntPtr.Zero;
 
@@ -632,76 +629,76 @@ namespace DS4Windows
 
         #region Interop Definitions
         [DllImport("setupapi.dll", SetLastError = true)]
-        protected static extern Int32 SetupDiCreateDeviceInfoList(ref Guid ClassGuid, Int32 hwndParent);
+        protected static extern int SetupDiCreateDeviceInfoList(ref Guid ClassGuid, int hwndParent);
 
         [DllImport("setupapi.dll", SetLastError = true)]
-        protected static extern Int32 SetupDiDestroyDeviceInfoList(IntPtr DeviceInfoSet);
+        protected static extern int SetupDiDestroyDeviceInfoList(IntPtr DeviceInfoSet);
 
         [DllImport("setupapi.dll", SetLastError = true)]
-        protected static extern Boolean SetupDiEnumDeviceInterfaces(IntPtr DeviceInfoSet, IntPtr DeviceInfoData, ref Guid InterfaceClassGuid, Int32 MemberIndex, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData);
+        protected static extern bool SetupDiEnumDeviceInterfaces(IntPtr DeviceInfoSet, IntPtr DeviceInfoData, ref Guid InterfaceClassGuid, int MemberIndex, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern IntPtr SetupDiGetClassDevs(ref Guid ClassGuid, IntPtr Enumerator, IntPtr hwndParent, Int32 Flags);
+        protected static extern IntPtr SetupDiGetClassDevs(ref Guid ClassGuid, IntPtr Enumerator, IntPtr hwndParent, int Flags);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiGetDeviceInterfaceDetail(IntPtr DeviceInfoSet, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData, IntPtr DeviceInterfaceDetailData, Int32 DeviceInterfaceDetailDataSize, ref Int32 RequiredSize, IntPtr DeviceInfoData);
+        protected static extern bool SetupDiGetDeviceInterfaceDetail(IntPtr DeviceInfoSet, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData, IntPtr DeviceInterfaceDetailData, int DeviceInterfaceDetailDataSize, ref int RequiredSize, IntPtr DeviceInfoData);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiGetDeviceInterfaceDetail(IntPtr DeviceInfoSet, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData, IntPtr DeviceInterfaceDetailData, Int32 DeviceInterfaceDetailDataSize, ref Int32 RequiredSize, ref SP_DEVICE_INTERFACE_DATA DeviceInfoData);
+        protected static extern bool SetupDiGetDeviceInterfaceDetail(IntPtr DeviceInfoSet, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData, IntPtr DeviceInterfaceDetailData, int DeviceInterfaceDetailDataSize, ref int RequiredSize, ref SP_DEVICE_INTERFACE_DATA DeviceInfoData);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        protected static extern IntPtr RegisterDeviceNotification(IntPtr hRecipient, IntPtr NotificationFilter, Int32 Flags);
+        protected static extern IntPtr RegisterDeviceNotification(IntPtr hRecipient, IntPtr NotificationFilter, int Flags);
 
         [DllImport("user32.dll", SetLastError = true)]
-        protected static extern Boolean UnregisterDeviceNotification(IntPtr Handle);
+        protected static extern bool UnregisterDeviceNotification(IntPtr Handle);
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern SafeFileHandle CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, UInt32 hTemplateFile);
+        protected static extern SafeFileHandle CreateFile(string lpFileName, uint dwDesiredAccess, uint dwShareMode, IntPtr lpSecurityAttributes, uint dwCreationDisposition, uint dwFlagsAndAttributes, uint hTemplateFile);
 
         [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern Boolean WinUsb_Initialize(SafeFileHandle DeviceHandle, ref IntPtr InterfaceHandle);
+        protected static extern bool WinUsb_Initialize(SafeFileHandle DeviceHandle, ref IntPtr InterfaceHandle);
 
         [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern Boolean WinUsb_QueryInterfaceSettings(IntPtr InterfaceHandle, Byte AlternateInterfaceNumber, ref USB_INTERFACE_DESCRIPTOR UsbAltInterfaceDescriptor);
+        protected static extern bool WinUsb_QueryInterfaceSettings(IntPtr InterfaceHandle, byte AlternateInterfaceNumber, ref USB_INTERFACE_DESCRIPTOR UsbAltInterfaceDescriptor);
 
         [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern Boolean WinUsb_QueryPipe(IntPtr InterfaceHandle, Byte AlternateInterfaceNumber, Byte PipeIndex, ref WINUSB_PIPE_INFORMATION PipeInformation);
+        protected static extern bool WinUsb_QueryPipe(IntPtr InterfaceHandle, byte AlternateInterfaceNumber, byte PipeIndex, ref WINUSB_PIPE_INFORMATION PipeInformation);
 
         [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern Boolean WinUsb_AbortPipe(IntPtr InterfaceHandle, Byte PipeID);
+        protected static extern bool WinUsb_AbortPipe(IntPtr InterfaceHandle, byte PipeID);
 
         [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern Boolean WinUsb_FlushPipe(IntPtr InterfaceHandle, Byte PipeID);
+        protected static extern bool WinUsb_FlushPipe(IntPtr InterfaceHandle, byte PipeID);
 
         [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern Boolean WinUsb_ControlTransfer(IntPtr InterfaceHandle, WINUSB_SETUP_PACKET SetupPacket, Byte[] Buffer, Int32 BufferLength, ref Int32 LengthTransferred, IntPtr Overlapped);
+        protected static extern bool WinUsb_ControlTransfer(IntPtr InterfaceHandle, WINUSB_SETUP_PACKET SetupPacket, byte[] Buffer, int BufferLength, ref int LengthTransferred, IntPtr Overlapped);
 
         [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern Boolean WinUsb_ReadPipe(IntPtr InterfaceHandle, Byte PipeID, Byte[] Buffer, Int32 BufferLength, ref Int32 LengthTransferred, IntPtr Overlapped);
+        protected static extern bool WinUsb_ReadPipe(IntPtr InterfaceHandle, byte PipeID, byte[] Buffer, int BufferLength, ref int LengthTransferred, IntPtr Overlapped);
 
         [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern Boolean WinUsb_WritePipe(IntPtr InterfaceHandle, Byte PipeID, Byte[] Buffer, Int32 BufferLength, ref Int32 LengthTransferred, IntPtr Overlapped);
+        protected static extern bool WinUsb_WritePipe(IntPtr InterfaceHandle, byte PipeID, byte[] Buffer, int BufferLength, ref int LengthTransferred, IntPtr Overlapped);
 
         [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern Boolean WinUsb_Free(IntPtr InterfaceHandle);
+        protected static extern bool WinUsb_Free(IntPtr InterfaceHandle);
 
         [DllImport("advapi32.dll", SetLastError = true)]
-        public static extern IntPtr RegisterServiceCtrlHandlerEx(String ServiceName, ServiceControlHandlerEx Callback, IntPtr Context);
+        public static extern IntPtr RegisterServiceCtrlHandlerEx(string ServiceName, ServiceControlHandlerEx Callback, IntPtr Context);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        protected static extern Boolean DeviceIoControl(SafeFileHandle DeviceHandle, Int32 IoControlCode, Byte[] InBuffer, Int32 InBufferSize, Byte[] OutBuffer, Int32 OutBufferSize, ref Int32 BytesReturned, IntPtr Overlapped);
+        protected static extern bool DeviceIoControl(SafeFileHandle DeviceHandle, int IoControlCode, byte[] InBuffer, int InBufferSize, byte[] OutBuffer, int OutBufferSize, ref int BytesReturned, IntPtr Overlapped);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Int32 CM_Get_Device_ID(Int32 dnDevInst, IntPtr Buffer, Int32 BufferLen, Int32 ulFlags);
+        protected static extern int CM_Get_Device_ID(int dnDevInst, IntPtr Buffer, int BufferLen, int ulFlags);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiOpenDeviceInfo(IntPtr DeviceInfoSet, String DeviceInstanceId, IntPtr hwndParent, Int32 Flags, ref SP_DEVICE_INTERFACE_DATA DeviceInfoData);
+        protected static extern bool SetupDiOpenDeviceInfo(IntPtr DeviceInfoSet, string DeviceInstanceId, IntPtr hwndParent, int Flags, ref SP_DEVICE_INTERFACE_DATA DeviceInfoData);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiChangeState(IntPtr DeviceInfoSet, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData);
+        protected static extern bool SetupDiChangeState(IntPtr DeviceInfoSet, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiSetClassInstallParams(IntPtr DeviceInfoSet, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData, ref SP_PROPCHANGE_PARAMS ClassInstallParams, Int32 ClassInstallParamsSize);
+        protected static extern bool SetupDiSetClassInstallParams(IntPtr DeviceInfoSet, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData, ref SP_PROPCHANGE_PARAMS ClassInstallParams, int ClassInstallParamsSize);
         #endregion
     }
 }

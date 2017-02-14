@@ -4,13 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using DS4Lib.Hid;
 
-namespace DS4Windows
+namespace DS4Lib.DS4
 {
-    public class DS4Devices
+    public class Devices
     {
-        private static Dictionary<string, DS4Device> Devices = new Dictionary<string, DS4Device>();
-        private static HashSet<String> DevicePaths = new HashSet<String>();
+        private static readonly Dictionary<string, Device> DS4s = new Dictionary<string, Device>();
+        private static readonly HashSet<string> DevicePaths = new HashSet<string>();
         public static bool isExclusiveMode = false;
 
         private static string devicePathToInstanceId(string devicePath)
@@ -29,12 +30,12 @@ namespace DS4Windows
         //enumerates ds4 controllers in the system
         public static void findControllers()
         {
-            lock (Devices)
+            lock (DS4s)
             {
                 int[] pid = { 0xBA0, 0x5C4, 0x09CC };
                 var hDevices = HidDevices.Enumerate(0x054C, pid);
                 // Sort Bluetooth first in case USB is also connected on the same controller.
-                hDevices = hDevices.OrderBy<HidDevice, ConnectionType>((HidDevice d) => { return DS4Device.HidConnectionType(d); });
+                hDevices = hDevices.OrderBy(Device.HidConnectionType);
 
                 foreach (var hDevice in hDevices)
                 {
@@ -83,13 +84,13 @@ namespace DS4Windows
                     }
                     if (hDevice.IsOpen)
                     {
-                        if (Devices.ContainsKey(hDevice.readSerial()))
+                        if (DS4s.ContainsKey(hDevice.readSerial()))
                             continue; // happens when the BT endpoint already is open and the USB is plugged into the same host
                         else
                         {
-                            var ds4Device = new DS4Device(hDevice);
+                            var ds4Device = new Device(hDevice);
                             ds4Device.Removal += On_Removal;
-                            Devices.Add(ds4Device.MacAddress, ds4Device);
+                            DS4s.Add(ds4Device.MacAddress, ds4Device);
                             DevicePaths.Add(hDevice.DevicePath);
                             ds4Device.StartUpdate();
                         }
@@ -101,14 +102,14 @@ namespace DS4Windows
 
         //allows to get DS4Device by specifying unique MAC address
         //format for MAC address is XX:XX:XX:XX:XX:XX
-        public static DS4Device getDS4Controller(string mac)
+        public static Device getDS4Controller(string mac)
         {
-            lock (Devices)
+            lock (DS4s)
             {
-                DS4Device device = null;
+                Device device = null;
                 try
                 {
-                    Devices.TryGetValue(mac, out device);
+                    DS4s.TryGetValue(mac, out device);
                 }
                 catch (ArgumentNullException) { }
                 return device;
@@ -116,19 +117,19 @@ namespace DS4Windows
         }
         
         //returns DS4 controllers that were found and are running
-        public static IEnumerable<DS4Device> getDS4Controllers()
+        public static IEnumerable<Device> getDS4Controllers()
         {
-            lock (Devices)
+            lock (DS4s)
             {
-                var controllers = new DS4Device[Devices.Count];
-                Devices.Values.CopyTo(controllers, 0);
+                var controllers = new Device[DS4s.Count];
+                DS4s.Values.CopyTo(controllers, 0);
                 return controllers;
             }
         }
 
         public static void stopControllers()
         {
-            lock (Devices)
+            lock (DS4s)
             {
                 var devices = getDS4Controllers();
                 foreach (var device in devices)
@@ -136,7 +137,7 @@ namespace DS4Windows
                     device.StopUpdate();
                     device.HidDevice.CloseDevice();
                 }
-                Devices.Clear();
+                DS4s.Clear();
                 DevicePaths.Clear();
             }
         }
@@ -144,15 +145,16 @@ namespace DS4Windows
         //called when devices is diconnected, timed out or has input reading failure
         public static void On_Removal(object sender, EventArgs e)
         {
-            lock (Devices)
+            lock (DS4s)
             {
-                var device = (DS4Device)sender;
+                var device = (Device)sender;
                 device.HidDevice.CloseDevice();
-                Devices.Remove(device.MacAddress);
+                DS4s.Remove(device.MacAddress);
                 DevicePaths.Remove(device.HidDevice.DevicePath);
             }
         }
 
+        // TODO: NativeMethods stuff, HidLib extension
         public static void reEnableDevice(string deviceInstanceId)
         {
             bool success;

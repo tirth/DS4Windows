@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Microsoft.Win32.SafeHandles; 
-namespace DS4Windows
+using Microsoft.Win32.SafeHandles;
+
+namespace DS4Lib.Hid
 {
     internal static class NativeMethods
     {
@@ -22,7 +23,7 @@ namespace DS4Windows
         internal static extern bool BluetoothFindRadioClose(IntPtr hFind);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        internal static extern Boolean DeviceIoControl(IntPtr DeviceHandle, Int32 IoControlCode, ref long InBuffer, Int32 InBufferSize, IntPtr OutBuffer, Int32 OutBufferSize, ref Int32 BytesReturned, IntPtr Overlapped);
+        internal static extern bool DeviceIoControl(IntPtr DeviceHandle, int IoControlCode, ref long InBuffer, int InBufferSize, IntPtr OutBuffer, int OutBufferSize, ref int BytesReturned, IntPtr Overlapped);
 
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Auto)]
         internal static extern bool CloseHandle(IntPtr hObject);
@@ -32,9 +33,9 @@ namespace DS4Windows
 	    internal const short FILE_SHARE_WRITE = 0x2;
 	    internal const uint GENERIC_READ = 0x80000000;
 	    internal const uint GENERIC_WRITE = 0x40000000;
-        internal const Int32 FileShareRead = 1;
-        internal const Int32 FileShareWrite = 2;
-        internal const Int32 OpenExisting = 3;
+        internal const int FileShareRead = 1;
+        internal const int FileShareWrite = 2;
+        internal const int OpenExisting = 3;
 	    internal const int ACCESS_NONE = 0;
 	    internal const int INVALID_HANDLE_VALUE = -1;
 	    internal const short OPEN_EXISTING = 3;
@@ -77,7 +78,7 @@ namespace DS4Windows
 	    internal static extern IntPtr CreateFile(string lpFileName, uint dwDesiredAccess, int dwShareMode, ref SECURITY_ATTRIBUTES lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, int hTemplateFile);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        internal static extern SafeFileHandle CreateFile(String lpFileName, UInt32 dwDesiredAccess, Int32 dwShareMode, IntPtr lpSecurityAttributes, Int32 dwCreationDisposition, Int32 dwFlagsAndAttributes, Int32 hTemplateFile);
+        internal static extern SafeFileHandle CreateFile(string lpFileName, uint dwDesiredAccess, int dwShareMode, IntPtr lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, int hTemplateFile);
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool ReadFile(IntPtr hFile, [Out] byte[] lpBuffer, uint nNumberOfBytesToRead, out uint lpNumberOfBytesRead, IntPtr lpOverlapped);
 
@@ -239,7 +240,7 @@ namespace DS4Windows
 	    internal static extern bool SetupDiEnumDeviceInfo(IntPtr deviceInfoSet, int memberIndex, ref SP_DEVINFO_DATA deviceInfoData);
 
 	    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-	    internal static extern IntPtr RegisterDeviceNotification(IntPtr hRecipient, IntPtr notificationFilter, Int32 flags);
+	    internal static extern IntPtr RegisterDeviceNotification(IntPtr hRecipient, IntPtr notificationFilter, int flags);
 
         [DllImport("setupapi.dll")]
         internal static extern int SetupDiCreateDeviceInfoList(ref Guid classGuid, int hwndParent);
@@ -266,7 +267,7 @@ namespace DS4Windows
         internal static extern bool SetupDiCallClassInstaller(int installFunction, IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData);
 
         [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
-        internal static extern bool SetupDiGetDeviceInstanceId(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, char[] deviceInstanceId, Int32 deviceInstanceIdSize, ref int requiredSize);
+        internal static extern bool SetupDiGetDeviceInstanceId(IntPtr deviceInfoSet, ref SP_DEVINFO_DATA deviceInfoData, char[] deviceInstanceId, int deviceInstanceIdSize, ref int requiredSize);
 
         [DllImport("user32.dll")]
 	    internal static extern bool UnregisterDeviceNotification(IntPtr handle);
@@ -356,7 +357,7 @@ namespace DS4Windows
 	    internal static extern bool HidD_GetFeature(IntPtr hidDeviceObject, byte[] lpReportBuffer, int reportBufferLength);
 
         [DllImport("hid.dll", SetLastError = true)]
-        internal static extern Boolean HidD_GetInputReport(SafeFileHandle HidDeviceObject, Byte[] lpReportBuffer, Int32 ReportBufferLength);        
+        internal static extern bool HidD_GetInputReport(SafeFileHandle HidDeviceObject, byte[] lpReportBuffer, int ReportBufferLength);        
 
 	    [DllImport("hid.dll")]
 	    internal static extern void HidD_GetHidGuid(ref Guid hidGuid);

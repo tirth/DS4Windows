@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using System.IO;
-using System.Xml;
+using DS4Lib.DS4;
+
 namespace DS4Windows
 {
     public partial class SpecActions : Form
@@ -25,7 +21,7 @@ namespace DS4Windows
         public bool macrorepeat, newaction;
         public string program;
         int editIndex;
-        protected String m_Actions = Global.appdatapath + "\\Actions.xml";
+        protected string m_Actions = Global.appdatapath + "\\Actions.xml";
         string oldprofilename;
         bool loadingAction = true;
         public SpecActions(Options opt, string edit = "", int editindex = -1)
@@ -239,7 +235,7 @@ namespace DS4Windows
                             actRe = true;
                             if (!string.IsNullOrEmpty(oldprofilename) && oldprofilename != tBName.Text)
                                 Global.RemoveAction(oldprofilename);
-                            Global.SaveAction(tBName.Text, String.Join("/", controls), cBActions.SelectedIndex, String.Join("/", macrostag), edit, cBMacroScanCode.Checked ? "Scan Code" : "");
+                            Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, string.Join("/", macrostag), edit, cBMacroScanCode.Checked ? "Scan Code" : "");
                         }
                         break;
                     case 2:
@@ -249,7 +245,7 @@ namespace DS4Windows
                             actRe = true;
                             if (!string.IsNullOrEmpty(oldprofilename) && oldprofilename != tBName.Text)
                                 Global.RemoveAction(oldprofilename);
-                            Global.SaveAction(tBName.Text, String.Join("/", controls), cBActions.SelectedIndex, program + "?" + nUDProg.Value, edit, tBArg.Text);
+                            Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, program + "?" + nUDProg.Value, edit, tBArg.Text);
                         }
                         break;
                     case 3:
@@ -259,7 +255,7 @@ namespace DS4Windows
                             actRe = true;
                             if (!string.IsNullOrEmpty(oldprofilename) && oldprofilename != tBName.Text)
                                 Global.RemoveAction(oldprofilename);
-                            Global.SaveAction(tBName.Text, String.Join("/", controls), cBActions.SelectedIndex, cBProfiles.Text, edit, String.Join("/", ucontrols));
+                            Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, cBProfiles.Text, edit, string.Join("/", ucontrols));
                         }
                         else
                             btnSetUTriggerProfile.ForeColor = Color.Red;
@@ -279,11 +275,11 @@ namespace DS4Windows
                                     uaction = "Release";
                                 else
                                     uaction = "Press";
-                                Global.SaveAction(tBName.Text, String.Join("/", controls), cBActions.SelectedIndex, btnSelectKey.Tag.ToString() + (btnSelectKey.Text.Contains("(SC)") ? " Scan Code" : ""),
-                                    edit, uaction + '\n' + String.Join("/", ucontrols));
+                                Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, btnSelectKey.Tag.ToString() + (btnSelectKey.Text.Contains("(SC)") ? " Scan Code" : ""),
+                                    edit, uaction + '\n' + string.Join("/", ucontrols));
                             }
                             else
-                                Global.SaveAction(tBName.Text, String.Join("/", controls), cBActions.SelectedIndex, btnSelectKey.Tag.ToString() + (btnSelectKey.Text.Contains("(SC)") ? " Scan Code" : ""), edit);
+                                Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, btnSelectKey.Tag.ToString() + (btnSelectKey.Text.Contains("(SC)") ? " Scan Code" : ""), edit);
                         }
                         else if (btnSelectKey.Tag == null)
                             btnSelectKey.ForeColor = Color.Red;
@@ -295,7 +291,7 @@ namespace DS4Windows
                         actRe = true;
                         if (!string.IsNullOrEmpty(oldprofilename) && oldprofilename != tBName.Text)
                             Global.RemoveAction(oldprofilename);
-                        Global.SaveAction(tBName.Text, String.Join("/", controls), cBActions.SelectedIndex, Math.Round(nUDDCBT.Value, 1).ToString(), edit);
+                        Global.SaveAction(tBName.Text, string.Join("/", controls), cBActions.SelectedIndex, Math.Round(nUDDCBT.Value, 1).ToString(), edit);
                         break;
                     case 6:
                         if (cbLightbarBatt.Checked || cBNotificationBatt.Checked)
@@ -335,7 +331,7 @@ namespace DS4Windows
                 if (actRe)
                 {                    
                     var lvi = new ListViewItem(tBName.Text);
-                    lvi.SubItems.Add(String.Join(", ", controls));
+                    lvi.SubItems.Add(string.Join(", ", controls));
                     lvi.SubItems.Add(action);
                     lvi.Checked = true;
                     if (editIndex > -1)
@@ -481,7 +477,7 @@ namespace DS4Windows
             if (sender is Color && device < 4)
             {
                 var color = (Color)sender;
-                var dcolor = new DS4Color { red = color.R, green = color.G, blue = color.B };
+                var dcolor = new DS4Colour { Red = color.R, Green = color.G, Blue = color.B };
                 DS4LightBar.forcedColor[device] = dcolor;
                 DS4LightBar.forcedFlash[device] = 0;
                 DS4LightBar.forcelight[device] = true;

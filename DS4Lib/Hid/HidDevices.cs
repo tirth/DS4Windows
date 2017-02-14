@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace DS4Windows
+namespace DS4Lib.Hid
 {
     public class HidDevices
     {

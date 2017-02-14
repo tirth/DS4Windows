@@ -13,14 +13,14 @@ using System.Xml;
 using System.Text;
 using System.Globalization;
 using System.Threading.Tasks;
-using System.ServiceProcess;
+using DS4Lib.DS4;
 using static DS4Windows.Global;
 namespace DS4Windows
 {
     public partial class DS4Form : Form
     {
         public readonly string[] Arguments;
-        delegate void LogDebugDelegate(DateTime Time, String Data, bool warning);
+        delegate void LogDebugDelegate(DateTime Time, string Data, bool warning);
         protected readonly Label[] Pads, Batteries;
         protected ComboBox[] cbs;
         protected Button[] ebns;
@@ -39,8 +39,8 @@ namespace DS4Windows
         List<string>[] proprofiles;
         List<bool> turnOffTempProfiles;
         private static int WM_QUERYENDSESSION = 0x11;
-        private static bool systemShutdown = false;
-        private bool wasrunning = false;
+        private static bool systemShutdown;
+        private bool wasrunning;
         delegate void ControllerStatusChangedDelegate(object sender, EventArgs e);
         delegate void HotKeysDelegate(object sender, EventArgs e);
         Options opt;
@@ -134,7 +134,7 @@ namespace DS4Windows
                 AppCollectionThread.Start();
             }
 
-            if (String.IsNullOrEmpty(appdatapath))
+            if (string.IsNullOrEmpty(appdatapath))
             {
                 Close();
                 return;
@@ -281,9 +281,9 @@ namespace DS4Windows
             {
                 LoadProfile(i, true, Program.rootHub);
                 if (UseCustomLed[i])
-                    lights[i].BackColor = CustomColor[i].ToColorA;
+                    lights[i].BackColor = CustomColour[i].ToColorA;
                 else
-                    lights[i].BackColor = MainColor[i].ToColorA;
+                    lights[i].BackColor = MainColour[i].ToColorA;
             }
             LoadP();
             Global.ControllerStatusChange += ControllerStatusChange;
@@ -728,21 +728,21 @@ namespace DS4Windows
             WP.Dock = DockStyle.Fill;
             tabAutoProfiles.Controls.Add(WP);
         }
-        protected void LogDebug(DateTime Time, String Data, bool warning)
+        protected void LogDebug(DateTime Time, string Data, bool warning)
         {
             if (lvDebug.InvokeRequired)
             {
                 var d = new LogDebugDelegate(LogDebug);
                 try
                 {
-                    Invoke(d, new Object[] { Time, Data, warning });
+                    Invoke(d, new object[] { Time, Data, warning });
                 }
                 catch { }
             }
             else
             {
                 var Posted = Time.ToString("G");
-                lvDebug.Items.Add(new ListViewItem(new String[] { Posted, Data })).EnsureVisible();
+                lvDebug.Items.Add(new ListViewItem(new string[] { Posted, Data })).EnsureVisible();
                 if (warning) lvDebug.Items[lvDebug.Items.Count - 1].ForeColor = Color.Red;
                 //Added alternative
                 lbLastMessage.Text = Data;
@@ -853,7 +853,7 @@ namespace DS4Windows
             for (var Index = 0; Index < Pads.Length; Index++)
             {
                 Pads[Index].Text = Program.rootHub.getDS4MacAddress(Index);
-                var d = Program.rootHub.DS4Controllers[Index];
+                var d = Program.rootHub.Controllers[Index];
                 if (QuickCharge && d?.ConnectionType == ConnectionType.BT && (bool)d?.Charging)
                 {
                     d.DisconnectBT();
@@ -866,7 +866,7 @@ namespace DS4Windows
                     default: statPB[Index].Visible = false; toolTip1.SetToolTip(statPB[Index], ""); break;
                 }
                 Batteries[Index].Text = Program.rootHub.getDS4Battery(Index);
-                if (Pads[Index].Text != String.Empty)
+                if (Pads[Index].Text != string.Empty)
                 {
                     if (runningBat)
                     {
@@ -907,9 +907,9 @@ namespace DS4Windows
 
         private void pBStatus_MouseClick(object sender, MouseEventArgs e)
         {
-            var i = Int32.Parse(((PictureBox)sender).Tag.ToString());
-            if (e.Button == MouseButtons.Right && Program.rootHub.getDS4Status(i) == "BT" && !Program.rootHub.DS4Controllers[i].Charging)
-                Program.rootHub.DS4Controllers[i].DisconnectBT();
+            var i = int.Parse(((PictureBox)sender).Tag.ToString());
+            if (e.Button == MouseButtons.Right && Program.rootHub.getDS4Status(i) == "BT" && !Program.rootHub.Controllers[i].Charging)
+                Program.rootHub.Controllers[i].DisconnectBT();
         }
 
         private void Enable_Controls(int device, bool on)
@@ -1104,7 +1104,7 @@ namespace DS4Windows
         private void editButtons_Click(object sender, EventArgs e)
         {
             var bn = (Button)sender;
-            var i = Int32.Parse(bn.Tag.ToString());
+            var i = int.Parse(bn.Tag.ToString());
             if (cbs[i].Text == "(" + Properties.Resources.NoProfileLoaded + ")")
                 ShowOptions(i, "");
             else
@@ -1117,7 +1117,7 @@ namespace DS4Windows
             Show();
             WindowState = FormWindowState.Normal;
             var em = (ToolStripMenuItem)sender;
-            var i = Int32.Parse(em.Tag.ToString());
+            var i = int.Parse(em.Tag.ToString());
             if (em.Text == Properties.Resources.ContextNew.Replace("*number*", (i + 1).ToString()))
                 ShowOptions(i, "");
             else
@@ -1162,7 +1162,7 @@ namespace DS4Windows
         private void Profile_Changed(object sender, EventArgs e) //cbs[i] changed
         {
             var cb = (ComboBox)sender;
-            var tdevice = Int32.Parse(cb.Tag.ToString());
+            var tdevice = int.Parse(cb.Tag.ToString());
             if (cb.Items[cb.Items.Count - 1].ToString() == "+" + Properties.Resources.PlusNewProfile)
             {
                 if (cb.SelectedIndex < cb.Items.Count - 1)
@@ -1177,9 +1177,9 @@ namespace DS4Windows
                     Save();
                     LoadProfile(tdevice, true, Program.rootHub);
                     if (UseCustomLed[tdevice])
-                        lights[tdevice].BackColor = CustomColor[tdevice].ToColorA;
+                        lights[tdevice].BackColor = CustomColour[tdevice].ToColorA;
                     else
-                        lights[tdevice].BackColor = MainColor[tdevice].ToColorA;
+                        lights[tdevice].BackColor = MainColour[tdevice].ToColorA;
                 }
                 else if (cb.SelectedIndex == cb.Items.Count - 1 && cb.Items.Count > 1) //if +New Profile selected
                     ShowOptions(tdevice, "");
@@ -1194,7 +1194,7 @@ namespace DS4Windows
         private void Profile_Changed_Menu(object sender, ToolStripItemClickedEventArgs e)
         {
             var tS = (ToolStripMenuItem)sender;
-            var tdevice = Int32.Parse(tS.Tag.ToString());
+            var tdevice = int.Parse(tS.Tag.ToString());
             if (!(e.ClickedItem is ToolStripSeparator))
                 if (e.ClickedItem != tS.DropDownItems[tS.DropDownItems.Count - 1]) //if +New Profile not selected 
                     cbs[tdevice].SelectedIndex = tS.DropDownItems.IndexOf(e.ClickedItem);
@@ -1619,7 +1619,7 @@ namespace DS4Windows
                 FormWidth = oldsize.Width;
                 FormHeight = oldsize.Height;
             }
-            if (!String.IsNullOrEmpty(appdatapath))
+            if (!string.IsNullOrEmpty(appdatapath))
             {
                 Save();
                 Program.rootHub.Stop();
@@ -1686,10 +1686,10 @@ namespace DS4Windows
         private void Pads_MouseHover(object sender, EventArgs e)
         {
             var lb = (Label)sender;
-            var i = Int32.Parse(lb.Tag.ToString());
-            if (Program.rootHub.DS4Controllers[i] != null && Program.rootHub.DS4Controllers[i].ConnectionType == ConnectionType.BT)
+            var i = int.Parse(lb.Tag.ToString());
+            if (Program.rootHub.Controllers[i] != null && Program.rootHub.Controllers[i].ConnectionType == ConnectionType.BT)
             {
-                var latency = Program.rootHub.DS4Controllers[i].Latency;
+                var latency = Program.rootHub.Controllers[i].Latency;
                 toolTip1.Hide(Pads[i]);
                 toolTip1.Show(Properties.Resources.InputDelay.Replace("*number*", latency.ToString()), lb, lb.Size.Width, 0);
             }
@@ -1728,17 +1728,17 @@ namespace DS4Windows
         private void useProfileColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UseCustomLed[currentCustomLed] = false;
-            lights[currentCustomLed].BackColor = MainColor[currentCustomLed].ToColorA;
+            lights[currentCustomLed].BackColor = MainColour[currentCustomLed].ToColorA;
             Save();
         }
     
         private void useCustomColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            advColorDialog.Color = CustomColor[currentCustomLed].ToColor;
+            advColorDialog.Color = CustomColour[currentCustomLed].ToColor;
             if (advColorDialog.ShowDialog() == DialogResult.OK)
             {
-                lights[currentCustomLed].BackColor = new DS4Color(advColorDialog.Color).ToColorA;
-                CustomColor[currentCustomLed] = new DS4Color(advColorDialog.Color);
+                lights[currentCustomLed].BackColor = new DS4Colour(advColorDialog.Color).ToColorA;
+                CustomColour[currentCustomLed] = new DS4Colour(advColorDialog.Color);
                 UseCustomLed[currentCustomLed] = true;
                 Save();
             }
@@ -1757,7 +1757,7 @@ namespace DS4Windows
             if (sender is Color)
             {
                 var color = (Color)sender;
-                var dcolor = new DS4Color(color);
+                var dcolor = new DS4Colour(color);
                 Console.WriteLine(dcolor);
                 DS4LightBar.forcedColor[currentCustomLed] = dcolor;
                 DS4LightBar.forcedFlash[currentCustomLed] = 0;
@@ -1786,7 +1786,7 @@ namespace DS4Windows
     public class ThemeUtil
     {
         [DllImport("UxTheme", CharSet = CharSet.Unicode, ExactSpelling = true)]
-        private static extern int SetWindowTheme(IntPtr hWnd, String appName, String partList);
+        private static extern int SetWindowTheme(IntPtr hWnd, string appName, string partList);
 
         public static void SetTheme(ListView lv)
         {

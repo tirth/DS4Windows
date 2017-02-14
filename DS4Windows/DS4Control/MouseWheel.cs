@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using DS4Lib.DS4;
 
 namespace DS4Windows
 {
@@ -15,22 +12,22 @@ namespace DS4Windows
         }
 
         // Keep track of remainders when performing scrolls or we lose fractional parts.
-        private double horizontalRemainder = 0.0, verticalRemainder = 0.0;
+        private double horizontalRemainder, verticalRemainder;
 
         public void touchesBegan(TouchpadEventArgs arg)
         {
-            if (arg.touches.Length == 2)
+            if (arg.TouchReadings.Length == 2)
                 horizontalRemainder = verticalRemainder = 0.0;
         }
 
         public void touchesMoved(TouchpadEventArgs arg, bool dragging)
         {
-            if (arg.touches.Length != 2 || dragging)
+            if (arg.TouchReadings.Length != 2 || dragging)
                 return;
-            var lastT0 = arg.touches[0].previousTouch;
-            var lastT1 = arg.touches[1].previousTouch;
-            var T0 = arg.touches[0];
-            var T1 = arg.touches[1];
+            var lastT0 = arg.TouchReadings[0].PreviousTouchReadings;
+            var lastT1 = arg.TouchReadings[1].PreviousTouchReadings;
+            var T0 = arg.TouchReadings[0];
+            var T1 = arg.TouchReadings[1];
 
             //mouse wheel 120 == 1 wheel click according to Windows API
             double lastMidX = (lastT0.hwX + lastT1.hwX) / 2d, lastMidY = (lastT0.hwY + lastT1.hwY) / 2d,

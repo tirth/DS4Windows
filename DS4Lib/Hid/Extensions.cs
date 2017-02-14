@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace DS4Windows
+namespace DS4Lib.Hid
 {
     public static class Extensions
     {

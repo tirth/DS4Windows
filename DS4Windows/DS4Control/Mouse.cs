@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
+using DS4Lib.DS4;
 
 namespace DS4Windows
 {
     public class Mouse : ITouchpadBehaviour
     {
         protected DateTime pastTime, firstTap, TimeofEnd;
-        protected Touch firstTouch, secondTouch;
-        private DS4State s = new DS4State();
+        protected TouchReadings FirstTouchReadings, SecondTouchReadings;
+        private State s = new State();
         protected int deviceNum;
-        private DS4Device dev = null;
+        private Device dev;
         private readonly MouseCursor cursor;
         private readonly MouseWheel wheel;
-        private bool tappedOnce = false, secondtouchbegin = false;
+        private bool tappedOnce, secondtouchbegin;
         public bool swipeLeft, swipeRight, swipeUp, swipeDown;
         public byte swipeLeftB, swipeRightB, swipeUpB, swipeDownB, swipedB;
         public bool slideleft, slideright;
@@ -24,7 +21,7 @@ namespace DS4Windows
         protected DS4Controls pushed = DS4Controls.None;
         protected Mapping.Click clicked = Mapping.Click.None;
 
-        public Mouse(int deviceID, DS4Device d)
+        public Mouse(int deviceID, Device d)
         {
             deviceNum = deviceID;
             dev = d;
@@ -86,22 +83,22 @@ namespace DS4Windows
             }
             else
             {
-                if (!(swipeUp || swipeDown || swipeLeft || swipeRight) && arg.touches.Length == 1)
+                if (!(swipeUp || swipeDown || swipeLeft || swipeRight) && arg.TouchReadings.Length == 1)
                 {
-                    if (arg.touches[0].hwX - firstTouch.hwX > 400) swipeRight = true;
-                    if (arg.touches[0].hwX - firstTouch.hwX < -400) swipeLeft = true;
-                    if (arg.touches[0].hwY - firstTouch.hwY > 300) swipeDown = true;
-                    if (arg.touches[0].hwY - firstTouch.hwY < -300) swipeUp = true;
+                    if (arg.TouchReadings[0].hwX - FirstTouchReadings.hwX > 400) swipeRight = true;
+                    if (arg.TouchReadings[0].hwX - FirstTouchReadings.hwX < -400) swipeLeft = true;
+                    if (arg.TouchReadings[0].hwY - FirstTouchReadings.hwY > 300) swipeDown = true;
+                    if (arg.TouchReadings[0].hwY - FirstTouchReadings.hwY < -300) swipeUp = true;
                 }
-                swipeUpB = (byte)Math.Min(255, Math.Max(0, (firstTouch.hwY - arg.touches[0].hwY) * 1.5f));
-                swipeDownB = (byte)Math.Min(255, Math.Max(0, (arg.touches[0].hwY - firstTouch.hwY) * 1.5f));
-                swipeLeftB = (byte)Math.Min(255, Math.Max(0, firstTouch.hwX - arg.touches[0].hwX));
-                swipeRightB = (byte)Math.Min(255, Math.Max(0, arg.touches[0].hwX - firstTouch.hwX));
+                swipeUpB = (byte)Math.Min(255, Math.Max(0, (FirstTouchReadings.hwY - arg.TouchReadings[0].hwY) * 1.5f));
+                swipeDownB = (byte)Math.Min(255, Math.Max(0, (arg.TouchReadings[0].hwY - FirstTouchReadings.hwY) * 1.5f));
+                swipeLeftB = (byte)Math.Min(255, Math.Max(0, FirstTouchReadings.hwX - arg.TouchReadings[0].hwX));
+                swipeRightB = (byte)Math.Min(255, Math.Max(0, arg.TouchReadings[0].hwX - FirstTouchReadings.hwX));
             }
-            if (Math.Abs(firstTouch.hwY - arg.touches[0].hwY) < 50 && arg.touches.Length == 2)
-                if (arg.touches[0].hwX - firstTouch.hwX > 200 && !slideleft)
+            if (Math.Abs(FirstTouchReadings.hwY - arg.TouchReadings[0].hwY) < 50 && arg.TouchReadings.Length == 2)
+                if (arg.TouchReadings[0].hwX - FirstTouchReadings.hwX > 200 && !slideleft)
                     slideright = true;
-                else if (firstTouch.hwX - arg.touches[0].hwX > 200 && !slideright)
+                else if (FirstTouchReadings.hwX - arg.TouchReadings[0].hwX > 200 && !slideright)
                     slideleft = true;
             dev.getCurrentState(s);
             synthesizeMouseButtons();
@@ -114,7 +111,7 @@ namespace DS4Windows
                 wheel.touchesBegan(arg);
             }
             pastTime = arg.timeStamp;
-            firstTouch = arg.touches[0];
+            FirstTouchReadings = arg.TouchReadings[0];
             if (Global.DoubleTap[deviceNum])
             {
                 var test = arg.timeStamp;
@@ -139,7 +136,7 @@ namespace DS4Windows
                 }
                 var test = arg.timeStamp;
                 if (test <= pastTime + TimeSpan.FromMilliseconds((double)Global.TapSensitivity[deviceNum] * 2) && !arg.touchButtonPressed && !tappedOnce)
-                    if (Math.Abs(firstTouch.hwX - arg.touches[0].hwX) < 10 && Math.Abs(firstTouch.hwY - arg.touches[0].hwY) < 10)
+                    if (Math.Abs(FirstTouchReadings.hwX - arg.TouchReadings[0].hwX) < 10 && Math.Abs(FirstTouchReadings.hwY - arg.TouchReadings[0].hwY) < 10)
                         if (Global.DoubleTap[deviceNum])
                         {
                             tappedOnce = true;
@@ -153,12 +150,12 @@ namespace DS4Windows
             synthesizeMouseButtons();
         }
 
-        private bool isLeft(Touch t)
+        private bool isLeft(TouchReadings t)
         {
             return t.hwX < 1920 * 2 / 5;
         }
 
-        private bool isRight(Touch t)
+        private bool isRight(TouchReadings t)
         {
             return t.hwX >= 1920 * 2 / 5;
         }
@@ -170,7 +167,7 @@ namespace DS4Windows
             synthesizeMouseButtons();
         }
 
-        private DS4State remapped = new DS4State();
+        private State remapped = new State();
         public bool dragging, dragging2;
         private void synthesizeMouseButtons()
         {
@@ -223,24 +220,24 @@ namespace DS4Windows
 
         public virtual void touchButtonDown(object sender, TouchpadEventArgs arg)
         {
-            if (arg.touches == null)
+            if (arg.TouchReadings == null)
                 upperDown = true;
-            else if (arg.touches.Length > 1)
+            else if (arg.TouchReadings.Length > 1)
                 multiDown = true;
             else
             {
-                if (Global.LowerRCOn[deviceNum] && arg.touches[0].hwX > 1920 * 3 / 4 && arg.touches[0].hwY > 960 * 3 / 4)
+                if (Global.LowerRCOn[deviceNum] && arg.TouchReadings[0].hwX > 1920 * 3 / 4 && arg.TouchReadings[0].hwY > 960 * 3 / 4)
                     Mapping.MapClick(deviceNum, Mapping.Click.Right);
-                if (isLeft(arg.touches[0]))
+                if (isLeft(arg.TouchReadings[0]))
                     leftDown = true;
-                else if (isRight(arg.touches[0]))
+                else if (isRight(arg.TouchReadings[0]))
                     rightDown = true;
             }
             dev.getCurrentState(s);
             synthesizeMouseButtons();
         }
 
-        public DS4State getDS4State()
+        public State getDS4State()
         {
             return s;
         }
