@@ -105,7 +105,6 @@
     <Compile Include="DS4Library\DS4StateExposed.cs" />
     <Compile Include="DS4Library\DS4Touchpad.cs" />
     <Compile Include="DS4Forms\AdvancedColorDialog.cs" />
-    <Compile Include="DS4Forms\AdvancedComboBox.cs" />
     <Compile Include="DS4Forms\Alreadyrunning.cs">
       <SubType>Form</SubType>
     </Compile>

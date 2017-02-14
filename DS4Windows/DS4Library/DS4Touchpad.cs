@@ -8,9 +8,9 @@ namespace DS4Windows
     public class TouchpadEventArgs : EventArgs
     {
         public readonly Touch[] touches = null;
-        public readonly System.DateTime timeStamp;
+        public readonly DateTime timeStamp;
         public readonly bool touchButtonPressed;
-        public TouchpadEventArgs(System.DateTime utcTimestamp, bool tButtonDown, Touch t0, Touch t1 = null)
+        public TouchpadEventArgs(DateTime utcTimestamp, bool tButtonDown, Touch t0, Touch t1 = null)
         {
             if (t1 != null)
             {
@@ -24,7 +24,7 @@ namespace DS4Windows
                 touches[0] = t0;
             }
             touchButtonPressed = tButtonDown;
-            this.timeStamp = utcTimestamp;
+            timeStamp = utcTimestamp;
         }
     }
 
@@ -56,7 +56,7 @@ namespace DS4Windows
         public event EventHandler<TouchpadEventArgs> TouchButtonUp = null; // touchpad button released
         public event EventHandler<EventArgs> TouchUnchanged = null; // no status change for the touchpad itself... but other sensors may have changed, or you may just want to do some processing
 
-        public readonly static int TOUCHPAD_DATA_OFFSET = 35;
+        public static readonly int TOUCHPAD_DATA_OFFSET = 35;
         internal int lastTouchPadX1, lastTouchPadY1,
             lastTouchPadX2, lastTouchPadY2; // tracks 0, 1 or 2 touches; we maintain touch 1 and 2 separately
         internal bool lastTouchPadIsDown;
@@ -67,10 +67,10 @@ namespace DS4Windows
         // We check everything other than the not bothering with not-very-useful TouchPacketCounter.
         private bool PacketChanged(byte[] data, int touchPacketOffset)
         {
-            bool changed = false;
-            for (int i = 0; i < previousPacket.Length; i++)
+            var changed = false;
+            for (var i = 0; i < previousPacket.Length; i++)
             {
-                byte oldValue = previousPacket[i];
+                var oldValue = previousPacket[i];
                 previousPacket[i] = data[i + TOUCHPAD_DATA_OFFSET + touchPacketOffset];
                 if (previousPacket[i] != oldValue)
                     changed = true;
@@ -80,24 +80,24 @@ namespace DS4Windows
 
         public void handleTouchpad(byte[] data, DS4State sensors, int touchPacketOffset = 0)
         {
-            bool touchPadIsDown = sensors.TouchButton;
+            var touchPadIsDown = sensors.TouchButton;
             if (!PacketChanged(data, touchPacketOffset) && touchPadIsDown == lastTouchPadIsDown)
             {
                 if (TouchUnchanged != null)
                     TouchUnchanged(this, EventArgs.Empty);
                 return;
             }
-            byte touchID1 = (byte)(data[0 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0x7F);
-            byte touchID2 = (byte)(data[4 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0x7F);
-            int currentX1 = data[1 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] + ((data[2 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0xF) * 255);
-            int currentY1 = ((data[2 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0xF0) >> 4) + (data[3 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] * 16);
-            int currentX2 = data[5 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] + ((data[6 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0xF) * 255);
-            int currentY2 = ((data[6 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0xF0) >> 4) + (data[7 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] * 16);
+            var touchID1 = (byte)(data[0 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0x7F);
+            var touchID2 = (byte)(data[4 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0x7F);
+            var currentX1 = data[1 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] + (data[2 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0xF) * 255;
+            var currentY1 = ((data[2 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0xF0) >> 4) + data[3 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] * 16;
+            var currentX2 = data[5 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] + (data[6 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0xF) * 255;
+            var currentY2 = ((data[6 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] & 0xF0) >> 4) + data[7 + TOUCHPAD_DATA_OFFSET + touchPacketOffset] * 16;
 
             TouchpadEventArgs args;
             if (sensors.Touch1 || sensors.Touch2)
             {
-                if ((sensors.Touch1 && !lastIsActive1) || (sensors.Touch2 && !lastIsActive2))
+                if (sensors.Touch1 && !lastIsActive1 || sensors.Touch2 && !lastIsActive2)
                 {
                     if (TouchesBegan != null)
                     {

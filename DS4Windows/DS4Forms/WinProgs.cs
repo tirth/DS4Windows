@@ -37,7 +37,7 @@ namespace DS4Windows
             openProgram.Filter =  Properties.Resources.Programs+"|*.exe|" + Properties.Resources.Shortcuts + "|*.lnk";
             form = main;
             cbs = new ComboBox[4] { cBProfile1, cBProfile2, cBProfile3, cBProfile4 };
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
                 cbs[i].Items.AddRange(oc);
                 cbs[i].Items.Add(Properties.Resources.noneProfile);
@@ -64,7 +64,7 @@ namespace DS4Windows
 
         public bool Create()
         {
-            Boolean Saved = true;
+            var Saved = true;
 
             try
             {
@@ -97,23 +97,23 @@ namespace DS4Windows
 
         public void LoadP()
         {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             programpaths.Clear();
             if (!File.Exists(Global.appdatapath + "\\Auto Profiles.xml"))
                 return;
             doc.Load(Global.appdatapath + "\\Auto Profiles.xml");
-            XmlNodeList programslist = doc.SelectNodes("Programs/Program");
+            var programslist = doc.SelectNodes("Programs/Program");
             foreach (XmlNode x in programslist)
                 programpaths.Add(x.Attributes["path"].Value);
-            foreach (string st in programpaths)
+            foreach (var st in programpaths)
             {
                 if (File.Exists(st))
                 {
-                    int index = programpaths.IndexOf(st);
+                    var index = programpaths.IndexOf(st);
                     if (string.Empty != st)
                     {
                         iLIcons.Images.Add(Icon.ExtractAssociatedIcon(st));
-                        ListViewItem lvi = new ListViewItem(Path.GetFileNameWithoutExtension(st), index);
+                        var lvi = new ListViewItem(Path.GetFileNameWithoutExtension(st), index);
                         lvi.SubItems.Add(st);
                         lvi.Checked = true;
                         lvi.ToolTipText = st;
@@ -138,7 +138,7 @@ namespace DS4Windows
         {
             lodsf.Clear();
             lodsf.AddRange(Directory.GetFiles(path, "*.exe", SearchOption.TopDirectoryOnly));
-            foreach (string s in Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly))
+            foreach (var s in Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly))
             {
                 try
                 {
@@ -152,8 +152,8 @@ namespace DS4Windows
 
         private List<string> GetAppsR(string path)
         {
-            List<string> lods = new List<string>();
-            foreach (string s in Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly))
+            var lods = new List<string>();
+            foreach (var s in Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly))
             {
                 try
                 {
@@ -169,7 +169,7 @@ namespace DS4Windows
             lodsf.Clear();
             lodsf.AddRange(Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories));
             lodsf.AddRange(Directory.GetFiles(@"C:\ProgramData\Microsoft\Windows\Start Menu\Programs", "*.lnk", SearchOption.AllDirectories));
-            for (int i = 0; i < lodsf.Count; i++)
+            for (var i = 0; i < lodsf.Count; i++)
                 lodsf[i] = GetTargetPath(lodsf[i]);
             appsloaded = true;
         }
@@ -179,21 +179,21 @@ namespace DS4Windows
             if (appsloaded)
             {
                 bnAddPrograms.Text = Properties.Resources.AddingToList;
-                for (int i = lodsf.Count - 1; i >= 0; i--)
+                for (var i = lodsf.Count - 1; i >= 0; i--)
                     if (lodsf[i].Contains("etup") || lodsf[i].Contains("dotnet") || lodsf[i].Contains("SETUP")
                         || lodsf[i].Contains("edist") || lodsf[i].Contains("nstall") || String.IsNullOrEmpty(lodsf[i]))
                         lodsf.RemoveAt(i);
-                for (int i = lodsf.Count - 1; i >= 0; i--)
-                    for (int j = programpaths.Count - 1; j >= 0; j--)
+                for (var i = lodsf.Count - 1; i >= 0; i--)
+                    for (var j = programpaths.Count - 1; j >= 0; j--)
                         if (lodsf[i].ToLower().Replace('/', '\\') == programpaths[j].ToLower().Replace('/', '\\'))
                             lodsf.RemoveAt(i);
-                foreach (string st in lodsf)
+                foreach (var st in lodsf)
                 {
                     if (File.Exists(st))
                     {
-                        int index = programpaths.IndexOf(st);
+                        var index = programpaths.IndexOf(st);
                         iLIcons.Images.Add(Icon.ExtractAssociatedIcon(st));
-                        ListViewItem lvi = new ListViewItem(Path.GetFileNameWithoutExtension(st), iLIcons.Images.Count + index);
+                        var lvi = new ListViewItem(Path.GetFileNameWithoutExtension(st), iLIcons.Images.Count + index);
                         lvi.SubItems.Add(st);
                         lvi.ToolTipText = st;
                         lVPrograms.Items.Add(lvi);
@@ -219,7 +219,7 @@ namespace DS4Windows
             Node = m_Xdoc.SelectSingleNode("Programs");
             string programname;
             programname = Path.GetFileNameWithoutExtension(name);
-            XmlElement el = m_Xdoc.CreateElement("Program");
+            var el = m_Xdoc.CreateElement("Program");
             el.SetAttribute("path", name);
             el.AppendChild(m_Xdoc.CreateElement("Controller1")).InnerText = cBProfile1.Text;
             el.AppendChild(m_Xdoc.CreateElement("Controller2")).InnerText = cBProfile2.Text;
@@ -228,7 +228,7 @@ namespace DS4Windows
             el.AppendChild(m_Xdoc.CreateElement("TurnOff")).InnerText = cBTurnOffDS4W.Checked.ToString();
             try
             {
-                XmlNode oldxmlprocess = m_Xdoc.SelectSingleNode("/Programs/Program[@path=\"" + lBProgramPath.Text + "\"]");
+                var oldxmlprocess = m_Xdoc.SelectSingleNode("/Programs/Program[@path=\"" + lBProgramPath.Text + "\"]");
                 Node.ReplaceChild(el, oldxmlprocess);
             }
             catch { Node.AppendChild(el); }
@@ -241,17 +241,17 @@ namespace DS4Windows
 
         public void LoadP(string name)
         {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.Load(m_Profile);
-            XmlNodeList programs = doc.SelectNodes("Programs/Program");
-            XmlNode Item = doc.SelectSingleNode("/Programs/Program[@path=\"" + name + "\"]");
+            var programs = doc.SelectNodes("Programs/Program");
+            var Item = doc.SelectSingleNode("/Programs/Program[@path=\"" + name + "\"]");
             if (Item != null)
             {
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                 {
                     Item = doc.SelectSingleNode("/Programs/Program[@path=\"" + name + "\"]" + "/Controller" + (i + 1));
                     if (Item != null)
-                        for (int j = 0; j < cbs[i].Items.Count; j++)
+                        for (var j = 0; j < cbs[i].Items.Count; j++)
                             if (cbs[i].Items[j].ToString() == Item.InnerText)
                             {
                                 cbs[i].SelectedIndex = j;
@@ -274,7 +274,7 @@ namespace DS4Windows
             }
             else
             {
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                     cbs[i].SelectedIndex = cbs[i].Items.Count - 1;
                 cBTurnOffDS4W.Checked = false;
                 bnSave.Enabled = false;
@@ -284,17 +284,17 @@ namespace DS4Windows
         public void RemoveP(string name, bool uncheck, bool reload = true)
         {
 
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.Load(m_Profile);
-            XmlNode Node = doc.SelectSingleNode("Programs");
-            XmlNode Item = doc.SelectSingleNode("/Programs/Program[@path=\"" + name + "\"]");
+            var Node = doc.SelectSingleNode("Programs");
+            var Item = doc.SelectSingleNode("/Programs/Program[@path=\"" + name + "\"]");
             if (Item != null)
                 Node.RemoveChild(Item);
             doc.AppendChild(Node);
             doc.Save(m_Profile);
             if (lVPrograms.SelectedItems.Count > 0 && uncheck)
                 lVPrograms.SelectedItems[0].Checked = false;
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
                 cbs[i].SelectedIndex = cbs[i].Items.Count - 1;
             bnSave.Enabled = false;
             if (reload)
@@ -303,7 +303,7 @@ namespace DS4Windows
 
         private void CBProfile_IndexChanged(object sender, EventArgs e)
         {
-            int last = cbs[0].Items.Count - 1;
+            var last = cbs[0].Items.Count - 1;
             if (lBProgramPath.Text != string.Empty)
                 bnSave.Enabled = true;
             if (cbs[0].SelectedIndex == last && cbs[1].SelectedIndex == last &&
@@ -328,7 +328,7 @@ namespace DS4Windows
             if (lBProgramPath.Text != "")
                 LoadP(lBProgramPath.Text);
             else
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                     cbs[i].SelectedIndex = cbs[i].Items.Count - 1;
         }
 
@@ -372,14 +372,14 @@ namespace DS4Windows
             bnAddPrograms.Text = Properties.Resources.Loading;
             bnAddPrograms.Enabled = false;
             cMSPrograms.Items.Remove(addSteamGamesToolStripMenuItem);
-            Timer appstimer = new Timer();
+            var appstimer = new Timer();
             appstimer.Start();
             appstimer.Tick += appstimer_Tick;
         }
         
         private void addDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            var fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -391,7 +391,7 @@ namespace DS4Windows
                 catch { }
                 bnAddPrograms.Text = Properties.Resources.Loading;
                 bnAddPrograms.Enabled = false;
-                Timer appstimer = new Timer();
+                var appstimer = new Timer();
                 appstimer.Start();
                 appstimer.Tick += appstimer_Tick;
             }
@@ -401,14 +401,14 @@ namespace DS4Windows
         {
             if (openProgram.ShowDialog() == DialogResult.OK)
             {
-                string file = openProgram.FileName;
+                var file = openProgram.FileName;
                 if (file.EndsWith(".lnk"))
                 {
                     file = GetTargetPath(file);
                 }
                 lBProgramPath.Text = file;
                 iLIcons.Images.Add(Icon.ExtractAssociatedIcon(file));
-                ListViewItem lvi = new ListViewItem(Path.GetFileNameWithoutExtension(file), lVPrograms.Items.Count);
+                var lvi = new ListViewItem(Path.GetFileNameWithoutExtension(file), lVPrograms.Items.Count);
                 lvi.SubItems.Add(file);
                 lVPrograms.Items.Insert(0, lvi);
             }
@@ -426,7 +426,7 @@ namespace DS4Windows
             bnAddPrograms.Text = Properties.Resources.Loading;
             bnAddPrograms.Enabled = false;
             cMSPrograms.Items.Remove(addOriginGamesToolStripMenuItem);
-            Timer appstimer = new Timer();
+            var appstimer = new Timer();
             appstimer.Start();
             appstimer.Tick += appstimer_Tick;
         }
@@ -444,14 +444,14 @@ namespace DS4Windows
             bnAddPrograms.Text = Properties.Resources.Loading;
             bnAddPrograms.Enabled = false;
             cMSPrograms.Items.Remove(addProgramsFromStartMenuToolStripMenuItem);
-            Timer appstimer = new Timer();
+            var appstimer = new Timer();
             appstimer.Start();
             appstimer.Tick += appstimer_Tick;
         }
 
         public static string GetTargetPath(string filePath)
         {
-            string targetPath = ResolveMsiShortcut(filePath);
+            var targetPath = ResolveMsiShortcut(filePath);
             if (targetPath == null)
             {
                 targetPath = ResolveShortcut(filePath);
@@ -462,16 +462,16 @@ namespace DS4Windows
 
         public static string GetInternetShortcut(string filePath)
         {
-            string url = "";
+            var url = "";
 
             using (TextReader reader = new StreamReader(filePath))
             {
-                string line = "";
+                var line = "";
                 while ((line = reader.ReadLine()) != null)
                 {
                     if (line.StartsWith("URL="))
                     {
-                        string[] splitLine = line.Split('=');
+                        var splitLine = line.Split('=');
                         if (splitLine.Length > 0)
                         {
                             url = splitLine[1];
@@ -487,11 +487,11 @@ namespace DS4Windows
         public static string ResolveShortcut(string filePath)
         {
             // IWshRuntimeLibrary is in the COM library "Windows Script Host Object Model"
-            IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
+            var shell = new IWshRuntimeLibrary.WshShell();
 
             try
             {
-                IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(filePath);
+                var shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(filePath);
                 return shortcut.TargetPath;
             }
             catch (COMException)
@@ -504,11 +504,11 @@ namespace DS4Windows
         public static string ResolveShortcutAndArgument(string filePath)
         {
             // IWshRuntimeLibrary is in the COM library "Windows Script Host Object Model"
-            IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
+            var shell = new IWshRuntimeLibrary.WshShell();
 
             try
             {
-                IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(filePath);
+                var shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(filePath);
                 return shortcut.TargetPath + " " + shortcut.Arguments;
             }
             catch (COMException)
@@ -525,16 +525,16 @@ namespace DS4Windows
 
         public static string ResolveMsiShortcut(string file)
         {
-            StringBuilder product = new StringBuilder(NativeMethods2.MaxGuidLength + 1);
-            StringBuilder feature = new StringBuilder(NativeMethods2.MaxFeatureLength + 1);
-            StringBuilder component = new StringBuilder(NativeMethods2.MaxGuidLength + 1);
+            var product = new StringBuilder(NativeMethods2.MaxGuidLength + 1);
+            var feature = new StringBuilder(NativeMethods2.MaxFeatureLength + 1);
+            var component = new StringBuilder(NativeMethods2.MaxGuidLength + 1);
 
             NativeMethods2.MsiGetShortcutTarget(file, product, feature, component);
 
-            int pathLength = NativeMethods2.MaxPathLength;
-            StringBuilder path = new StringBuilder(pathLength);
+            var pathLength = NativeMethods2.MaxPathLength;
+            var path = new StringBuilder(pathLength);
 
-            NativeMethods2.InstallState installState = NativeMethods2.MsiGetComponentPath(product.ToString(), component.ToString(), path, ref pathLength);
+            var installState = NativeMethods2.MsiGetComponentPath(product.ToString(), component.ToString(), path, ref pathLength);
             if (installState == NativeMethods2.InstallState.Local)
             {
                 return path.ToString();

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KBM360));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(KBM360));
             this.pBHighlight = new System.Windows.Forms.PictureBox();
             this.pBMouse = new System.Windows.Forms.PictureBox();
             this.btnF6 = new System.Windows.Forms.Button();

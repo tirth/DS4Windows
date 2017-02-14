@@ -13,23 +13,23 @@ namespace DS4Windows
         public Hotkeys()
         {
             InitializeComponent();
-            string s = Thread.CurrentThread.CurrentUICulture.ToString().Split('-')[0];
+            var s = Thread.CurrentThread.CurrentUICulture.ToString().Split('-')[0];
             
-            Control[] ctrls = tLPTranslators.Controls.Find("lb" + s, true);
+            var ctrls = tLPTranslators.Controls.Find("lb" + s, true);
             if (ctrls.Length > 0)
             {
                 ((Label)ctrls[0]).ForeColor = Color.DarkGreen;
-                int ind = tLPTranslators.Controls.IndexOf(ctrls[0]) + 1;
+                var ind = tLPTranslators.Controls.IndexOf(ctrls[0]) + 1;
                 ((Label)tLPTranslators.Controls[ind]).ForeColor = Color.DarkGreen;
             }
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
-            string version = fvi.FileVersion;
+            var fvi = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            var version = fvi.FileVersion;
             lbAbout.Text += version + ")";
             if (tPCredits.HasChildren)
-                foreach (System.Windows.Forms.Control ctrl in tPCredits.Controls)
+                foreach (Control ctrl in tPCredits.Controls)
                 {
                     if (ctrl.HasChildren)
-                        foreach (System.Windows.Forms.Control ctrl2 in ctrl.Controls)
+                        foreach (Control ctrl2 in ctrl.Controls)
                             ctrl2.MouseHover += Items_MouseHover;
                     ctrl.MouseHover += Items_MouseHover;
                 }
@@ -39,7 +39,7 @@ namespace DS4Windows
 
         private void Items_MouseHover(object sender, EventArgs e)
         {
-            switch (((System.Windows.Forms.Control)sender).Name)
+            switch (((Control)sender).Name)
             {
                 //if (File.Exists(appdatapath + "\\Auto Profiles.xml"))
                 case "linkJays2Kings": lbLinkText.Text = "http://ds4windows.com"; break;

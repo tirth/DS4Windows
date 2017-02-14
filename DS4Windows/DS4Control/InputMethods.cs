@@ -22,7 +22,7 @@ namespace DS4Windows
                     sendInputs[0].Data.Mouse.Time = 0;
                     sendInputs[0].Data.Mouse.X = x;
                     sendInputs[0].Data.Mouse.Y = y;
-                    uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                    var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
                 }
             }
         }
@@ -69,7 +69,7 @@ namespace DS4Windows
                 sendInputs[0].Data.Mouse.Time = 0;
                 sendInputs[0].Data.Mouse.X = 0;
                 sendInputs[0].Data.Mouse.Y = 0;
-                uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
             }
         }
 
@@ -84,7 +84,7 @@ namespace DS4Windows
                 sendInputs[0].Data.Mouse.Time = 0;
                 sendInputs[0].Data.Mouse.X = 0;
                 sendInputs[0].Data.Mouse.Y = 0;
-                uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
             }
         }
 
@@ -100,7 +100,7 @@ namespace DS4Windows
                 sendInputs[0].Data.Mouse.Time = 0;
                 sendInputs[0].Data.Mouse.X = 0;
                 sendInputs[0].Data.Mouse.Y = 0;
-                uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
             }
         }
 
@@ -116,7 +116,7 @@ namespace DS4Windows
                 sendInputs[0].Data.Mouse.Time = 0;
                 sendInputs[0].Data.Mouse.X = 0;
                 sendInputs[0].Data.Mouse.Y = 0;
-                uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
             }
         }
 
@@ -132,7 +132,7 @@ namespace DS4Windows
                 sendInputs[0].Data.Mouse.Time = 0;
                 sendInputs[0].Data.Mouse.X = 0;
                 sendInputs[0].Data.Mouse.Y = 0;
-                uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
             }
         }
 
@@ -148,7 +148,7 @@ namespace DS4Windows
                 sendInputs[0].Data.Mouse.Time = 0;
                 sendInputs[0].Data.Mouse.X = 0;
                 sendInputs[0].Data.Mouse.Y = 0;
-                uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
             }
         }
         public static void performSCKeyPress(ushort key)
@@ -161,7 +161,7 @@ namespace DS4Windows
                 sendInputs[0].Data.Keyboard.Scan = MapVirtualKey(key, MAPVK_VK_TO_VSC);
                 sendInputs[0].Data.Keyboard.Time = 0;
                 sendInputs[0].Data.Keyboard.Vk = key;
-                uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
             }
         }
 
@@ -175,7 +175,7 @@ namespace DS4Windows
                 sendInputs[0].Data.Keyboard.Scan = 0;
                 sendInputs[0].Data.Keyboard.Time = 0;
                 sendInputs[0].Data.Keyboard.Vk = key;
-                uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
             }
         }
 
@@ -189,7 +189,7 @@ namespace DS4Windows
                 sendInputs[0].Data.Keyboard.Scan = MapVirtualKey(key, MAPVK_VK_TO_VSC);
                 sendInputs[0].Data.Keyboard.Time = 0;
                 //sendInputs[0].Data.Keyboard.Vk = MapVirtualKey(key, MAPVK_VK_TO_VSC);
-                uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
             }
         }
 
@@ -203,7 +203,7 @@ namespace DS4Windows
                 sendInputs[0].Data.Keyboard.Scan = 0;
                 sendInputs[0].Data.Keyboard.Time = 0;
                 sendInputs[0].Data.Keyboard.Vk = key;
-                uint result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
+                var result = SendInput(1, sendInputs, Marshal.SizeOf(sendInputs[0]));
             }
         }
 

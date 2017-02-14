@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RecordBox));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(RecordBox));
             this.btnRecord = new System.Windows.Forms.Button();
             this.cBRecordDelays = new System.Windows.Forms.CheckBox();
             this.lVMacros = new System.Windows.Forms.ListView();

@@ -47,7 +47,7 @@ namespace DS4Windows
                 cBDTapDVR.SelectedIndex = 1;
             }*/
             cBActions.Items[7] = Properties.Resources.MultiAction;
-            foreach (object s in opt.root.lBProfiles.Items)
+            foreach (var s in opt.root.lBProfiles.Items)
                 cBProfiles.Items.Add(s.ToString());
             editIndex = editindex;
             if (edit != string.Empty)
@@ -61,9 +61,9 @@ namespace DS4Windows
 
         void LoadAction()
         {
-            SpecialAction act = Global.GetAction(oldprofilename);
+            var act = Global.GetAction(oldprofilename);
             string[] dets;
-            foreach (string s in act.controls.Split('/'))
+            foreach (var s in act.controls.Split('/'))
                 foreach (ListViewItem lvi in lVTrigger.Items)
                     if (lvi.Text == s)
                     {
@@ -88,7 +88,7 @@ namespace DS4Windows
                 case "Profile": 
                     cBActions.SelectedIndex = 3;
                     cBProfiles.Text = act.details;
-                    foreach (string s in act.ucontrols.Split('/'))
+                    foreach (var s in act.ucontrols.Split('/'))
                         foreach (ListViewItem lvi in lVUnloadTrigger.Items)
                             if (lvi.Text == s)
                             {
@@ -98,7 +98,7 @@ namespace DS4Windows
                     break;
                 case "Key":
                     cBActions.SelectedIndex = 4;
-                    int key = int.Parse(act.details);
+                    var key = int.Parse(act.details);
                     btnSelectKey.Text = ((Keys)key).ToString() +
                         (act.keyType.HasFlag(DS4KeyType.ScanCode) ? " (SC)" : "") + 
                         (!string.IsNullOrEmpty(act.ucontrols) ? " (Toggle)" : "");
@@ -108,7 +108,7 @@ namespace DS4Windows
                     if (!string.IsNullOrEmpty(act.ucontrols))
                     {
                         //cBPressToggleKeys.SelectedIndex = 1;
-                        foreach (string s in act.ucontrols.Split('/'))
+                        foreach (var s in act.ucontrols.Split('/'))
                             foreach (ListViewItem lvi in lVUnloadTrigger.Items)
                                 if (lvi.Text == s)
                                 {
@@ -152,10 +152,10 @@ namespace DS4Windows
                 case "MultiAction":
                     cBActions.SelectedIndex = 7;
                     dets = act.details.Split(',');
-                    for (int i = 0; i < 3; i++)
+                    for (var i = 0; i < 3; i++)
                     {
-                        string[] macs = dets[i].Split('/');
-                        foreach (string s in macs)
+                        var macs = dets[i].Split('/');
+                        foreach (var s in macs)
                         {
                             int v;
                             if (int.TryParse(s, out v))
@@ -184,7 +184,7 @@ namespace DS4Windows
         {
             rb = new RecordBox(this);
             rb.TopLevel = true;
-            rb.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            rb.FormBorderStyle = FormBorderStyle.FixedSingle;
             rb.ShowDialog();
         }
 
@@ -207,10 +207,10 @@ namespace DS4Windows
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            foreach (SpecialAction sA in Global.GetActions())
+            foreach (var sA in Global.GetActions())
             {
-                if ((sA.name == tBName.Text && editIndex > -1 && tBName.Text != oldprofilename) ||
-                   (sA.name == tBName.Text && editIndex == -1))
+                if (sA.name == tBName.Text && editIndex > -1 && tBName.Text != oldprofilename ||
+                   sA.name == tBName.Text && editIndex == -1)
                 {
                     MessageBox.Show(Properties.Resources.ActionExists);
                     return;
@@ -226,10 +226,10 @@ namespace DS4Windows
                         ucontrols.Add(lvi.Text);
             if (!string.IsNullOrEmpty(tBName.Text) && controls.Count > 0 && cBActions.SelectedIndex > 0)
             {      
-                bool actRe = false;
-                string action = "null";
+                var actRe = false;
+                var action = "null";
                 string dets;
-                bool edit = (!string.IsNullOrEmpty(oldprofilename) && tBName.Text == oldprofilename);
+                var edit = !string.IsNullOrEmpty(oldprofilename) && tBName.Text == oldprofilename;
                 switch (cBActions.SelectedIndex)
                 {
                     case 1:
@@ -239,7 +239,7 @@ namespace DS4Windows
                             actRe = true;
                             if (!string.IsNullOrEmpty(oldprofilename) && oldprofilename != tBName.Text)
                                 Global.RemoveAction(oldprofilename);
-                            Global.SaveAction(tBName.Text, String.Join("/", controls), cBActions.SelectedIndex, String.Join("/", macrostag), edit, (cBMacroScanCode.Checked ? "Scan Code" : ""));
+                            Global.SaveAction(tBName.Text, String.Join("/", controls), cBActions.SelectedIndex, String.Join("/", macrostag), edit, cBMacroScanCode.Checked ? "Scan Code" : "");
                         }
                         break;
                     case 2:
@@ -266,9 +266,9 @@ namespace DS4Windows
                         break;
                     case 4:
                         if (btnSelectKey.Tag != null &&
-                            (!btnSelectKey.Text.Contains("(Toggle)") || (btnSelectKey.Text.Contains("(Toggle)") && ucontrols.Count > 0)))
+                            (!btnSelectKey.Text.Contains("(Toggle)") || btnSelectKey.Text.Contains("(Toggle)") && ucontrols.Count > 0))
                         {
-                            action = ((Keys)int.Parse(btnSelectKey.Tag.ToString())).ToString() + ((btnSelectKey.Text.Contains("(Toggle)") ? " (Toggle)" : ""));
+                            action = ((Keys)int.Parse(btnSelectKey.Tag.ToString())).ToString() + (btnSelectKey.Text.Contains("(Toggle)") ? " (Toggle)" : "");
                             actRe = true;
                             if (!string.IsNullOrEmpty(oldprofilename) && oldprofilename != tBName.Text)
                                 Global.RemoveAction(oldprofilename);
@@ -334,7 +334,7 @@ namespace DS4Windows
                 }
                 if (actRe)
                 {                    
-                    ListViewItem lvi = new ListViewItem(tBName.Text);
+                    var lvi = new ListViewItem(tBName.Text);
                     lvi.SubItems.Add(String.Join(", ", controls));
                     lvi.SubItems.Add(action);
                     lvi.Checked = true;
@@ -363,7 +363,7 @@ namespace DS4Windows
 
         private void cBActions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int i = cBActions.SelectedIndex;
+            var i = cBActions.SelectedIndex;
             pnlMacro.Visible = i == 1;
             pnlProgram.Visible = i == 2;
             pnlProfile.Visible = i == 3;
@@ -376,7 +376,7 @@ namespace DS4Windows
 
         private void btnBroswe_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 LoadProgram(openFileDialog1.FileName);
         }
 
@@ -404,7 +404,7 @@ namespace DS4Windows
 
         private void btnSetUTrigger_Click(object sender, EventArgs e)
         {
-            Button button = (Button)sender;
+            var button = (Button)sender;
             lVTrigger.Visible = !lVTrigger.Visible;
             if (lVTrigger.Visible)
                 button.Text = Properties.Resources.SetUnloadTrigger;
@@ -464,13 +464,13 @@ namespace DS4Windows
         private void pBGraident_Paint(object sender, PaintEventArgs e)
         {
 
-            System.Drawing.Drawing2D.LinearGradientBrush linGrBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
+            var linGrBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
    new Point(0, pBGraident.Height),
    new Point(pBGraident.Width, pBGraident.Height),
    bnEmptyColor.BackColor,   // Opaque red
    bnFullColor.BackColor);  // Opaque blue
 
-            Pen pen = new Pen(linGrBrush);
+            var pen = new Pen(linGrBrush);
             // e.Graphics.DrawLine(pen, 0, 10, 200, 10);
             //e.Graphics.FillEllipse(linGrBrush, 0, 30, 200, 100);
             e.Graphics.FillRectangle(linGrBrush, 0, 0, pBGraident.Width, pBGraident.Height);
@@ -480,8 +480,8 @@ namespace DS4Windows
         {
             if (sender is Color && device < 4)
             {
-                Color color = (Color)sender;
-                DS4Color dcolor = new DS4Color { red = color.R, green = color.G, blue = color.B };
+                var color = (Color)sender;
+                var dcolor = new DS4Color { red = color.R, green = color.G, blue = color.B };
                 DS4LightBar.forcedColor[device] = dcolor;
                 DS4LightBar.forcedFlash[device] = 0;
                 DS4LightBar.forcelight[device] = true;
@@ -524,7 +524,7 @@ namespace DS4Windows
         {
             rb = new RecordBox(this, i);
             rb.TopLevel = true;
-            rb.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            rb.FormBorderStyle = FormBorderStyle.FixedSingle;
             rb.ShowDialog();
         }
         private void cBBatt_CheckedChanged(object sender, EventArgs e)

@@ -32,14 +32,14 @@ namespace DS4Windows
 
             double coefficient = Global.GyroSensitivity[deviceNumber] / 100f;
             //Collect rounding errors instead of losing motion.
-            double xMotion = coefficient * deltaX;
+            var xMotion = coefficient * deltaX;
             xMotion += hRemainder;
-            int xAction = (int)xMotion;
+            var xAction = (int)xMotion;
             hRemainder += xMotion - xAction;
             hRemainder -= (int)hRemainder;
-            double yMotion = coefficient * deltaY;
+            var yMotion = coefficient * deltaY;
             yMotion += vRemainder;
-            int yAction = (int)yMotion;
+            var yAction = (int)yMotion;
             vRemainder += yMotion - yAction;
             vRemainder -= (int)vRemainder;
             if (Global.GyroInvert[deviceNumber] == 2 || Global.GyroInvert[deviceNumber] == 3)
@@ -65,7 +65,7 @@ namespace DS4Windows
         private byte lastTouchID;
         public void touchesMoved(TouchpadEventArgs arg, bool dragging)
         {
-            if ((!dragging && arg.touches.Length != 1) || (dragging && arg.touches.Length < 1))
+            if (!dragging && arg.touches.Length != 1 || dragging && arg.touches.Length < 1)
                 return;
             int deltaX, deltaY;
             if (arg.touches[0].touchID != lastTouchID)
@@ -139,9 +139,9 @@ namespace DS4Windows
                 }
             }
 
-            double coefficient = Global.TouchSensitivity[deviceNumber] / 100.0;
+            var coefficient = Global.TouchSensitivity[deviceNumber] / 100.0;
             // Collect rounding errors instead of losing motion.
-            double xMotion = coefficient * deltaX;
+            var xMotion = coefficient * deltaX;
             if (xMotion > 0.0)
             {
                 if (horizontalRemainder > 0.0)
@@ -152,10 +152,10 @@ namespace DS4Windows
                 if (horizontalRemainder < 0.0)
                     xMotion += horizontalRemainder;
             }
-            int xAction = (int)xMotion;
+            var xAction = (int)xMotion;
             horizontalRemainder = xMotion - xAction;
 
-            double yMotion = coefficient * deltaY;
+            var yMotion = coefficient * deltaY;
             if (yMotion > 0.0)
             {
                 if (verticalRemainder > 0.0)
@@ -166,7 +166,7 @@ namespace DS4Windows
                 if (verticalRemainder < 0.0)
                     yMotion += verticalRemainder;
             }
-            int yAction = (int)yMotion;
+            var yAction = (int)yMotion;
             verticalRemainder = yMotion - yAction;
 
             if (yAction != 0 || xAction != 0)

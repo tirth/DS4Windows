@@ -29,7 +29,7 @@ namespace DS4Windows
 
         private void bnFinish_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void linkBluetoothSettings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -39,7 +39,7 @@ namespace DS4Windows
         bool driverinstalling = false;
         private void bnStep1_Click(object sender, EventArgs e)
         {
-            WebClient wb = new WebClient();
+            var wb = new WebClient();
             if (!driverinstalling)
             {
                 wb.DownloadFileAsync(new Uri("http://ds4windows.com/Files/Virtual Bus Driver.zip"), exepath + "\\VBus.zip");
@@ -80,7 +80,7 @@ namespace DS4Windows
                 }
                 catch { Process.Start(exepath + "\\Virtual Bus Driver"); }
 
-            Timer timer = new Timer();
+            var timer = new Timer();
             timer.Start();
             timer.Tick += timer_Tick;
         }
@@ -88,7 +88,7 @@ namespace DS4Windows
         DateTime waitFileCheck;
         private void timer_Tick(object sender, EventArgs e)
         {
-            Process[] processes = Process.GetProcessesByName("ScpDriver");
+            var processes = Process.GetProcessesByName("ScpDriver");
             if (processes.Length < 1)
             {
                 if (!File.Exists(exepath + "\\ScpDriver.log") && !waitForFile)
@@ -107,7 +107,7 @@ namespace DS4Windows
                 }
                 else if (waitForFile)
                     return;
-                string log = File.ReadAllText(exepath + "\\ScpDriver.log");
+                var log = File.ReadAllText(exepath + "\\ScpDriver.log");
                 if (log.Contains("Install Succeeded"))
                     bnStep1.Text = Properties.Resources.InstallComplete;
                 else

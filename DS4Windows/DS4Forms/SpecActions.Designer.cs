@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SpecActions));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(SpecActions));
             this.lVTrigger = new System.Windows.Forms.ListView();
             this.cHTrigger = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnRecordMacro = new System.Windows.Forms.Button();

@@ -37,13 +37,13 @@ namespace DS4Windows
         {
             InitializeComponent();
 
-            this.m_Class = new Guid(Class);
+            m_Class = new Guid(Class);
         }
 
 
         public virtual Boolean Open(Int32 Instance = 0) 
         {
-            String DevicePath = String.Empty;
+            var DevicePath = String.Empty;
             m_WinUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
 
             if (Find(m_Class, ref DevicePath, Instance))
@@ -149,7 +149,7 @@ namespace DS4Windows
         {
             if (!m_IsActive) return false;
 
-            WINUSB_SETUP_PACKET Setup = new WINUSB_SETUP_PACKET();
+            var Setup = new WINUSB_SETUP_PACKET();
 
             Setup.RequestType = RequestType;
             Setup.Request     = Request;
@@ -354,12 +354,12 @@ namespace DS4Windows
 
         public static Boolean RegisterNotify(IntPtr Form, Guid Class, ref IntPtr Handle, Boolean Window = true) 
         {
-            IntPtr devBroadcastDeviceInterfaceBuffer = IntPtr.Zero;
+            var devBroadcastDeviceInterfaceBuffer = IntPtr.Zero;
 
             try
             {
-                DEV_BROADCAST_DEVICEINTERFACE devBroadcastDeviceInterface = new DEV_BROADCAST_DEVICEINTERFACE();
-                Int32 Size = Marshal.SizeOf(devBroadcastDeviceInterface);
+                var devBroadcastDeviceInterface = new DEV_BROADCAST_DEVICEINTERFACE();
+                var Size = Marshal.SizeOf(devBroadcastDeviceInterface);
 
                 devBroadcastDeviceInterface.dbcc_size       = Size;
                 devBroadcastDeviceInterface.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
@@ -406,8 +406,8 @@ namespace DS4Windows
         #region Protected Methods
         protected virtual Boolean Find(Guid Target, ref String Path, Int32 Instance = 0) 
         {
-            IntPtr detailDataBuffer = IntPtr.Zero;
-            IntPtr deviceInfoSet    = IntPtr.Zero;
+            var detailDataBuffer = IntPtr.Zero;
+            var deviceInfoSet    = IntPtr.Zero;
 
             try
             {
@@ -424,11 +424,11 @@ namespace DS4Windows
                     {
                         detailDataBuffer = Marshal.AllocHGlobal(bufferSize);
 
-                        Marshal.WriteInt32(detailDataBuffer, (IntPtr.Size == 4) ? (4 + Marshal.SystemDefaultCharSize) : 8);
+                        Marshal.WriteInt32(detailDataBuffer, IntPtr.Size == 4 ? 4 + Marshal.SystemDefaultCharSize : 8);
 
                         if (SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref DeviceInterfaceData, detailDataBuffer, bufferSize, ref bufferSize, ref da))
                         {
-                            IntPtr pDevicePathName = new IntPtr(IntPtr.Size == 4 ? detailDataBuffer.ToInt32() + 4: detailDataBuffer.ToInt64() + 4);
+                            var pDevicePathName = new IntPtr(IntPtr.Size == 4 ? detailDataBuffer.ToInt32() + 4: detailDataBuffer.ToInt64() + 4);
 
                             Path = Marshal.PtrToStringAuto(pDevicePathName).ToUpper();
                             Marshal.FreeHGlobal(detailDataBuffer);
@@ -459,8 +459,8 @@ namespace DS4Windows
 
         protected virtual Boolean GetDeviceInstance(ref String Instance) 
         {
-            IntPtr detailDataBuffer = IntPtr.Zero;
-            IntPtr deviceInfoSet    = IntPtr.Zero;
+            var detailDataBuffer = IntPtr.Zero;
+            var deviceInfoSet    = IntPtr.Zero;
 
             try
             {
@@ -477,19 +477,19 @@ namespace DS4Windows
                     {
                         detailDataBuffer = Marshal.AllocHGlobal(bufferSize);
 
-                        Marshal.WriteInt32(detailDataBuffer, (IntPtr.Size == 4) ? (4 + Marshal.SystemDefaultCharSize) : 8);
+                        Marshal.WriteInt32(detailDataBuffer, IntPtr.Size == 4 ? 4 + Marshal.SystemDefaultCharSize : 8);
 
                         if (SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref DeviceInterfaceData, detailDataBuffer, bufferSize, ref bufferSize, ref da))
                         {
-                            IntPtr pDevicePathName = new IntPtr(IntPtr.Size == 4 ? detailDataBuffer.ToInt32() + 4 : detailDataBuffer.ToInt64() + 4);
+                            var pDevicePathName = new IntPtr(IntPtr.Size == 4 ? detailDataBuffer.ToInt32() + 4 : detailDataBuffer.ToInt64() + 4);
 
-                            String Current = Marshal.PtrToStringAuto(pDevicePathName).ToUpper();
+                            var Current = Marshal.PtrToStringAuto(pDevicePathName).ToUpper();
                             Marshal.FreeHGlobal(detailDataBuffer);
 
                             if (Current == Path)
                             {
-                                Int32  nBytes = 256;
-                                IntPtr ptrInstanceBuf = Marshal.AllocHGlobal(nBytes);
+                                var  nBytes = 256;
+                                var ptrInstanceBuf = Marshal.AllocHGlobal(nBytes);
 
                                 CM_Get_Device_ID(da.Flags, ptrInstanceBuf, nBytes, 0);
                                 Instance = Marshal.PtrToStringAuto(ptrInstanceBuf).ToUpper();
@@ -522,7 +522,7 @@ namespace DS4Windows
 
         protected virtual Boolean GetDeviceHandle(String Path) 
         {
-            m_FileHandle = CreateFile(Path, (GENERIC_WRITE | GENERIC_READ), FILE_SHARE_READ | FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, 0);
+            m_FileHandle = CreateFile(Path, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, 0);
 
             return !m_FileHandle.IsInvalid;
         }
@@ -541,21 +541,21 @@ namespace DS4Windows
         {
             try
             {
-                USB_INTERFACE_DESCRIPTOR ifaceDescriptor = new USB_INTERFACE_DESCRIPTOR();
-                WINUSB_PIPE_INFORMATION  pipeInfo = new WINUSB_PIPE_INFORMATION();
+                var ifaceDescriptor = new USB_INTERFACE_DESCRIPTOR();
+                var  pipeInfo = new WINUSB_PIPE_INFORMATION();
 
                 if (WinUsb_QueryInterfaceSettings(m_WinUsbHandle, 0, ref ifaceDescriptor))
                 {
-                    for (Int32 i = 0; i < ifaceDescriptor.bNumEndpoints; i++)
+                    for (var i = 0; i < ifaceDescriptor.bNumEndpoints; i++)
                     {
-                        WinUsb_QueryPipe(m_WinUsbHandle, 0, System.Convert.ToByte(i), ref pipeInfo);
+                        WinUsb_QueryPipe(m_WinUsbHandle, 0, Convert.ToByte(i), ref pipeInfo);
 
-                        if (((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeBulk) & UsbEndpointDirectionIn(pipeInfo.PipeId)))
+                        if ((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeBulk) & UsbEndpointDirectionIn(pipeInfo.PipeId))
                         {
                             m_BulkIn = pipeInfo.PipeId;
                             WinUsb_FlushPipe(m_WinUsbHandle, m_BulkIn);
                         }
-                        else if (((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeBulk) & UsbEndpointDirectionOut(pipeInfo.PipeId)))
+                        else if ((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeBulk) & UsbEndpointDirectionOut(pipeInfo.PipeId))
                         {
                             m_BulkOut = pipeInfo.PipeId;
                             WinUsb_FlushPipe(m_WinUsbHandle, m_BulkOut);
@@ -586,18 +586,18 @@ namespace DS4Windows
 
         protected virtual Boolean RestartDevice(String InstanceId) 
         {
-            IntPtr deviceInfoSet = IntPtr.Zero;
+            var deviceInfoSet = IntPtr.Zero;
 
             try
             {
-                SP_DEVICE_INTERFACE_DATA deviceInterfaceData = new SP_DEVICE_INTERFACE_DATA();
+                var deviceInterfaceData = new SP_DEVICE_INTERFACE_DATA();
 
                 deviceInterfaceData.cbSize = Marshal.SizeOf(deviceInterfaceData);
                 deviceInfoSet = SetupDiGetClassDevs(ref m_Class, IntPtr.Zero, IntPtr.Zero, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
                 if (SetupDiOpenDeviceInfo(deviceInfoSet, InstanceId, IntPtr.Zero, 0, ref deviceInterfaceData))
                 {
-                    SP_PROPCHANGE_PARAMS props = new SP_PROPCHANGE_PARAMS();
+                    var props = new SP_PROPCHANGE_PARAMS();
 
                     props.ClassInstallHeader = new SP_CLASSINSTALL_HEADER();
                     props.ClassInstallHeader.cbSize = Marshal.SizeOf(props.ClassInstallHeader);
@@ -632,16 +632,16 @@ namespace DS4Windows
 
         #region Interop Definitions
         [DllImport("setupapi.dll", SetLastError = true)]
-        protected static extern Int32 SetupDiCreateDeviceInfoList(ref System.Guid ClassGuid, Int32 hwndParent);
+        protected static extern Int32 SetupDiCreateDeviceInfoList(ref Guid ClassGuid, Int32 hwndParent);
 
         [DllImport("setupapi.dll", SetLastError = true)]
         protected static extern Int32 SetupDiDestroyDeviceInfoList(IntPtr DeviceInfoSet);
 
         [DllImport("setupapi.dll", SetLastError = true)]
-        protected static extern Boolean SetupDiEnumDeviceInterfaces(IntPtr DeviceInfoSet, IntPtr DeviceInfoData, ref System.Guid InterfaceClassGuid, Int32 MemberIndex, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData);
+        protected static extern Boolean SetupDiEnumDeviceInterfaces(IntPtr DeviceInfoSet, IntPtr DeviceInfoData, ref Guid InterfaceClassGuid, Int32 MemberIndex, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern IntPtr SetupDiGetClassDevs(ref System.Guid ClassGuid, IntPtr Enumerator, IntPtr hwndParent, Int32 Flags);
+        protected static extern IntPtr SetupDiGetClassDevs(ref Guid ClassGuid, IntPtr Enumerator, IntPtr hwndParent, Int32 Flags);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
         protected static extern Boolean SetupDiGetDeviceInterfaceDetail(IntPtr DeviceInfoSet, ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData, IntPtr DeviceInterfaceDetailData, Int32 DeviceInterfaceDetailDataSize, ref Int32 RequiredSize, IntPtr DeviceInfoData);

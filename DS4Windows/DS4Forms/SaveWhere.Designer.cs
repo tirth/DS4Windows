@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveWhere));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveWhere));
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.bnAppdataFolder = new System.Windows.Forms.Button();

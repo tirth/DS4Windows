@@ -63,8 +63,8 @@ namespace DS4Windows
 
         public bool Save(String path)
         {
-            Boolean Saved = true;
-            XmlDocument m_Xdoc = new XmlDocument();
+            var Saved = true;
+            var m_Xdoc = new XmlDocument();
             try
             {
                 XmlNode Node;

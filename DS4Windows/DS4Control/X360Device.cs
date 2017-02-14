@@ -105,7 +105,7 @@ namespace DS4Windows
             Output[4] = (Byte)(device + firstController);
             Output[9] = 0x14;
 
-            for (int i = 10; i < Output.Length; i++)
+            for (var i = 10; i < Output.Length; i++)
             {
                 Output[i] = 0;
             }
@@ -132,10 +132,10 @@ namespace DS4Windows
             Output[12] = state.L2; // Left Trigger
             Output[13] = state.R2; // Right Trigger
 
-            Int32 ThumbLX = Scale(state.LX, false);
-            Int32 ThumbLY = -Scale(state.LY, false);
-            Int32 ThumbRX = Scale(state.RX, false);
-            Int32 ThumbRY = -Scale(state.RY, false);
+            var ThumbLX = Scale(state.LX, false);
+            var ThumbLY = -Scale(state.LY, false);
+            var ThumbRX = Scale(state.RX, false);
+            var ThumbRY = -Scale(state.RY, false);
             Output[14] = (Byte)((ThumbLX >> 0) & 0xFF); // LX
             Output[15] = (Byte)((ThumbLX >> 8) & 0xFF);            
             Output[16] = (Byte)((ThumbLY >> 0) & 0xFF); // LY
@@ -150,8 +150,8 @@ namespace DS4Windows
         {
             if (IsActive)
             {
-                Int32 Transfered = 0;
-                Byte[] Buffer = new Byte[16];
+                var Transfered = 0;
+                var Buffer = new Byte[16];
 
                 Buffer[0] = 0x10;
                 Buffer[1] = 0x00;
@@ -174,8 +174,8 @@ namespace DS4Windows
         {
             if (IsActive)
             {
-                Int32 Transfered = 0;
-                Byte[] Buffer = new Byte[16];
+                var Transfered = 0;
+                var Buffer = new Byte[16];
 
                 Buffer[0] = 0x10;
                 Buffer[1] = 0x00;
@@ -198,8 +198,8 @@ namespace DS4Windows
         {
             if (IsActive)
             {
-                Int32 Transfered = 0;
-                Byte[] Buffer = new Byte[16];
+                var Transfered = 0;
+                var Buffer = new Byte[16];
 
                 Buffer[0] = 0x10;
                 Buffer[1] = 0x00;
@@ -217,7 +217,7 @@ namespace DS4Windows
         {
             if (IsActive)
             {
-                Int32 Transfered = 0;
+                var Transfered = 0;
 
                 return DeviceIoControl(m_FileHandle, 0x2A400C, Input, Input.Length, Output, Output.Length, ref Transfered, IntPtr.Zero) && Transfered > 0;
             }

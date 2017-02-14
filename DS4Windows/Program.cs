@@ -12,15 +12,15 @@ namespace DS4Windows
     {
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
         // Add "global\" in front of the EventName, then only one instance is allowed on the
         // whole system, including other users. But the application can not be brought
         // into view, of course. 
-        private static String SingleAppComEventName = "{a52b5b20-d9ee-4f32-8518-307fa14aa0c6}";
-        static Mutex mutex = new Mutex(true, "{FI329DM2-DS4W-J2K2-HYES-92H21B3WJARG}");
+        private const string SingleAppComEventName = "{a52b5b20-d9ee-4f32-8518-307fa14aa0c6}";
+        private static readonly Mutex Mutex = new Mutex(true, "{FI329DM2-DS4W-J2K2-HYES-92H21B3WJARG}");
         private static BackgroundWorker singleAppComThread = null;
         private static EventWaitHandle threadComEvent = null;
         public static ControlService rootHub;
@@ -32,9 +32,9 @@ namespace DS4Windows
         static void Main(string[] args)
         {
             //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("he");
-            for (int i = 0; i < args.Length; i++)
+            for (var i = 0; i < args.Length; i++)
             {
-                string s = args[i];
+                var s = args[i];
                 if (s == "driverinstall" || s == "-driverinstall")
                 {
                     Application.EnableVisualStyles();
@@ -42,12 +42,13 @@ namespace DS4Windows
                     Application.Run(new WelcomeDialog());
                     return;
                 }
-                else if (s == "re-enabledevice" || s == "-re-enabledevice")
+
+                if (s == "re-enabledevice" || s == "-re-enabledevice")
                 {
                     try
                     {
                         i++;
-                        string deviceInstanceId = args[i];
+                        var deviceInstanceId = args[i];
                         DS4Devices.reEnableDevice(deviceInstanceId);
                         Environment.ExitCode = 0;
                         return;
@@ -62,7 +63,7 @@ namespace DS4Windows
             System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
             try
             {
-                Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
             }
             catch
             {
@@ -81,13 +82,13 @@ namespace DS4Windows
             threadComEvent = new EventWaitHandle(false, EventResetMode.AutoReset, SingleAppComEventName);
             CreateInterAppComThread();
 
-            if (mutex.WaitOne(TimeSpan.Zero, true))
+            if (Mutex.WaitOne(TimeSpan.Zero, true))
             {
                 rootHub = new ControlService();
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new DS4Form(args));
-                mutex.ReleaseMutex();
+                Mutex.ReleaseMutex();
             }
 
             // End the communication thread.
@@ -97,7 +98,7 @@ namespace DS4Windows
             threadComEvent.Close();
         }
 
-        static private void CreateInterAppComThread()
+        private static void CreateInterAppComThread()
         {
             singleAppComThread = new BackgroundWorker();
             singleAppComThread.WorkerReportsProgress = false;
@@ -106,10 +107,10 @@ namespace DS4Windows
             singleAppComThread.RunWorkerAsync();
         }
 
-        static private void singleAppComThread_DoWork(object sender, DoWorkEventArgs e)
+        private static void singleAppComThread_DoWork(object sender, DoWorkEventArgs e)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            WaitHandle[] waitHandles = new WaitHandle[] { threadComEvent };
+            var worker = sender as BackgroundWorker;
+            var waitHandles = new WaitHandle[] { threadComEvent };
 
             while (!worker.CancellationPending)
             {
@@ -121,7 +122,7 @@ namespace DS4Windows
                     // That form is created in another thread, so we need some thread sync magic.
                     if (Application.OpenForms.Count > 0)
                     {
-                        Form mainForm = Application.OpenForms[0];
+                        var mainForm = Application.OpenForms[0];
                         mainForm.Invoke(new SetFormVisableDelegate(ThreadFormVisable), mainForm);
                     }
                 }
@@ -135,7 +136,7 @@ namespace DS4Windows
         /// </summary>
         /// <param name="frm"></param>
         private delegate void SetFormVisableDelegate(Form frm);
-        static private void ThreadFormVisable(Form frm)
+        private static void ThreadFormVisable(Form frm)
         {
             if (frm != null)
             {
@@ -147,7 +148,7 @@ namespace DS4Windows
                 }
                 else
                 {
-                    WinProgs wp = (WinProgs)frm;
+                    var wp = (WinProgs)frm;
                     wp.form.mAllowVisible = true;
                     wp.ShowMainWindow();
                     SetForegroundWindow(wp.form.Handle);

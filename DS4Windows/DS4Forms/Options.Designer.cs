@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Options));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(Options));
             this.lowColorChooserButton = new System.Windows.Forms.Button();
             this.nUDRainbow = new System.Windows.Forms.NumericUpDown();
             this.tBBlueBar = new System.Windows.Forms.TrackBar();

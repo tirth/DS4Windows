@@ -1,18 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
-
 using System.Runtime.InteropServices;
-using Microsoft.Win32.SafeHandles;
 using System.Diagnostics;
-using System.Threading.Tasks;
-
-
 using System.Linq;
-using System.Text;
-using System.IO;
-using System.Collections;
 using System.Drawing;
 
 namespace DS4Windows
@@ -22,7 +13,7 @@ namespace DS4Windows
         public byte red;
         public byte green;
         public byte blue;
-        public DS4Color(System.Drawing.Color c)
+        public DS4Color(Color c)
         {
             red = c.R;
             green = c.G;
@@ -38,8 +29,8 @@ namespace DS4Windows
         {
             if (obj is DS4Color)
             {
-                DS4Color dsc = ((DS4Color)obj);
-                return (this.red == dsc.red && this.green == dsc.green && this.blue == dsc.blue);
+                var dsc = (DS4Color)obj;
+                return red == dsc.red && green == dsc.green && blue == dsc.blue;
             }
             else
                 return false;
@@ -49,19 +40,19 @@ namespace DS4Windows
         {
             get
             {
-                byte alphacolor = Math.Max(red, Math.Max(green, blue));
-                Color reg = Color.FromArgb(red, green, blue);
-                Color full = HuetoRGB(reg.GetHue(), reg.GetBrightness(), reg);
-                return Color.FromArgb((alphacolor > 205 ? 255 : (alphacolor + 50)), full);
+                var alphacolor = Math.Max(red, Math.Max(green, blue));
+                var reg = Color.FromArgb(red, green, blue);
+                var full = HuetoRGB(reg.GetHue(), reg.GetBrightness(), reg);
+                return Color.FromArgb(alphacolor > 205 ? 255 : alphacolor + 50, full);
             }
         }
 
         private Color HuetoRGB(float hue, float light, Color rgb)
         {
-            float L = (float)Math.Max(.5, light);
-            float C = (1 - Math.Abs(2 * L - 1));
-            float X = (C * (1 - Math.Abs((hue / 60) % 2 - 1)));
-            float m = L - C / 2;
+            var L = (float)Math.Max(.5, light);
+            var C = 1 - Math.Abs(2 * L - 1);
+            var X = C * (1 - Math.Abs(hue / 60 % 2 - 1));
+            var m = L - C / 2;
             float R = 0, G = 0, B = 0;
             if (light == 1) return Color.White;
             else if (rgb.R == rgb.G && rgb.G == rgb.B) return Color.White;
@@ -78,7 +69,7 @@ namespace DS4Windows
         {
             try
             {
-                string[] ss = value.Split(',');
+                var ss = value.Split(',');
                 return byte.TryParse(ss[0], out ds4color.red) &&byte.TryParse(ss[1], out ds4color.green) && byte.TryParse(ss[2], out ds4color.blue);
             }
             catch { return false; }
@@ -239,7 +230,7 @@ namespace DS4Windows
         {
             if (ds4Input == null)
             {
-                Console.WriteLine(MacAddress.ToString() + " " + System.DateTime.UtcNow.ToString("o") + "> start");
+                Console.WriteLine(MacAddress.ToString() + " " + DateTime.UtcNow.ToString("o") + "> start");
                 sendOutputReport(true); // initialize the output report
                 ds4Output = new Thread(performDs4Output);
                 ds4Output.Name = "DS4 Output thread: " + Mac;
@@ -301,7 +292,7 @@ namespace DS4Windows
         {
             lock (outputReport)
             {
-                int lastError = 0;
+                var lastError = 0;
                 while (true)
                 {
                     if (writeOutput())
@@ -314,10 +305,10 @@ namespace DS4Windows
                     }
                     else
                     {
-                        int thisError = Marshal.GetLastWin32Error();
+                        var thisError = Marshal.GetLastWin32Error();
                         if (lastError != thisError)
                         {
-                            Console.WriteLine(MacAddress.ToString() + " " + System.DateTime.UtcNow.ToString("o") + "> encountered write failure: " + thisError);
+                            Console.WriteLine(MacAddress.ToString() + " " + DateTime.UtcNow.ToString("o") + "> encountered write failure: " + thisError);
                             lastError = thisError;
                         }
                     }
@@ -337,15 +328,15 @@ namespace DS4Windows
         private void performDs4Input()
         {
             firstActive = DateTime.UtcNow;
-            System.Timers.Timer readTimeout = new System.Timers.Timer(); // Await 30 seconds for the initial packet, then 3 seconds thereafter.
+            var readTimeout = new System.Timers.Timer(); // Await 30 seconds for the initial packet, then 3 seconds thereafter.
             readTimeout.Elapsed += delegate { HidDevice.CancelIO(); };
-            List<long> Latency = new List<long>();
+            var Latency = new List<long>();
             long oldtime = 0;
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
             sw.Start();
             while (true)
             {
-                string currerror = string.Empty;
+                var currerror = string.Empty;
                 Latency.Add(sw.ElapsedMilliseconds - oldtime);
                 oldtime = sw.ElapsedMilliseconds;
 
@@ -371,7 +362,7 @@ namespace DS4Windows
                 readTimeout.Enabled = true;
                 if (conType != ConnectionType.USB)
                 {
-                    HidDevice.ReadStatus res = hDevice.ReadFile(btInputReport);
+                    var res = hDevice.ReadFile(btInputReport);
                     readTimeout.Enabled = false;
                     if (res == HidDevice.ReadStatus.Success)
                     {
@@ -379,7 +370,7 @@ namespace DS4Windows
                     }
                     else
                     {
-                        Console.WriteLine(MacAddress.ToString() + " " + System.DateTime.UtcNow.ToString("o") + "> disconnect due to read failure: " + Marshal.GetLastWin32Error());
+                        Console.WriteLine(MacAddress.ToString() + " " + DateTime.UtcNow.ToString("o") + "> disconnect due to read failure: " + Marshal.GetLastWin32Error());
                         sendOutputReport(true); // Kick Windows into noticing the disconnection.
                         StopOutputUpdate();
                         IsDisconnecting = true;
@@ -391,11 +382,11 @@ namespace DS4Windows
                 }
                 else
                 {
-                    HidDevice.ReadStatus res = hDevice.ReadFile(inputReport);
+                    var res = hDevice.ReadFile(inputReport);
                     readTimeout.Enabled = false;
                     if (res != HidDevice.ReadStatus.Success)
                     {
-                        Console.WriteLine(MacAddress.ToString() + " " + System.DateTime.UtcNow.ToString("o") + "> disconnect due to read failure: " + Marshal.GetLastWin32Error());
+                        Console.WriteLine(MacAddress.ToString() + " " + DateTime.UtcNow.ToString("o") + "> disconnect due to read failure: " + Marshal.GetLastWin32Error());
                         StopOutputUpdate();
                         IsDisconnecting = true;
                         if (Removal != null)
@@ -408,7 +399,7 @@ namespace DS4Windows
 	                //Received incorrect report, skip it
 	                continue;
 	            }
-                DateTime utcNow = System.DateTime.UtcNow; // timestamp with UTC in case system time zone changes
+                var utcNow = DateTime.UtcNow; // timestamp with UTC in case system time zone changes
                 resetHapticState();
                 cState.ReportTimeStamp = utcNow;
                 cState.LX = inputReport[1];
@@ -473,7 +464,7 @@ namespace DS4Windows
                     if (inputReport[30] != priorInputReport30)
                     {
                         priorInputReport30 = inputReport[30];
-                        Console.WriteLine(MacAddress.ToString() + " " + System.DateTime.UtcNow.ToString("o") + "> power subsystem octet: 0x" + inputReport[30].ToString("x02"));
+                        Console.WriteLine(MacAddress.ToString() + " " + DateTime.UtcNow.ToString("o") + "> power subsystem octet: 0x" + inputReport[30].ToString("x02"));
                     }
                 }
                 catch { currerror = "Index out of bounds: battery"; }
@@ -483,12 +474,12 @@ namespace DS4Windows
                     for (int touches = inputReport[-1 + DS4Touchpad.TOUCHPAD_DATA_OFFSET - 1], touchOffset = 0; touches > 0; touches--, touchOffset += 9)
                     {
                         cState.TouchPacketCounter = inputReport[-1 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset];
-                        cState.Touch1 = (inputReport[0 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] >> 7) != 0 ? false : true; // >= 1 touch detected
+                        cState.Touch1 = inputReport[0 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] >> 7 == 0; // >= 1 touch detected
                         cState.Touch1Identifier = (byte)(inputReport[0 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] & 0x7f);
-                        cState.Touch2 = (inputReport[4 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] >> 7) != 0 ? false : true; // 2 touches detected
+                        cState.Touch2 = inputReport[4 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] >> 7 == 0; // 2 touches detected
                         cState.Touch2Identifier = (byte)(inputReport[4 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] & 0x7f);
-                        cState.TouchLeft = (inputReport[1 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] + ((inputReport[2 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] & 0xF) * 255) >= 1920 * 2 / 5) ? false : true;
-                        cState.TouchRight = (inputReport[1 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] + ((inputReport[2 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] & 0xF) * 255) < 1920 * 2 / 5) ? false : true;
+                        cState.TouchLeft = inputReport[1 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] + (inputReport[2 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] & 0xF) * 255 < 1920 * 2 / 5;
+                        cState.TouchRight = inputReport[1 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] + (inputReport[2 + DS4Touchpad.TOUCHPAD_DATA_OFFSET + touchOffset] & 0xF) * 255 >= 1920 * 2 / 5;
                         // Even when idling there is still a touch packet indicating no touch 1 or 2
                         touchpad.handleTouchpad(inputReport, cState, touchOffset);
                     }
@@ -507,12 +498,12 @@ namespace DS4Windows
                     lastActive = utcNow;
                 if (conType == ConnectionType.BT)
                 {
-                    bool shouldDisconnect = false;
+                    var shouldDisconnect = false;
                     if (IdleTimeout > 0)
                     {
                         if (isDS4Idle())
                         {
-                            DateTime timeout = lastActive + TimeSpan.FromSeconds(IdleTimeout);
+                            var timeout = lastActive + TimeSpan.FromSeconds(IdleTimeout);
                             if (!Charging)
                                 shouldDisconnect = utcNow >= timeout;
                         }
@@ -574,7 +565,7 @@ namespace DS4Windows
                     {
                         if (!writeOutput())
                         {
-                            Console.WriteLine(MacAddress.ToString() + " " + System.DateTime.UtcNow.ToString("o") + "> encountered synchronous write failure: " + Marshal.GetLastWin32Error());
+                            Console.WriteLine(MacAddress.ToString() + " " + DateTime.UtcNow.ToString("o") + "> encountered synchronous write failure: " + Marshal.GetLastWin32Error());
                             ds4Output.Abort();
                             ds4Output.Join();
                         }
@@ -586,8 +577,8 @@ namespace DS4Windows
                 }
                 else
                 {
-                    bool output = false;
-                    for (int i = 0; !output && i < outputReport.Length; i++)
+                    var output = false;
+                    for (var i = 0; !output && i < outputReport.Length; i++)
                         output = outputReport[i] != outputReportBuffer[i];
                     if (output)
                     {
@@ -603,23 +594,23 @@ namespace DS4Windows
             if (Mac != null)
             {
                 Console.WriteLine("Trying to disconnect BT device " + Mac);
-                IntPtr btHandle = IntPtr.Zero;
-                int IOCTL_BTH_DISCONNECT_DEVICE = 0x41000c;
+                var btHandle = IntPtr.Zero;
+                var IOCTL_BTH_DISCONNECT_DEVICE = 0x41000c;
 
-                byte[] btAddr = new byte[8];
-                string[] sbytes = Mac.Split(':');
-                for (int i = 0; i < 6; i++)
+                var btAddr = new byte[8];
+                var sbytes = Mac.Split(':');
+                for (var i = 0; i < 6; i++)
                 {
                     //parse hex byte in reverse order
                     btAddr[5 - i] = Convert.ToByte(sbytes[i], 16);
                 }
-                long lbtAddr = BitConverter.ToInt64(btAddr, 0);
+                var lbtAddr = BitConverter.ToInt64(btAddr, 0);
 
-                NativeMethods.BLUETOOTH_FIND_RADIO_PARAMS p = new NativeMethods.BLUETOOTH_FIND_RADIO_PARAMS();
+                var p = new NativeMethods.BLUETOOTH_FIND_RADIO_PARAMS();
                 p.dwSize = Marshal.SizeOf(typeof(NativeMethods.BLUETOOTH_FIND_RADIO_PARAMS));
-                IntPtr searchHandle = NativeMethods.BluetoothFindFirstRadio(ref p, ref btHandle);
-                int bytesReturned = 0;
-                bool success = false;
+                var searchHandle = NativeMethods.BluetoothFindFirstRadio(ref p, ref btHandle);
+                var bytesReturned = 0;
+                var success = false;
                 while (!success && btHandle != IntPtr.Zero)
                 {
                     success = NativeMethods.DeviceIoControl(btHandle, IOCTL_BTH_DISCONNECT_DEVICE, ref lbtAddr, 8, IntPtr.Zero, 0, ref bytesReturned, IntPtr.Zero);
@@ -720,11 +711,11 @@ namespace DS4Windows
         // Use the "most recently set" haptic state for each of light bar/motor.
         private void setHapticState()
         {
-            int i = 0;
-            DS4Color lightBarColor = LightBarColor;
+            var i = 0;
+            var lightBarColor = LightBarColor;
             byte lightBarFlashDurationOn = LightBarOnDuration, lightBarFlashDurationOff = LightBarOffDuration;
             byte rumbleMotorStrengthLeftHeavySlow = LeftHeavySlowRumble, rumbleMotorStrengthRightLightFast = rightLightFastRumble;
-            foreach (DS4HapticState haptic in hapticState)
+            foreach (var haptic in hapticState)
             {
                 if (i++ == hapticStackIndex)
                     break; // rest haven't been used this time
@@ -751,7 +742,7 @@ namespace DS4Windows
         {
             if (hapticStackIndex == hapticState.Length)
             {
-                DS4HapticState[] newHaptics = new DS4HapticState[hapticState.Length + 1];
+                var newHaptics = new DS4HapticState[hapticState.Length + 1];
                 Array.Copy(hapticState, newHaptics, hapticState.Length);
                 hapticState = newHaptics;
             }

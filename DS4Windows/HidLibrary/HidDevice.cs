@@ -206,9 +206,9 @@ namespace DS4Windows
                 if (!safeReadHandle.IsInvalid && fileStream.CanRead)
                 {
 
-                    Task<ReadStatus> readFileTask = new Task<ReadStatus>(() => ReadWithFileStreamTask(inputBuffer));
+                    var readFileTask = new Task<ReadStatus>(() => ReadWithFileStreamTask(inputBuffer));
                     readFileTask.Start();
-                    bool success = readFileTask.Wait(timeout);
+                    var success = readFileTask.Wait(timeout);
                     if (success)
                     {
                         if (readFileTask.Result == ReadStatus.Success)
@@ -338,7 +338,7 @@ namespace DS4Windows
 
             if (Capabilities.InputReportByteLength == 64)
             {
-                byte[] buffer = new byte[16];
+                var buffer = new byte[16];
                 buffer[0] = 18;
                 readFeatureData(buffer);                
                 serial =  String.Format("{0:X02}:{1:X02}:{2:X02}:{3:X02}:{4:X02}:{5:X02}", buffer[6], buffer[5], buffer[4], buffer[3], buffer[2], buffer[1]);
@@ -346,9 +346,9 @@ namespace DS4Windows
             }
             else
             {
-                byte[] buffer = new byte[126];
+                var buffer = new byte[126];
                 NativeMethods.HidD_GetSerialNumberString(safeReadHandle.DangerousGetHandle(), buffer, (ulong)buffer.Length);
-                string MACAddr = System.Text.Encoding.Unicode.GetString(buffer).Replace("\0", string.Empty).ToUpper();
+                var MACAddr = System.Text.Encoding.Unicode.GetString(buffer).Replace("\0", string.Empty).ToUpper();
                 MACAddr = $"{MACAddr[0]}{MACAddr[1]}:{MACAddr[2]}{MACAddr[3]}:{MACAddr[4]}{MACAddr[5]}:{MACAddr[6]}{MACAddr[7]}:{MACAddr[8]}{MACAddr[9]}:{MACAddr[10]}{MACAddr[11]}";
                 serial = MACAddr;
                 return serial;

@@ -14,7 +14,7 @@ namespace DS4Windows
 
         protected virtual Boolean LogDebug(String Data, bool warning) 
         {
-            DebugEventArgs args = new DebugEventArgs(Data, warning);
+            var args = new DebugEventArgs(Data, warning);
 
             On_Debug(this, args);
 

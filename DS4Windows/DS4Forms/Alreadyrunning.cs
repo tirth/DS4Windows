@@ -18,9 +18,9 @@ namespace DS4Windows
         public Alreadyrunning()
         {
             InitializeComponent();
-            this.WindowState = FormWindowState.Minimized;
+            WindowState = FormWindowState.Minimized;
             Hide();
-            Timer t = new Timer();
+            var t = new Timer();
             t.Start();
             t.Tick += t_Tick;
             sw = new Stopwatch();
@@ -30,7 +30,7 @@ namespace DS4Windows
         void t_Tick(object sender, EventArgs e)
         {
             if (sw.ElapsedMilliseconds >= 10)
-                this.Close();
+                Close();
         }
     }
 }

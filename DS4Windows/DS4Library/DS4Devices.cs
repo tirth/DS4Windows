@@ -15,7 +15,7 @@ namespace DS4Windows
 
         private static string devicePathToInstanceId(string devicePath)
         {
-            string deviceInstanceId = devicePath;
+            var deviceInstanceId = devicePath;
             deviceInstanceId = deviceInstanceId.Remove(0, deviceInstanceId.LastIndexOf('\\') + 1);
             deviceInstanceId = deviceInstanceId.Remove(deviceInstanceId.LastIndexOf('{'));
             deviceInstanceId = deviceInstanceId.Replace('#', '\\');
@@ -32,11 +32,11 @@ namespace DS4Windows
             lock (Devices)
             {
                 int[] pid = { 0xBA0, 0x5C4, 0x09CC };
-                IEnumerable<HidDevice> hDevices = HidDevices.Enumerate(0x054C, pid);
+                var hDevices = HidDevices.Enumerate(0x054C, pid);
                 // Sort Bluetooth first in case USB is also connected on the same controller.
                 hDevices = hDevices.OrderBy<HidDevice, ConnectionType>((HidDevice d) => { return DS4Device.HidConnectionType(d); });
 
-                foreach (HidDevice hDevice in hDevices)
+                foreach (var hDevice in hDevices)
                 {
                     if (DevicePaths.Contains(hDevice.DevicePath))
                         continue; // BT/USB endpoint already open once
@@ -47,18 +47,18 @@ namespace DS4Windows
                         {
                             try
                             {
-                                WindowsIdentity identity = WindowsIdentity.GetCurrent();
-                                WindowsPrincipal principal = new WindowsPrincipal(identity);
-                                bool elevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+                                var identity = WindowsIdentity.GetCurrent();
+                                var principal = new WindowsPrincipal(identity);
+                                var elevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
 
                                 if (!elevated)
                                 {
                                     // Launches an elevated child process to re-enable device
-                                    string exeName = Process.GetCurrentProcess().MainModule.FileName;
-                                    ProcessStartInfo startInfo = new ProcessStartInfo(exeName);
+                                    var exeName = Process.GetCurrentProcess().MainModule.FileName;
+                                    var startInfo = new ProcessStartInfo(exeName);
                                     startInfo.Verb = "runas";
                                     startInfo.Arguments = "re-enabledevice " + devicePathToInstanceId(hDevice.DevicePath);
-                                    Process child = Process.Start(startInfo);
+                                    var child = Process.Start(startInfo);
                                     if (!child.WaitForExit(5000))
                                     {
                                         child.Kill();
@@ -87,7 +87,7 @@ namespace DS4Windows
                             continue; // happens when the BT endpoint already is open and the USB is plugged into the same host
                         else
                         {
-                            DS4Device ds4Device = new DS4Device(hDevice);
+                            var ds4Device = new DS4Device(hDevice);
                             ds4Device.Removal += On_Removal;
                             Devices.Add(ds4Device.MacAddress, ds4Device);
                             DevicePaths.Add(hDevice.DevicePath);
@@ -120,7 +120,7 @@ namespace DS4Windows
         {
             lock (Devices)
             {
-                DS4Device[] controllers = new DS4Device[Devices.Count];
+                var controllers = new DS4Device[Devices.Count];
                 Devices.Values.CopyTo(controllers, 0);
                 return controllers;
             }
@@ -130,8 +130,8 @@ namespace DS4Windows
         {
             lock (Devices)
             {
-                IEnumerable<DS4Device> devices = getDS4Controllers();
-                foreach (DS4Device device in devices)
+                var devices = getDS4Controllers();
+                foreach (var device in devices)
                 {
                     device.StopUpdate();
                     device.HidDevice.CloseDevice();
@@ -146,7 +146,7 @@ namespace DS4Windows
         {
             lock (Devices)
             {
-                DS4Device device = (DS4Device)sender;
+                var device = (DS4Device)sender;
                 device.HidDevice.CloseDevice();
                 Devices.Remove(device.MacAddress);
                 DevicePaths.Remove(device.HidDevice.DevicePath);
@@ -156,10 +156,10 @@ namespace DS4Windows
         public static void reEnableDevice(string deviceInstanceId)
         {
             bool success;
-            Guid hidGuid = new Guid();
+            var hidGuid = new Guid();
             NativeMethods.HidD_GetHidGuid(ref hidGuid);
-            IntPtr deviceInfoSet = NativeMethods.SetupDiGetClassDevs(ref hidGuid, deviceInstanceId, 0, NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_DEVICEINTERFACE);
-            NativeMethods.SP_DEVINFO_DATA deviceInfoData = new NativeMethods.SP_DEVINFO_DATA();
+            var deviceInfoSet = NativeMethods.SetupDiGetClassDevs(ref hidGuid, deviceInstanceId, 0, NativeMethods.DIGCF_PRESENT | NativeMethods.DIGCF_DEVICEINTERFACE);
+            var deviceInfoData = new NativeMethods.SP_DEVINFO_DATA();
             deviceInfoData.cbSize = Marshal.SizeOf(deviceInfoData);
             success = NativeMethods.SetupDiEnumDeviceInfo(deviceInfoSet, 0, ref deviceInfoData);
             if (!success)
@@ -172,7 +172,7 @@ namespace DS4Windows
                 throw new Exception("Can't find unique device");
             }
 
-            NativeMethods.SP_PROPCHANGE_PARAMS propChangeParams = new NativeMethods.SP_PROPCHANGE_PARAMS();
+            var propChangeParams = new NativeMethods.SP_PROPCHANGE_PARAMS();
             propChangeParams.classInstallHeader.cbSize = Marshal.SizeOf(propChangeParams.classInstallHeader);
             propChangeParams.classInstallHeader.installFunction = NativeMethods.DIF_PROPERTYCHANGE;
             propChangeParams.stateChange = NativeMethods.DICS_DISABLE;

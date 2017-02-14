@@ -131,7 +131,7 @@ namespace DS4Windows
                 {
                     if (cBRecordDelays.Checked)
                     {
-                        Mouse tP = Program.rootHub.touchPad[0];
+                        var tP = Program.rootHub.touchPad[0];
                         if (tP.leftDown && !pTP[0])
                             if (!btnRumble.Text.Contains("Stop"))
                                 btnRumble_Click(sender, e);
@@ -147,12 +147,12 @@ namespace DS4Windows
                         pTP[0] = tP.leftDown;
                         pTP[1] = tP.rightDown;
                     }
-                    foreach (DS4Controls dc in dcs)
+                    foreach (var dc in dcs)
                         if (Mapping.getBoolMapping(0, dc, cState, null, null))
                         {
-                            int value = DS4ControltoInt(dc);
-                            int count = 0;
-                            foreach (int i in macros)
+                            var value = DS4ControltoInt(dc);
+                            var count = 0;
+                            foreach (var i in macros)
                             {
                                 if (i == value)
                                     count++;
@@ -185,9 +185,9 @@ namespace DS4Windows
                         {
                             if (macros.Count != 0)
                             {
-                                int value = DS4ControltoInt(dc);
-                                int count = 0;
-                                foreach (int i in macros)
+                                var value = DS4ControltoInt(dc);
+                                var count = 0;
+                                foreach (var i in macros)
                                 {
                                     if (i == value)
                                         count++;
@@ -349,21 +349,21 @@ namespace DS4Windows
         {
             if (btnRecord.Text == Properties.Resources.StopText)
             {
-                int value = WhichKey(e, 0);
-                int count = 0;
+                var value = WhichKey(e, 0);
+                var count = 0;
                 if (recordAfter)
-                    foreach (int i in macrosAfter)
+                    foreach (var i in macrosAfter)
                     {
                         if (i == value)
                             count++;
                     }
                 else
-                foreach (int i in macros)
+                foreach (var i in macros)
                 {
                     if (i == value)
                         count++;
                 }
-                if (macros.Count == 0 || (recordAfter && macrosAfter.Count == 0))
+                if (macros.Count == 0 || recordAfter && macrosAfter.Count == 0)
                 {
                     AddMacroValue(value);
                     lVMacros.Items.Add(((Keys)value).ToString(), 0);
@@ -405,14 +405,14 @@ namespace DS4Windows
                 {
                     if (recordAfter)
                     {
-                        for (int i = macrosAfter.Count - 1; i >= 0; i--)
+                        for (var i = macrosAfter.Count - 1; i >= 0; i--)
                             if (macrosAfter[i] == 160)
                                 return 160;
                             else if (macrosAfter[i] == 161)
                                 return 161;
                     }
                     else
-                        for (int i = macros.Count - 1; i >= 0; i--)
+                        for (var i = macros.Count - 1; i >= 0; i--)
                             if (macros[i] == 160)
                                 return 160;
                             else if (macros[i] == 161)
@@ -422,14 +422,14 @@ namespace DS4Windows
                 {
                     if (recordAfter)
                     {
-                        for (int i = macrosAfter.Count - 1; i >= 0; i--)
+                        for (var i = macrosAfter.Count - 1; i >= 0; i--)
                             if (macrosAfter[i] == 162)
                                 return 162;
                             else if (macrosAfter[i] == 163)
                                 return 163;
                     }
                     else
-                    for (int i = macros.Count - 1; i >= 0; i--)
+                    for (var i = macros.Count - 1; i >= 0; i--)
                         if (macros[i] == 162)
                             return 162;
                         else if (macros[i] == 163)
@@ -439,14 +439,14 @@ namespace DS4Windows
                 {
                     if (recordAfter)
                     {
-                        for (int i = macrosAfter.Count - 1; i >= 0; i--)
+                        for (var i = macrosAfter.Count - 1; i >= 0; i--)
                             if (macrosAfter[i] == 164)
                                 return 164;
                             else if (macrosAfter[i] == 165)
                                 return 165;
                     }
                     else
-                        for (int i = macros.Count - 1; i >= 0; i--)
+                        for (var i = macros.Count - 1; i >= 0; i--)
                             if (macros[i] == 164)
                                 return 164;
                             else if (macros[i] == 165)
@@ -483,9 +483,9 @@ namespace DS4Windows
 
         private void anyKeyUp(object sender, KeyEventArgs e)
         {
-            if (btnRecord.Text == Properties.Resources.StopText && (macros.Count != 0 || (recordAfter && macrosAfter.Count != 0)))
+            if (btnRecord.Text == Properties.Resources.StopText && (macros.Count != 0 || recordAfter && macrosAfter.Count != 0))
             {
-                int value = WhichKey(e, 1);
+                var value = WhichKey(e, 1);
                 if (cBRecordDelays.Checked)
                 {
                     AddMacroValue((int)sw.ElapsedMilliseconds + 300);
@@ -505,14 +505,14 @@ namespace DS4Windows
                 int value;
                 switch (e.Button)
                 {
-                    case System.Windows.Forms.MouseButtons.Left: value = 256; break;
-                    case System.Windows.Forms.MouseButtons.Right: value = 257; break;
-                    case System.Windows.Forms.MouseButtons.Middle: value = 258; break;
-                    case System.Windows.Forms.MouseButtons.XButton1: value = 259; break;
-                    case System.Windows.Forms.MouseButtons.XButton2: value = 260; break;
+                    case MouseButtons.Left: value = 256; break;
+                    case MouseButtons.Right: value = 257; break;
+                    case MouseButtons.Middle: value = 258; break;
+                    case MouseButtons.XButton1: value = 259; break;
+                    case MouseButtons.XButton2: value = 260; break;
                     default: value = 0; break;
                 }
-                if (macros.Count == 0 || (recordAfter && macrosAfter.Count == 0))
+                if (macros.Count == 0 || recordAfter && macrosAfter.Count == 0)
                 {
                     AddMacroValue(value);
                     lVMacros.Items.Add(e.Button.ToString() + " Mouse Button", 0);
@@ -522,7 +522,7 @@ namespace DS4Windows
                         sw.Start();
                     }
                 }
-                else if (macros.Count > 0 || (recordAfter && macrosAfter.Count > 0))
+                else if (macros.Count > 0 || recordAfter && macrosAfter.Count > 0)
                 {
                     if (cBRecordDelays.Checked)
                     {
@@ -534,9 +534,9 @@ namespace DS4Windows
                     AddMacroValue(value);
                     lVMacros.Items.Add(e.Button.ToString() + " Mouse Button", 0);
                 }
-                if (e.Button == System.Windows.Forms.MouseButtons.XButton1)
+                if (e.Button == MouseButtons.XButton1)
                     lVMacros.Items[lVMacros.Items.Count - 1].Text = "4th Mouse Button";
-                if (e.Button == System.Windows.Forms.MouseButtons.XButton2)
+                if (e.Button == MouseButtons.XButton2)
                     lVMacros.Items[lVMacros.Items.Count - 1].Text = "5th Mouse Button";
                 lVMacros.Items[lVMacros.Items.Count - 1].EnsureVisible();
             }
@@ -544,16 +544,16 @@ namespace DS4Windows
 
         private void anyMouseUp(object sender, MouseEventArgs e)
         {
-            if (btnRecord.Text == Properties.Resources.StopText && (macros.Count != 0 || (recordAfter && macrosAfter.Count != 0)))
+            if (btnRecord.Text == Properties.Resources.StopText && (macros.Count != 0 || recordAfter && macrosAfter.Count != 0))
             {
                 int value;
                 switch (e.Button)
                 {
-                    case System.Windows.Forms.MouseButtons.Left: value = 256; break;
-                    case System.Windows.Forms.MouseButtons.Right: value = 257; break;
-                    case System.Windows.Forms.MouseButtons.Middle: value = 258; break;
-                    case System.Windows.Forms.MouseButtons.XButton1: value = 259; break;
-                    case System.Windows.Forms.MouseButtons.XButton2: value = 260; break;
+                    case MouseButtons.Left: value = 256; break;
+                    case MouseButtons.Right: value = 257; break;
+                    case MouseButtons.Middle: value = 258; break;
+                    case MouseButtons.XButton1: value = 259; break;
+                    case MouseButtons.XButton2: value = 260; break;
                     default: value = 0; break;
                 }
 
@@ -566,9 +566,9 @@ namespace DS4Windows
                 }
                 AddMacroValue(value);
                 lVMacros.Items.Add(e.Button.ToString() + " Mouse Button", 1);
-                if (e.Button == System.Windows.Forms.MouseButtons.XButton1)
+                if (e.Button == MouseButtons.XButton1)
                     lVMacros.Items[lVMacros.Items.Count - 1].Text = "4th Mouse Button";
-                if (e.Button == System.Windows.Forms.MouseButtons.XButton2)
+                if (e.Button == MouseButtons.XButton2)
                     lVMacros.Items[lVMacros.Items.Count - 1].Text = "5th Mouse Button";
                 lVMacros.Items[lVMacros.Items.Count - 1].EnsureVisible();
             }
@@ -576,10 +576,10 @@ namespace DS4Windows
 
         private void btn4th_Click(object sender, EventArgs e)
         {
-            int value = 259;
+            var value = 259;
             if (btn4th.Text.Contains(Properties.Resources.DownText))
             {
-                if (macros.Count == 0 || (recordAfter && macrosAfter.Count == 0))
+                if (macros.Count == 0 || recordAfter && macrosAfter.Count == 0)
                 {
                     AddMacroValue(value);
                     lVMacros.Items.Add("4th Mouse Button", 0);
@@ -589,7 +589,7 @@ namespace DS4Windows
                         sw.Start();
                     }
                 }
-                else if (macros.Count > 0 || (recordAfter && macrosAfter.Count >0))
+                else if (macros.Count > 0 || recordAfter && macrosAfter.Count >0)
                 {
                     if (cBRecordDelays.Checked)
                     {
@@ -621,10 +621,10 @@ namespace DS4Windows
 
         private void btn5th_Click(object sender, EventArgs e)
         {
-            int value = 260;
+            var value = 260;
             if (btn5th.Text.Contains(Properties.Resources.DownText))
             {
-                if (macros.Count == 0 || (recordAfter && macrosAfter.Count == 0))
+                if (macros.Count == 0 || recordAfter && macrosAfter.Count == 0)
                 {
                     AddMacroValue(value);
                     lVMacros.Items.Add("5th Mouse Button", 0);
@@ -634,7 +634,7 @@ namespace DS4Windows
                         sw.Start();
                     }
                 }
-                else if (macros.Count > 0 || (recordAfter && macrosAfter.Count > 0))
+                else if (macros.Count > 0 || recordAfter && macrosAfter.Count > 0)
                 {
                     if (cBRecordDelays.Checked)
                     {
@@ -667,10 +667,10 @@ namespace DS4Windows
 
         private void btnRumble_Click(object sender, EventArgs e)
         {
-            int value = 1255255;
+            var value = 1255255;
             if (btnRumble.Text.Contains("Add"))
             {
-                if (macros.Count == 0 || (recordAfter && macrosAfter.Count == 0))
+                if (macros.Count == 0 || recordAfter && macrosAfter.Count == 0)
                 {
                     AddMacroValue(value);
                     lVMacros.Items.Add("Rumble 255,255 (100%)", 0);
@@ -680,7 +680,7 @@ namespace DS4Windows
                         sw.Start();
                     }
                 }
-                else if (macros.Count > 0 || (recordAfter && macrosAfter.Count > 0))
+                else if (macros.Count > 0 || recordAfter && macrosAfter.Count > 0)
                 {
                     if (cBRecordDelays.Checked)
                     {
@@ -713,10 +713,10 @@ namespace DS4Windows
 
         private void btnLightbar_Click(object sender, EventArgs e)
         {
-            int value = 1255255255;
+            var value = 1255255255;
             if (btnLightbar.Text.Contains("Change"))
             {
-                if (macros.Count == 0 || (recordAfter && macrosAfter.Count == 0))
+                if (macros.Count == 0 || recordAfter && macrosAfter.Count == 0)
                 {
                     AddMacroValue(value);
                     lVMacros.Items.Add("Lightbar Color: 255,255,255", 0);
@@ -726,7 +726,7 @@ namespace DS4Windows
                         sw.Start();
                     }
                 }
-                else if (macros.Count > 0 || (recordAfter && macrosAfter.Count > 0))
+                else if (macros.Count > 0 || recordAfter && macrosAfter.Count > 0)
                 {
                     if (cBRecordDelays.Checked)
                     {
@@ -778,7 +778,7 @@ namespace DS4Windows
                 {
                     macronames.Add(lvi.Text);
                 }
-                string macro = string.Join(", ", macronames.ToArray());
+                var macro = string.Join(", ", macronames.ToArray());
                 if (kbm != null)
                 {
                     kbm.macrostag = macros;
@@ -828,11 +828,11 @@ namespace DS4Windows
                     //savePresets.InitialDirectory = path;
                 }
                 Console.WriteLine(savePresets.InitialDirectory);
-                if (savePresets.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (savePresets.ShowDialog() == DialogResult.OK)
                     if ((stream = savePresets.OpenFile()) != null)
                     {
-                        string macro = string.Join("/", macros.ToArray());
-                        StreamWriter sw = new StreamWriter(stream);
+                        var macro = string.Join("/", macros.ToArray());
+                        var sw = new StreamWriter(stream);
                         sw.Write(macro);
                         sw.Close();
                     }
@@ -863,15 +863,15 @@ namespace DS4Windows
                 openPresets.InitialDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName + @"\Macros\";
             else
                 openPresets.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\DS4Tool" + @"\Macros\";
-            if (openPresets.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (openPresets.ShowDialog() == DialogResult.OK)
             {
-                string file = openPresets.FileName;
+                var file = openPresets.FileName;
                 macros.Clear();
                 lVMacros.Items.Clear();
-                StreamReader sr = new StreamReader(file);
-                string[] macs = File.ReadAllText(file).Split('/');
+                var sr = new StreamReader(file);
+                var macs = File.ReadAllText(file).Split('/');
                 int temp;
-                foreach (string s in macs)
+                foreach (var s in macs)
                 {
                     if (int.TryParse(s, out temp))
                         macros.Add(temp);
@@ -897,17 +897,17 @@ namespace DS4Windows
 
             if (macros.Count > 0)
             {
-                bool[] keydown = new bool[286];
-                foreach (int i in macros)
+                var keydown = new bool[286];
+                foreach (var i in macros)
                 {
                     if (i >= 1000000000)
                     {
                         if (i > 1000000000)
                         {
-                            string lb = i.ToString().Substring(1);
-                            byte r = (byte)(int.Parse(lb[0].ToString()) * 100 + int.Parse(lb[1].ToString()) * 10 + int.Parse(lb[2].ToString()));
-                            byte g = (byte)(int.Parse(lb[3].ToString()) * 100 + int.Parse(lb[4].ToString()) * 10 + int.Parse(lb[5].ToString()));
-                            byte b = (byte)(int.Parse(lb[6].ToString()) * 100 + int.Parse(lb[7].ToString()) * 10 + int.Parse(lb[8].ToString()));
+                            var lb = i.ToString().Substring(1);
+                            var r = (byte)(int.Parse(lb[0].ToString()) * 100 + int.Parse(lb[1].ToString()) * 10 + int.Parse(lb[2].ToString()));
+                            var g = (byte)(int.Parse(lb[3].ToString()) * 100 + int.Parse(lb[4].ToString()) * 10 + int.Parse(lb[5].ToString()));
+                            var b = (byte)(int.Parse(lb[6].ToString()) * 100 + int.Parse(lb[7].ToString()) * 10 + int.Parse(lb[8].ToString()));
                             lVMacros.Items.Add($"Lightbar Color: {r},{g},{b}", 0);
                         }
                         else
@@ -919,9 +919,9 @@ namespace DS4Windows
                     {
                         if (i > 1000000)
                         {
-                            string r = i.ToString().Substring(1);
-                            byte heavy = (byte)(int.Parse(r[0].ToString()) * 100 + int.Parse(r[1].ToString()) * 10 + int.Parse(r[2].ToString()));
-                            byte light = (byte)(int.Parse(r[3].ToString()) * 100 + int.Parse(r[4].ToString()) * 10 + int.Parse(r[5].ToString()));
+                            var r = i.ToString().Substring(1);
+                            var heavy = (byte)(int.Parse(r[0].ToString()) * 100 + int.Parse(r[1].ToString()) * 10 + int.Parse(r[2].ToString()));
+                            var light = (byte)(int.Parse(r[3].ToString()) * 100 + int.Parse(r[4].ToString()) * 10 + int.Parse(r[5].ToString()));
                             lVMacros.Items.Add($"Rumble {heavy}, {light} ({Math.Round((heavy * .75f + light * .25f) / 2.55f, 1)}%)", 0);
                         }
                         else
@@ -1001,7 +1001,7 @@ namespace DS4Windows
                         keydown[i] = false;
                     }
                 }
-                for (int i = 0; i < keydown.Length; i++)
+                for (var i = 0; i < keydown.Length; i++)
                 {
                     if (keydown[i])
                     {
@@ -1047,7 +1047,7 @@ namespace DS4Windows
         private void RecordBox_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!saved && macros.Count > 0)
-                if (MessageBox.Show(Properties.Resources.SaveRecordedMacro, "DS4Windows", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                if (MessageBox.Show(Properties.Resources.SaveRecordedMacro, "DS4Windows", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     btnSave_Click(null, null);
         }
 
@@ -1106,7 +1106,7 @@ namespace DS4Windows
             if (lVMacros.SelectedIndices[0] >= 0)
                 if (lVMacros.SelectedItems[0].ImageIndex == 2)
                 {
-                    TextBox tb = new TextBox();
+                    var tb = new TextBox();
                     tb.MaxLength = 5;
                     tb.KeyDown += nud_KeyDown;
                     tb.LostFocus += nud_LostFocus;
@@ -1122,26 +1122,26 @@ namespace DS4Windows
                 else if (macros[lVMacros.SelectedIndices[0]] > 1000000000)
                 {
                     selection = lVMacros.SelectedIndices[0];
-                    string lb = macros[lVMacros.SelectedIndices[0]].ToString().Substring(1);
-                    byte r = (byte)(int.Parse(lb[0].ToString()) * 100 + int.Parse(lb[1].ToString()) * 10 + int.Parse(lb[2].ToString()));
-                    byte g = (byte)(int.Parse(lb[3].ToString()) * 100 + int.Parse(lb[4].ToString()) * 10 + int.Parse(lb[5].ToString()));
-                    byte b = (byte)(int.Parse(lb[6].ToString()) * 100 + int.Parse(lb[7].ToString()) * 10 + int.Parse(lb[8].ToString()));
-                    AdvancedColorDialog advColorDialog = new AdvancedColorDialog();
+                    var lb = macros[lVMacros.SelectedIndices[0]].ToString().Substring(1);
+                    var r = (byte)(int.Parse(lb[0].ToString()) * 100 + int.Parse(lb[1].ToString()) * 10 + int.Parse(lb[2].ToString()));
+                    var g = (byte)(int.Parse(lb[3].ToString()) * 100 + int.Parse(lb[4].ToString()) * 10 + int.Parse(lb[5].ToString()));
+                    var b = (byte)(int.Parse(lb[6].ToString()) * 100 + int.Parse(lb[7].ToString()) * 10 + int.Parse(lb[8].ToString()));
+                    var advColorDialog = new AdvancedColorDialog();
                     advColorDialog.Color = Color.FromArgb(r, g, b);
                     advColorDialog.OnUpdateColor += advColorDialog_OnUpdateColor;
                     if (advColorDialog.ShowDialog() == DialogResult.OK)
                     {
                         macros[selection] = 1000000000 + advColorDialog.Color.R * 1000000 + advColorDialog.Color.G * 1000 + advColorDialog.Color.B;
                     }
-                    lVMacros.Items[selection].Text = ($"Lightbar Color: {advColorDialog.Color.R},{advColorDialog.Color.G},{advColorDialog.Color.B}");
+                    lVMacros.Items[selection].Text = $"Lightbar Color: {advColorDialog.Color.R},{advColorDialog.Color.G},{advColorDialog.Color.B}";
                 }
                 else if (macros[lVMacros.SelectedIndices[0]] > 1000000 && macros[lVMacros.SelectedIndices[0]] != 1000000000)
                 {
                     
                     lVMacros.MouseHover -= lVMacros_MouseHover;
-                    string r = macros[lVMacros.SelectedIndices[0]].ToString().Substring(1);
-                    byte heavy = (byte)(int.Parse(r[0].ToString()) * 100 + int.Parse(r[1].ToString()) * 10 + int.Parse(r[2].ToString()));
-                    byte light = (byte)(int.Parse(r[3].ToString()) * 100 + int.Parse(r[4].ToString()) * 10 + int.Parse(r[5].ToString()));
+                    var r = macros[lVMacros.SelectedIndices[0]].ToString().Substring(1);
+                    var heavy = (byte)(int.Parse(r[0].ToString()) * 100 + int.Parse(r[1].ToString()) * 10 + int.Parse(r[2].ToString()));
+                    var light = (byte)(int.Parse(r[3].ToString()) * 100 + int.Parse(r[4].ToString()) * 10 + int.Parse(r[5].ToString()));
                     selection = lVMacros.SelectedIndices[0];
                     tb1 = new TextBox();
                     tb2 = new TextBox();
@@ -1170,10 +1170,10 @@ namespace DS4Windows
 
         void tb_TextChanged(object sender, EventArgs e)
         {
-            TextBox tb = (TextBox)sender;
+            var tb = (TextBox)sender;
             //if (changingDelay)
             {
-                for (int i = tb.Text.Length - 1; i >= 0; i--)
+                for (var i = tb.Text.Length - 1; i >= 0; i--)
                     if (!char.IsDigit(tb.Text[i]))
                         tb.Text = tb.Text.Remove(i, 1);
             }
@@ -1196,7 +1196,7 @@ namespace DS4Windows
             {
                 if (changingDelay && int.TryParse(tb.Text, out i))
                 {
-                    lVMacros.Items[selection] = new ListViewItem(Properties.Resources.WaitMS.Replace("*number*", (tb.Text)).Replace("*ms*", "ms"), 2);
+                    lVMacros.Items[selection] = new ListViewItem(Properties.Resources.WaitMS.Replace("*number*", tb.Text).Replace("*ms*", "ms"), 2);
                     macros[selection] = i + 300;
                     Controls.Remove(tb);
                     saved = false;
@@ -1207,9 +1207,9 @@ namespace DS4Windows
                     {
                         if (i + j > 0)
                         {
-                            byte heavy = (byte)i;
-                            byte light = (byte)j;
-                            lVMacros.Items[selection].Text = ($"Rumble {heavy}, {light} ({Math.Round((heavy * .75f + light * .25f) / 2.55f, 1)}%)");
+                            var heavy = (byte)i;
+                            var light = (byte)j;
+                            lVMacros.Items[selection].Text = $"Rumble {heavy}, {light} ({Math.Round((heavy * .75f + light * .25f) / 2.55f, 1)}%)";
                             macros[selection] = 1000000 + heavy * 1000 + light;
                             saved = false;
                             Controls.Remove(tb1);
@@ -1232,8 +1232,8 @@ namespace DS4Windows
         {
             if (sender is Color && Program.rootHub.DS4Controllers[0] != null)
             {
-                Color color = (Color)sender;
-                DS4Color dcolor = new DS4Color { red = color.R, green = color.G, blue = color.B };
+                var color = (Color)sender;
+                var dcolor = new DS4Color { red = color.R, green = color.G, blue = color.B };
                 DS4LightBar.forcedColor[0] = dcolor;
                 DS4LightBar.forcedFlash[0] = 0;
                 DS4LightBar.forcelight[0] = true;

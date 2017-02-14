@@ -56,7 +56,7 @@ namespace DS4Windows
             public ApiWindow[] GetTopLevelWindows(string className)
             {
                 _topLevelClass = className;
-                return this.GetTopLevelWindows();
+                return GetTopLevelWindows();
             }
 
             public ApiWindow[] GetChildWindows(IntPtr hwnd)
@@ -69,14 +69,14 @@ namespace DS4Windows
             public ApiWindow[] GetChildWindows(IntPtr hwnd, string childClass)
             {
                 _childClass = childClass;
-                return this.GetChildWindows(hwnd);
+                return GetChildWindows(hwnd);
             }
 
             private Int32 EnumWindowProc(IntPtr hwnd, Int32 lParam)
             {
                 if (GetParent(hwnd) == 0 && IsWindowVisible(hwnd) != 0)
                 {
-                    ApiWindow window = GetWindowIdentification(hwnd);
+                    var window = GetWindowIdentification(hwnd);
                     if (_topLevelClass.Length == 0 || window.ClassName.ToLower() == _topLevelClass.ToLower())
                     {
                         _listTopLevel.Add(window);
@@ -87,7 +87,7 @@ namespace DS4Windows
 
             private Int32 EnumChildWindowProc(IntPtr hwnd, Int32 lParam)
             {
-                ApiWindow window = GetWindowIdentification(hwnd);
+                var window = GetWindowIdentification(hwnd);
                 if (_childClass.Length == 0 || window.ClassName.ToLower() == _childClass.ToLower())
                 {
                     _listChildren.Add(window);
@@ -97,10 +97,10 @@ namespace DS4Windows
 
             private ApiWindow GetWindowIdentification(IntPtr hwnd)
             {
-                System.Text.StringBuilder classBuilder = new System.Text.StringBuilder(64);
+                var classBuilder = new System.Text.StringBuilder(64);
                 GetClassName(hwnd, classBuilder, 64);
 
-                ApiWindow window = new ApiWindow();
+                var window = new ApiWindow();
                 window.ClassName = classBuilder.ToString();
                 window.MainWindowTitle = WindowText(hwnd);
                 window.hWnd = hwnd;
@@ -112,8 +112,8 @@ namespace DS4Windows
                 const int W_GETTEXT = 0xd;
                 const int W_GETTEXTLENGTH = 0xe;
 
-                System.Text.StringBuilder SB = new System.Text.StringBuilder();
-                int length = SendMessage(hwnd, W_GETTEXTLENGTH, 0, 0);
+                var SB = new System.Text.StringBuilder();
+                var length = SendMessage(hwnd, W_GETTEXTLENGTH, 0, 0);
                 if (length > 0)
                 {
                     SB = new System.Text.StringBuilder(length + 1);
@@ -142,19 +142,19 @@ namespace DS4Windows
         {
             if (msg == WM_INITDIALOG)
             {
-                IntPtr mainWindow = GetAncestor(hWnd, GA_ROOT);
+                var mainWindow = GetAncestor(hWnd, GA_ROOT);
                 if (!mainWindow.Equals(IntPtr.Zero))
-                    EditWindows = new List<ApiWindow>((new WindowsEnumerator()).GetChildWindows(mainWindow, "Edit"));
+                    EditWindows = new List<ApiWindow>(new WindowsEnumerator().GetChildWindows(mainWindow, "Edit"));
             }
             else if (msg == WM_CTLCOLOREDIT)
             {
-                if ((EditWindows == null))
+                if (EditWindows == null)
                 {
-                    IntPtr mainWindow = GetAncestor(hWnd, GA_ROOT);
+                    var mainWindow = GetAncestor(hWnd, GA_ROOT);
                     if (!mainWindow.Equals(IntPtr.Zero))
-                        EditWindows = new List<ApiWindow>((new WindowsEnumerator()).GetChildWindows(mainWindow, "Edit"));
+                        EditWindows = new List<ApiWindow>(new WindowsEnumerator().GetChildWindows(mainWindow, "Edit"));
                 }
-                if ((EditWindows != null) && EditWindows.Count == 6)
+                if (EditWindows != null && EditWindows.Count == 6)
                 {
                     byte red = 0, green = 0, blue = 0;
                     if (Byte.TryParse(WindowsEnumerator.WindowText(EditWindows[3].hWnd), out red))

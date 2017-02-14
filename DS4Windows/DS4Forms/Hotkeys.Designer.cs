@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Hotkeys));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(Hotkeys));
             this.linkElectro = new System.Windows.Forms.LinkLabel();
             this.linkJays2Kings = new System.Windows.Forms.LinkLabel();
             this.lbAbout = new System.Windows.Forms.Label();

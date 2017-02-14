@@ -36,11 +36,11 @@ namespace DS4Windows
         {
             if (Global.UseSAforMouse[deviceNum] && Global.GyroSensitivity[deviceNum] > 0)
             {
-                bool triggeractivated = true;
-                int i = 0;
-                string[] ss = Global.SATriggers[deviceNum].Split(',');
+                var triggeractivated = true;
+                var i = 0;
+                var ss = Global.SATriggers[deviceNum].Split(',');
                 if (!string.IsNullOrEmpty(ss[0]))
-                    foreach (string s in ss)
+                    foreach (var s in ss)
                         if (!(int.TryParse(s, out i) && getDS4ControlsByName(i)))
                             triggeractivated = false;
                 if (triggeractivated)
@@ -117,8 +117,8 @@ namespace DS4Windows
             firstTouch = arg.touches[0];
             if (Global.DoubleTap[deviceNum])
             {
-                DateTime test = arg.timeStamp;
-                if (test <= (firstTap + TimeSpan.FromMilliseconds((double)Global.TapSensitivity[deviceNum] * 1.5)) && !arg.touchButtonPressed)
+                var test = arg.timeStamp;
+                if (test <= firstTap + TimeSpan.FromMilliseconds((double)Global.TapSensitivity[deviceNum] * 1.5) && !arg.touchButtonPressed)
                     secondtouchbegin = true;
             }
             dev.getCurrentState(s);
@@ -137,8 +137,8 @@ namespace DS4Windows
                     tappedOnce = false;
                     secondtouchbegin = false;
                 }
-                DateTime test = arg.timeStamp;
-                if (test <= (pastTime + TimeSpan.FromMilliseconds((double)Global.TapSensitivity[deviceNum] * 2)) && !arg.touchButtonPressed && !tappedOnce)
+                var test = arg.timeStamp;
+                if (test <= pastTime + TimeSpan.FromMilliseconds((double)Global.TapSensitivity[deviceNum] * 2) && !arg.touchButtonPressed && !tappedOnce)
                     if (Math.Abs(firstTouch.hwX - arg.touches[0].hwX) < 10 && Math.Abs(firstTouch.hwY - arg.touches[0].hwY) < 10)
                         if (Global.DoubleTap[deviceNum])
                         {
@@ -191,8 +191,8 @@ namespace DS4Windows
             {
                 if (tappedOnce)
                 {
-                    DateTime tester = DateTime.Now;
-                    if (tester > (TimeofEnd + TimeSpan.FromMilliseconds((double)(Global.TapSensitivity[deviceNum]) * 1.5)))
+                    var tester = DateTime.Now;
+                    if (tester > TimeofEnd + TimeSpan.FromMilliseconds((double)Global.TapSensitivity[deviceNum] * 1.5))
                     {
                         Mapping.MapClick(deviceNum, Mapping.Click.Left);
                         tappedOnce = false;
@@ -229,7 +229,7 @@ namespace DS4Windows
                 multiDown = true;
             else
             {
-                if ((Global.LowerRCOn[deviceNum] && arg.touches[0].hwX > (1920 * 3) / 4 && arg.touches[0].hwY > (960 * 3) / 4))
+                if (Global.LowerRCOn[deviceNum] && arg.touches[0].hwX > 1920 * 3 / 4 && arg.touches[0].hwY > 960 * 3 / 4)
                     Mapping.MapClick(deviceNum, Mapping.Click.Right);
                 if (isLeft(arg.touches[0]))
                     leftDown = true;

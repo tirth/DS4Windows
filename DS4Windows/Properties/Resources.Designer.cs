@@ -39,7 +39,7 @@ namespace DS4Windows.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DS4Windows.Properties.Resources", typeof(Resources).Assembly);
+                    var temp = new global::System.Resources.ResourceManager("DS4Windows.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -65,7 +65,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap _360_highlight {
             get {
-                object obj = ResourceManager.GetObject("_360_highlight", resourceCulture);
+                var obj = ResourceManager.GetObject("_360_highlight", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -75,7 +75,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap _360_map {
             get {
-                object obj = ResourceManager.GetObject("_360_map", resourceCulture);
+                var obj = ResourceManager.GetObject("_360_map", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -85,7 +85,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap _checked {
             get {
-                object obj = ResourceManager.GetObject("_checked", resourceCulture);
+                var obj = ResourceManager.GetObject("_checked", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -95,7 +95,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap A {
             get {
-                object obj = ResourceManager.GetObject("A", resourceCulture);
+                var obj = ResourceManager.GetObject("A", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -159,7 +159,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap B {
             get {
-                object obj = ResourceManager.GetObject("B", resourceCulture);
+                var obj = ResourceManager.GetObject("B", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -169,7 +169,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap BACK {
             get {
-                object obj = ResourceManager.GetObject("BACK", resourceCulture);
+                var obj = ResourceManager.GetObject("BACK", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -206,7 +206,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap BT {
             get {
-                object obj = ResourceManager.GetObject("BT", resourceCulture);
+                var obj = ResourceManager.GetObject("BT", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -342,7 +342,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap copy {
             get {
-                object obj = ResourceManager.GetObject("copy", resourceCulture);
+                var obj = ResourceManager.GetObject("copy", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -397,7 +397,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap delete {
             get {
-                object obj = ResourceManager.GetObject("delete", resourceCulture);
+                var obj = ResourceManager.GetObject("delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -452,7 +452,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DOWN {
             get {
-                object obj = ResourceManager.GetObject("DOWN", resourceCulture);
+                var obj = ResourceManager.GetObject("DOWN", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -489,7 +489,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Icon DS4 {
             get {
-                object obj = ResourceManager.GetObject("DS4", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -499,7 +499,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -509,7 +509,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_Circle {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_Circle", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_Circle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -519,7 +519,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_Cross {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_Cross", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_Cross", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -529,7 +529,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_Down {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_Down", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_Down", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -539,7 +539,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_L1 {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_L1", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_L1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -549,7 +549,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_L2 {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_L2", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_L2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -559,7 +559,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_Left {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_Left", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_Left", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -569,7 +569,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_LS {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_LS", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_LS", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -579,7 +579,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_Options {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_Options", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_Options", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -589,7 +589,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_PS {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_PS", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_PS", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -599,7 +599,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_R1 {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_R1", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_R1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -609,7 +609,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_R2 {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_R2", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_R2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -619,7 +619,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_Right {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_Right", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_Right", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -629,7 +629,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_RS {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_RS", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_RS", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -639,7 +639,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_Share {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_Share", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_Share", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -649,7 +649,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_Square {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_Square", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_Square", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -659,7 +659,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_TouchLeft {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_TouchLeft", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_TouchLeft", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -669,7 +669,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_TouchMulti {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_TouchMulti", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_TouchMulti", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -679,7 +679,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_TouchRight {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_TouchRight", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_TouchRight", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -689,7 +689,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_TouchUpper {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_TouchUpper", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_TouchUpper", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -699,7 +699,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_Triangle {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_Triangle", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_Triangle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -709,7 +709,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Config_Up {
             get {
-                object obj = ResourceManager.GetObject("DS4_Config_Up", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Config_Up", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -719,7 +719,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_Controller {
             get {
-                object obj = ResourceManager.GetObject("DS4_Controller", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_Controller", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -729,7 +729,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap DS4_lightbar {
             get {
-                object obj = ResourceManager.GetObject("DS4_lightbar", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4_lightbar", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -748,7 +748,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Icon DS4W {
             get {
-                object obj = ResourceManager.GetObject("DS4W", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4W", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -758,7 +758,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Icon DS4W___White {
             get {
-                object obj = ResourceManager.GetObject("DS4W___White", resourceCulture);
+                var obj = ResourceManager.GetObject("DS4W___White", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -777,7 +777,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap edit {
             get {
-                object obj = ResourceManager.GetObject("edit", resourceCulture);
+                var obj = ResourceManager.GetObject("edit", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -805,7 +805,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap export {
             get {
-                object obj = ResourceManager.GetObject("export", resourceCulture);
+                var obj = ResourceManager.GetObject("export", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -986,7 +986,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap import {
             get {
-                object obj = ResourceManager.GetObject("import", resourceCulture);
+                var obj = ResourceManager.GetObject("import", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1086,7 +1086,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap LB {
             get {
-                object obj = ResourceManager.GetObject("LB", resourceCulture);
+                var obj = ResourceManager.GetObject("LB", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1096,7 +1096,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap LEFT {
             get {
-                object obj = ResourceManager.GetObject("LEFT", resourceCulture);
+                var obj = ResourceManager.GetObject("LEFT", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1106,7 +1106,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap left_touch {
             get {
-                object obj = ResourceManager.GetObject("left_touch", resourceCulture);
+                var obj = ResourceManager.GetObject("left_touch", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1143,7 +1143,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap LS {
             get {
-                object obj = ResourceManager.GetObject("LS", resourceCulture);
+                var obj = ResourceManager.GetObject("LS", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1153,7 +1153,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap LSD {
             get {
-                object obj = ResourceManager.GetObject("LSD", resourceCulture);
+                var obj = ResourceManager.GetObject("LSD", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1163,7 +1163,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap LSL {
             get {
-                object obj = ResourceManager.GetObject("LSL", resourceCulture);
+                var obj = ResourceManager.GetObject("LSL", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1173,7 +1173,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap LSR {
             get {
-                object obj = ResourceManager.GetObject("LSR", resourceCulture);
+                var obj = ResourceManager.GetObject("LSR", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1183,7 +1183,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap LSU {
             get {
-                object obj = ResourceManager.GetObject("LSU", resourceCulture);
+                var obj = ResourceManager.GetObject("LSU", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1193,7 +1193,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap LT {
             get {
-                object obj = ResourceManager.GetObject("LT", resourceCulture);
+                var obj = ResourceManager.GetObject("LT", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1230,7 +1230,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap mouse {
             get {
-                object obj = ResourceManager.GetObject("mouse", resourceCulture);
+                var obj = ResourceManager.GetObject("mouse", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1267,7 +1267,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap newprofile {
             get {
-                object obj = ResourceManager.GetObject("newprofile", resourceCulture);
+                var obj = ResourceManager.GetObject("newprofile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1286,7 +1286,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap none {
             get {
-                object obj = ResourceManager.GetObject("none", resourceCulture);
+                var obj = ResourceManager.GetObject("none", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1368,7 +1368,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Pairmode {
             get {
-                object obj = ResourceManager.GetObject("Pairmode", resourceCulture);
+                var obj = ResourceManager.GetObject("Pairmode", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1450,7 +1450,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap rainbow {
             get {
-                object obj = ResourceManager.GetObject("rainbow", resourceCulture);
+                var obj = ResourceManager.GetObject("rainbow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1460,7 +1460,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap rainbowC {
             get {
-                object obj = ResourceManager.GetObject("rainbowC", resourceCulture);
+                var obj = ResourceManager.GetObject("rainbowC", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1470,7 +1470,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap RB {
             get {
-                object obj = ResourceManager.GetObject("RB", resourceCulture);
+                var obj = ResourceManager.GetObject("RB", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1489,7 +1489,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap RIGHT {
             get {
-                object obj = ResourceManager.GetObject("RIGHT", resourceCulture);
+                var obj = ResourceManager.GetObject("RIGHT", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1499,7 +1499,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap right_touch {
             get {
-                object obj = ResourceManager.GetObject("right_touch", resourceCulture);
+                var obj = ResourceManager.GetObject("right_touch", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1518,7 +1518,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap RS {
             get {
-                object obj = ResourceManager.GetObject("RS", resourceCulture);
+                var obj = ResourceManager.GetObject("RS", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1528,7 +1528,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap RSD {
             get {
-                object obj = ResourceManager.GetObject("RSD", resourceCulture);
+                var obj = ResourceManager.GetObject("RSD", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1538,7 +1538,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap RSL {
             get {
-                object obj = ResourceManager.GetObject("RSL", resourceCulture);
+                var obj = ResourceManager.GetObject("RSL", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1548,7 +1548,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap RSR {
             get {
-                object obj = ResourceManager.GetObject("RSR", resourceCulture);
+                var obj = ResourceManager.GetObject("RSR", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1558,7 +1558,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap RSU {
             get {
-                object obj = ResourceManager.GetObject("RSU", resourceCulture);
+                var obj = ResourceManager.GetObject("RSU", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1568,7 +1568,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap RT {
             get {
-                object obj = ResourceManager.GetObject("RT", resourceCulture);
+                var obj = ResourceManager.GetObject("RT", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1578,7 +1578,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap saveprofile {
             get {
-                object obj = ResourceManager.GetObject("saveprofile", resourceCulture);
+                var obj = ResourceManager.GetObject("saveprofile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1669,7 +1669,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap size {
             get {
-                object obj = ResourceManager.GetObject("size", resourceCulture);
+                var obj = ResourceManager.GetObject("size", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1679,7 +1679,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap START {
             get {
-                object obj = ResourceManager.GetObject("START", resourceCulture);
+                var obj = ResourceManager.GetObject("START", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1959,7 +1959,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap UP {
             get {
-                object obj = ResourceManager.GetObject("UP", resourceCulture);
+                var obj = ResourceManager.GetObject("UP", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1987,7 +1987,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap USB {
             get {
-                object obj = ResourceManager.GetObject("USB", resourceCulture);
+                var obj = ResourceManager.GetObject("USB", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2069,7 +2069,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap X {
             get {
-                object obj = ResourceManager.GetObject("X", resourceCulture);
+                var obj = ResourceManager.GetObject("X", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2097,7 +2097,7 @@ namespace DS4Windows.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Y {
             get {
-                object obj = ResourceManager.GetObject("Y", resourceCulture);
+                var obj = ResourceManager.GetObject("Y", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

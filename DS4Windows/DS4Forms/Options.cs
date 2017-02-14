@@ -58,22 +58,22 @@ namespace DS4Windows
             foreach (Control control in pnlController.Controls)
                 if (control is Button && !((Button)control).Name.Contains("btn"))
                     buttons.Add((Button)control);
-            foreach (Button b in buttons)
+            foreach (var b in buttons)
             {
                 defaults.Add(b.Name, b.Text);
                 b.Text = "";
             }
             
-            foreach (System.Windows.Forms.Control control in Controls)
+            foreach (Control control in Controls)
             {
                 if (control.HasChildren)
-                    foreach (System.Windows.Forms.Control ctrl in control.Controls)
+                    foreach (Control ctrl in control.Controls)
                     {
                         if (ctrl.HasChildren)
-                            foreach (System.Windows.Forms.Control ctrl2 in ctrl.Controls)
+                            foreach (Control ctrl2 in ctrl.Controls)
                             {
                                 if (ctrl2.HasChildren)
-                                    foreach (System.Windows.Forms.Control ctrl3 in ctrl2.Controls)
+                                    foreach (Control ctrl3 in ctrl2.Controls)
                                         ctrl3.MouseHover += Items_MouseHover;
                                 ctrl2.MouseHover += Items_MouseHover;
                             }
@@ -82,7 +82,7 @@ namespace DS4Windows
                 control.MouseHover += Items_MouseHover;
             }
             
-            foreach (Button b in buttons)
+            foreach (var b in buttons)
             {
                 b.MouseHover += button_MouseHover;
                 b.MouseLeave += button_MouseLeave;
@@ -110,7 +110,7 @@ namespace DS4Windows
             lbControlName.Text = "";
 
             tCControls.SelectedIndex = 0;
-            Graphics g = this.CreateGraphics();
+            var g = CreateGraphics();
             try
             {
                 dpix = g.DpiX / 100f * 1.041666666667f;
@@ -144,7 +144,7 @@ namespace DS4Windows
                     btnRainbow.Image = colored;
                     ToggleRainbow(true);
                 }
-                DS4Color color = MainColor[device];
+                var color = MainColor[device];
                 tBRedBar.Value = color.red;
                 tBGreenBar.Value = color.green;
                 tBBlueBar.Value = color.blue;
@@ -152,26 +152,26 @@ namespace DS4Windows
                 alphacolor = Math.Max(tBRedBar.Value, Math.Max(tBGreenBar.Value, tBBlueBar.Value));
                 reg = Color.FromArgb(color.red, color.green, color.blue);
                 full = HuetoRGB(reg.GetHue(), reg.GetBrightness(), reg);
-                main = Color.FromArgb((alphacolor > 205 ? 255 : (alphacolor + 50)), full);
+                main = Color.FromArgb(alphacolor > 205 ? 255 : alphacolor + 50, full);
                 btnLightbar.BackgroundImage = RecolorImage((Bitmap)btnLightbar.BackgroundImage, main);
 
                 cBLightbyBattery.Checked = LedAsBatteryIndicator[device];
                 nUDflashLED.Value = FlashAt[device];
                 pnlLowBattery.Visible = cBLightbyBattery.Checked;
-                lbFull.Text = (cBLightbyBattery.Checked ? "Full:" : "Color:");
+                lbFull.Text = cBLightbyBattery.Checked ? "Full:" : "Color:";
                 //pnlFull.Location = new Point(pnlFull.Location.X, (cBLightbyBattery.Checked ? (int)(dpix * 42) : (pnlFull.Location.Y + pnlLowBattery.Location.Y) / 2));
-                DS4Color lowColor = LowColor[device];
+                var lowColor = LowColor[device];
                 tBLowRedBar.Value = lowColor.red;
                 tBLowGreenBar.Value = lowColor.green;
                 tBLowBlueBar.Value = lowColor.blue;
 
-                DS4Color cColor = ChargingColor[device];
+                var cColor = ChargingColor[device];
                 btnChargingColor.BackColor = Color.FromArgb(cColor.red, cColor.green, cColor.blue);
                 if (FlashType[device] > cBFlashType.Items.Count - 1)
                     cBFlashType.SelectedIndex = 0;
                 else
                     cBFlashType.SelectedIndex = FlashType[device];
-                DS4Color fColor = FlashColor[device];
+                var fColor = FlashColor[device];
                 if (fColor.Equals(new DS4Color { red = 0, green = 0, blue = 0 }))
                     if (Rainbow[device] == 0)
                         btnFlashColor.BackColor = main;
@@ -199,7 +199,7 @@ namespace DS4Windows
                 alphacolor = Math.Max(tBLowRedBar.Value, Math.Max(tBGreenBar.Value, tBBlueBar.Value));
                 reg = Color.FromArgb(lowColor.red, lowColor.green, lowColor.blue);
                 full = HuetoRGB(reg.GetHue(), reg.GetBrightness(), reg);
-                lowColorChooserButton.BackColor = Color.FromArgb((alphacolor > 205 ? 255 : (alphacolor + 50)), full);
+                lowColorChooserButton.BackColor = Color.FromArgb(alphacolor > 205 ? 255 : alphacolor + 50, full);
                 nUDRainbow.Value = (decimal)Rainbow[device];
                 if (ChargingType[device] > cBWhileCharging.Items.Count - 1)
                     cBWhileCharging.SelectedIndex = 0;
@@ -318,9 +318,9 @@ namespace DS4Windows
                 nUDRSCurve.Value = RSCurve[device];
                 cBControllerInput.Checked = DS4Mapping;
 
-                string[] satriggers = SATriggers[device].Split(',');
-                List<string> s = new List<string>();
-                for (int i = 0; i < satriggers.Length; i++)
+                var satriggers = SATriggers[device].Split(',');
+                var s = new List<string>();
+                for (var i = 0; i < satriggers.Length; i++)
                 {
                     int tr;
                     if (int.TryParse(satriggers[i], out tr))
@@ -345,7 +345,7 @@ namespace DS4Windows
                     }
                 }
                 nUDGyroSensitivity.Value = GyroSensitivity[device];
-                int invert = GyroInvert[device];
+                var invert = GyroInvert[device];
                 cBGyroInvertX.Checked = invert == 2 || invert == 3;
                 cBGyroInvertY.Checked = invert == 1 || invert == 3;
                 if (s.Count > 0)
@@ -374,7 +374,7 @@ namespace DS4Windows
 
                 cBLightbyBattery.Checked = false;
                 nUDflashLED.Value = 0;
-                lbFull.Text = (cBLightbyBattery.Checked ? "Full:" : "Color:");
+                lbFull.Text = cBLightbyBattery.Checked ? "Full:" : "Color:";
 
                 cBFlashType.SelectedIndex = 0;
                 nUDRumbleBoost.Value = 100;
@@ -485,10 +485,10 @@ namespace DS4Windows
         public void LoadActions(bool newp)
         {
             lVActions.Items.Clear();
-            List<string> pactions = ProfileActions[device];
-            foreach (SpecialAction action in GetActions())
+            var pactions = ProfileActions[device];
+            foreach (var action in GetActions())
             {
-                ListViewItem lvi = new ListViewItem(action.name);
+                var lvi = new ListViewItem(action.name);
                 lvi.SubItems.Add(action.controls.Replace("/", ", "));
                 //string type = action.type;
                 switch (action.type)
@@ -516,7 +516,7 @@ namespace DS4Windows
                     else
                         lvi.Checked = false;
                 else
-                    foreach (string s in pactions)
+                    foreach (var s in pactions)
                         if (s == action.name)
                         {
                             lvi.Checked = true;
@@ -579,24 +579,24 @@ namespace DS4Windows
                     float max = x + y;
                     double curvex;
                     double curvey;
-                    double multimax = TValue(382.5, max, (double)nUDLSCurve.Value);
-                    double multimin = TValue(127.5, max, (double)nUDLSCurve.Value);
-                    if ((x > 127.5f && y > 127.5f) || (x < 127.5f && y < 127.5f))
+                    var multimax = TValue(382.5, max, (double)nUDLSCurve.Value);
+                    var multimin = TValue(127.5, max, (double)nUDLSCurve.Value);
+                    if (x > 127.5f && y > 127.5f || x < 127.5f && y < 127.5f)
                     {
-                        curvex = (x > 127.5f ? Math.Min(x, (x / max) * multimax) : Math.Max(x, (x / max) * multimin));
-                        curvey = (y > 127.5f ? Math.Min(y, (y / max) * multimax) : Math.Max(y, (y / max) * multimin));
+                        curvex = x > 127.5f ? Math.Min(x, x / max * multimax) : Math.Max(x, x / max * multimin);
+                        curvey = y > 127.5f ? Math.Min(y, y / max * multimax) : Math.Max(y, y / max * multimin);
                     }
                     else
                     {
                         if (x < 127.5f)
                         {
-                            curvex = Math.Min(x, (x / max) * multimax);
-                            curvey = Math.Min(y, (-(y / max) * multimax + 510));
+                            curvex = Math.Min(x, x / max * multimax);
+                            curvey = Math.Min(y, -(y / max) * multimax + 510);
                         }
                         else
                         {
-                            curvex = Math.Min(x, (-(x / max) * multimax + 510));
-                            curvey = Math.Min(y, (y / max) * multimax);
+                            curvex = Math.Min(x, -(x / max) * multimax + 510);
+                            curvey = Math.Min(y, y / max * multimax);
                         }
                     }
                     btnLSTrack.Location = new Point((int)(dpix * curvex / 2.09), (int)(dpiy * curvey / 2.09));
@@ -618,24 +618,24 @@ namespace DS4Windows
                     float max = x + y;
                     double curvex;
                     double curvey;
-                    double multimax = TValue(382.5, max, (double)nUDRSCurve.Value);
-                    double multimin = TValue(127.5, max, (double)nUDRSCurve.Value);
-                    if ((x > 127.5f && y > 127.5f) || (x < 127.5f && y < 127.5f))
+                    var multimax = TValue(382.5, max, (double)nUDRSCurve.Value);
+                    var multimin = TValue(127.5, max, (double)nUDRSCurve.Value);
+                    if (x > 127.5f && y > 127.5f || x < 127.5f && y < 127.5f)
                     {
-                        curvex = (x > 127.5f ? Math.Min(x, (x / max) * multimax) : Math.Max(x, (x / max) * multimin));
-                        curvey = (y > 127.5f ? Math.Min(y, (y / max) * multimax) : Math.Max(y, (y / max) * multimin));
+                        curvex = x > 127.5f ? Math.Min(x, x / max * multimax) : Math.Max(x, x / max * multimin);
+                        curvey = y > 127.5f ? Math.Min(y, y / max * multimax) : Math.Max(y, y / max * multimin);
                     }
                     else
                     {
                         if (x < 127.5f)
                         {
-                            curvex = Math.Min(x, (x / max) * multimax);
-                            curvey = Math.Min(y, (-(y / max) * multimax + 510));
+                            curvex = Math.Min(x, x / max * multimax);
+                            curvey = Math.Min(y, -(y / max) * multimax + 510);
                         }
                         else
                         {
-                            curvex = Math.Min(x, (-(x / max) * multimax + 510));
-                            curvey = Math.Min(y, (y / max) * multimax);
+                            curvex = Math.Min(x, -(x / max) * multimax + 510);
+                            curvey = Math.Min(y, y / max * multimax);
                         }
                     }
                     btnRSTrack.Location = new Point((int)(dpix * curvex / 2.09), (int)(dpiy * curvey / 2.09));
@@ -659,8 +659,8 @@ namespace DS4Windows
 
                 tBL2.Value = Program.rootHub.getDS4State((int)nUDSixaxis.Value - 1).L2;
                 lbL2Track.Location = new Point(tBL2.Location.X - (int)(dpix * 25), 
-                    Math.Max((int)(((tBL2.Location.Y + tBL2.Size.Height) - (tBL2.Value * (float)nUDL2S.Value) / (tBL2.Size.Height * .0209f / Math.Pow(dpix, 2))) - dpix * 20),
-                    (int)(1 * ((tBL2.Location.Y + tBL2.Size.Height) - 255 / (tBL2.Size.Height * .0209f / Math.Pow(dpix, 2))) - dpix * 20)));
+                    Math.Max((int)(tBL2.Location.Y + tBL2.Size.Height - tBL2.Value * (float)nUDL2S.Value / (tBL2.Size.Height * .0209f / Math.Pow(dpix, 2)) - dpix * 20),
+                    (int)(1 * (tBL2.Location.Y + tBL2.Size.Height - 255 / (tBL2.Size.Height * .0209f / Math.Pow(dpix, 2))) - dpix * 20)));
                 if (tBL2.Value * (float)nUDL2S.Value >= 255)
                     lbL2Track.ForeColor = Color.Green;
                 else if (tBL2.Value * (float)nUDL2S.Value < (double)nUDL2.Value * 255)
@@ -670,8 +670,8 @@ namespace DS4Windows
 
                 tBR2.Value = Program.rootHub.getDS4State((int)nUDSixaxis.Value - 1).R2;
                 lbR2Track.Location = new Point(tBR2.Location.X + (int)(dpix * 25),
-                     Math.Max((int)(1 * ((tBR2.Location.Y + tBR2.Size.Height) - (tBR2.Value * (float)nUDR2S.Value) / (tBR2.Size.Height * .0209f / Math.Pow(dpix, 2))) - dpix * 20),
-                     (int)(1 * ((tBR2.Location.Y + tBR2.Size.Height) - 255 / (tBR2.Size.Height * .0209f / Math.Pow(dpix, 2))) - dpix * 20)));
+                     Math.Max((int)(1 * (tBR2.Location.Y + tBR2.Size.Height - tBR2.Value * (float)nUDR2S.Value / (tBR2.Size.Height * .0209f / Math.Pow(dpix, 2))) - dpix * 20),
+                     (int)(1 * (tBR2.Location.Y + tBR2.Size.Height - 255 / (tBR2.Size.Height * .0209f / Math.Pow(dpix, 2))) - dpix * 20)));
                 if (tBR2.Value * (float)nUDR2S.Value >= 255)
                     lbR2Track.ForeColor = Color.Green;
                 else if (tBR2.Value * (float)nUDR2S.Value < (double)nUDR2.Value * 255)
@@ -680,7 +680,7 @@ namespace DS4Windows
                     lbR2Track.ForeColor = Color.Black;
 
 
-                double latency = Program.rootHub.DS4Controllers[(int)nUDSixaxis.Value - 1].Latency;
+                var latency = Program.rootHub.DS4Controllers[(int)nUDSixaxis.Value - 1].Latency;
                 lbInputDelay.Text = Properties.Resources.InputDelay.Replace("*number*", latency.ToString());
                 if (latency > 10)
                 {
@@ -707,49 +707,49 @@ namespace DS4Windows
         }
         private void InputDS4(object sender, EventArgs e)
         {
-            if (Form.ActiveForm == root && cBControllerInput.Checked && tCControls.SelectedIndex < 1)
+            if (ActiveForm == root && cBControllerInput.Checked && tCControls.SelectedIndex < 1)
                 switch (Program.rootHub.GetInputkeys((int)nUDSixaxis.Value - 1))
                 {
-                    case ("Cross"): Show_ControlsBn(bnCross, e); break;
-                    case ("Circle"): Show_ControlsBn(bnCircle, e); break;
-                    case ("Square"): Show_ControlsBn(bnSquare, e); break;
-                    case ("Triangle"): Show_ControlsBn(bnTriangle, e); break;
-                    case ("Options"): Show_ControlsBn(bnOptions, e); break;
-                    case ("Share"): Show_ControlsBn(bnShare, e); break;
-                    case ("Up"): Show_ControlsBn(bnUp, e); break;
-                    case ("Down"): Show_ControlsBn(bnDown, e); break;
-                    case ("Left"): Show_ControlsBn(bnLeft, e); break;
-                    case ("Right"): Show_ControlsBn(bnRight, e); break;
-                    case ("PS"): Show_ControlsBn(bnPS, e); break;
-                    case ("L1"): Show_ControlsBn(bnL1, e); break;
-                    case ("R1"): Show_ControlsBn(bnR1, e); break;
-                    case ("L2"): Show_ControlsBn(bnL2, e); break;
-                    case ("R2"): Show_ControlsBn(bnR2, e); break;
-                    case ("L3"): Show_ControlsBn(bnL3, e); break;
-                    case ("R3"): Show_ControlsBn(bnR3, e); break;
-                    case ("Touch Left"): Show_ControlsBn(bnTouchLeft, e); break;
-                    case ("Touch Right"): Show_ControlsBn(bnTouchRight, e); break;
-                    case ("Touch Multi"): Show_ControlsBn(bnTouchMulti, e); break;
-                    case ("Touch Upper"): Show_ControlsBn(bnTouchUpper, e); break;
-                    case ("LS Up"): Show_ControlsBn(bnLSUp, e); break;
-                    case ("LS Down"): Show_ControlsBn(bnLSDown, e); break;
-                    case ("LS Left"): Show_ControlsBn(bnLSLeft, e); break;
-                    case ("LS Right"): Show_ControlsBn(bnLSRight, e); break;
-                    case ("RS Up"): Show_ControlsBn(bnRSUp, e); break;
-                    case ("RS Down"): Show_ControlsBn(bnRSDown, e); break;
-                    case ("RS Left"): Show_ControlsBn(bnRSLeft, e); break;
-                    case ("RS Right"): Show_ControlsBn(bnRSRight, e); break;
-                    case ("GyroXP"): Show_ControlsBn(bnGyroXP, e); break;
-                    case ("GyroXN"): Show_ControlsBn(bnGyroXN, e); break;
-                    case ("GyroZP"): Show_ControlsBn(bnGyroZP, e); break;
-                    case ("GyroZN"): Show_ControlsBn(bnGyroZN, e); break;
+                    case "Cross": Show_ControlsBn(bnCross, e); break;
+                    case "Circle": Show_ControlsBn(bnCircle, e); break;
+                    case "Square": Show_ControlsBn(bnSquare, e); break;
+                    case "Triangle": Show_ControlsBn(bnTriangle, e); break;
+                    case "Options": Show_ControlsBn(bnOptions, e); break;
+                    case "Share": Show_ControlsBn(bnShare, e); break;
+                    case "Up": Show_ControlsBn(bnUp, e); break;
+                    case "Down": Show_ControlsBn(bnDown, e); break;
+                    case "Left": Show_ControlsBn(bnLeft, e); break;
+                    case "Right": Show_ControlsBn(bnRight, e); break;
+                    case "PS": Show_ControlsBn(bnPS, e); break;
+                    case "L1": Show_ControlsBn(bnL1, e); break;
+                    case "R1": Show_ControlsBn(bnR1, e); break;
+                    case "L2": Show_ControlsBn(bnL2, e); break;
+                    case "R2": Show_ControlsBn(bnR2, e); break;
+                    case "L3": Show_ControlsBn(bnL3, e); break;
+                    case "R3": Show_ControlsBn(bnR3, e); break;
+                    case "Touch Left": Show_ControlsBn(bnTouchLeft, e); break;
+                    case "Touch Right": Show_ControlsBn(bnTouchRight, e); break;
+                    case "Touch Multi": Show_ControlsBn(bnTouchMulti, e); break;
+                    case "Touch Upper": Show_ControlsBn(bnTouchUpper, e); break;
+                    case "LS Up": Show_ControlsBn(bnLSUp, e); break;
+                    case "LS Down": Show_ControlsBn(bnLSDown, e); break;
+                    case "LS Left": Show_ControlsBn(bnLSLeft, e); break;
+                    case "LS Right": Show_ControlsBn(bnLSRight, e); break;
+                    case "RS Up": Show_ControlsBn(bnRSUp, e); break;
+                    case "RS Down": Show_ControlsBn(bnRSDown, e); break;
+                    case "RS Left": Show_ControlsBn(bnRSLeft, e); break;
+                    case "RS Right": Show_ControlsBn(bnRSRight, e); break;
+                    case "GyroXP": Show_ControlsBn(bnGyroXP, e); break;
+                    case "GyroXN": Show_ControlsBn(bnGyroXN, e); break;
+                    case "GyroZP": Show_ControlsBn(bnGyroZP, e); break;
+                    case "GyroZN": Show_ControlsBn(bnGyroZN, e); break;
                 }
         }
 
 
         private void button_MouseHoverB(object sender, EventArgs e)
         {
-            Control[] b = Controls.Find(((Button)sender).Name.Remove(1, 1), true);
+            var b = Controls.Find(((Button)sender).Name.Remove(1, 1), true);
             if (b != null && b.Length == 1)
                 button_MouseHover(b[0], e);
         }
@@ -790,8 +790,8 @@ namespace DS4Windows
 
         private void button_MouseHover(object sender, EventArgs e)
         {
-            bool swipesOn = lBControls.Items.Count > 33;
-            string name = ((Button)sender).Name;
+            var swipesOn = lBControls.Items.Count > 33;
+            var name = ((Button)sender).Name;
             if (e != null)
             {
                 switch (name)
@@ -841,16 +841,16 @@ namespace DS4Windows
                         case "bnSwipeRight": if (swipesOn) lBControls.SelectedIndex = 36; break;
                     }
             }
-            DS4ControlSettings dcs = getDS4CSetting(device, name);
+            var dcs = getDS4CSetting(device, name);
             if (lBControls.SelectedIndex >= 0)
             { 
-                string tipText = lBControls.SelectedItem.ToString().Split(':')[0];
+                var tipText = lBControls.SelectedItem.ToString().Split(':')[0];
                 tipText += ": ";
-                tipText += UpdateButtonList(((Button)sender));
+                tipText += UpdateButtonList((Button)sender);
                 if (GetDS4Action(device, name, true) != null && GetDS4STrigger(device, name) > 0)
                 {
                     tipText += "\n Shift: ";
-                    tipText += ShiftTrigger(GetDS4STrigger(device, name)) + " -> " + UpdateButtonList(((Button)sender), true);
+                    tipText += ShiftTrigger(GetDS4STrigger(device, name)) + " -> " + UpdateButtonList((Button)sender, true);
                 }
                 lbControlName.Text = tipText;
             }
@@ -999,7 +999,7 @@ namespace DS4Windows
         public void Set()
         {
             pnlLowBattery.Visible = cBLightbyBattery.Checked;
-            lbFull.Text = (cBLightbyBattery.Checked ? Properties.Resources.Full + ":": Properties.Resources.Color + ":");
+            lbFull.Text = cBLightbyBattery.Checked ? Properties.Resources.Full + ":": Properties.Resources.Color + ":";
             MainColor[device] = new DS4Color((byte)tBRedBar.Value, (byte)tBGreenBar.Value, (byte)tBBlueBar.Value);
             LowColor[device] = new DS4Color((byte)tBLowRedBar.Value, (byte)tBLowGreenBar.Value, (byte)tBLowBlueBar.Value);
             ChargingColor[device] = new DS4Color(btnChargingColor.BackColor);
@@ -1008,8 +1008,8 @@ namespace DS4Windows
                 FlashColor[device] = new DS4Color(btnFlashColor.BackColor);
             else
                 FlashColor[device] = new DS4Color(Color.Black);
-            L2Deadzone[device] = (byte)Math.Round((nUDL2.Value * 255), 0);
-            R2Deadzone[device] = (byte)Math.Round((nUDR2.Value * 255), 0);
+            L2Deadzone[device] = (byte)Math.Round(nUDL2.Value * 255, 0);
+            R2Deadzone[device] = (byte)Math.Round(nUDR2.Value * 255, 0);
             RumbleBoost[device] = (byte)nUDRumbleBoost.Value;
             TouchSensitivity[device] = (byte)nUDTouch.Value;
             TouchpadJitterCompensation[device] = cBTouchpadJitterCompensation.Checked;
@@ -1019,8 +1019,8 @@ namespace DS4Windows
             TapSensitivity[device] = (byte)nUDTap.Value;
             IdleDisconnectTimeout[device] = (int)(nUDIdleDisconnect.Value * 60);
             Rainbow[device] = (int)nUDRainbow.Value;
-            RSDeadzone[device] = (int)Math.Round((nUDRS.Value * 127), 0);
-            LSDeadzone[device] = (int)Math.Round((nUDLS.Value * 127), 0);
+            RSDeadzone[device] = (int)Math.Round(nUDRS.Value * 127, 0);
+            LSDeadzone[device] = (int)Math.Round(nUDLS.Value * 127, 0);
             ButtonMouseSensitivity[device] = (int)numUDMouseSens.Value;
             FlashAt[device] = (int)nUDflashLED.Value;
             SXDeadzone[device] = (double)nUDSX.Value;
@@ -1033,7 +1033,7 @@ namespace DS4Windows
             DS4Mapping = cBControllerInput.Checked;
             LSCurve[device] = (int)Math.Round(nUDLSCurve.Value, 0);
             RSCurve[device] = (int)Math.Round(nUDRSCurve.Value, 0);
-            List<string> pactions = new List<string>();
+            var pactions = new List<string>();
             foreach (ListViewItem lvi in lVActions.Items)
                 if (lvi.Checked)
                     pactions.Add(lvi.Text);
@@ -1044,15 +1044,15 @@ namespace DS4Windows
             fLPTouchSwipe.Visible = rBTPControls.Checked;
 
             GyroSensitivity[device] = (int)Math.Round(nUDGyroSensitivity.Value, 0);
-            int invert = 0;
+            var invert = 0;
             if (cBGyroInvertX.Checked)
                 invert += 2;
             if (cBGyroInvertY.Checked)
                 invert += 1;
             GyroInvert[device] = invert;
 
-            List<int> ints = new List<int>();
-            for (int i = 0; i < cMGyroTriggers.Items.Count - 1; i++)
+            var ints = new List<int>();
+            for (var i = 0; i < cMGyroTriggers.Items.Count - 1; i++)
                 if (((ToolStripMenuItem)cMGyroTriggers.Items[i]).Checked)
                     ints.Add(i);
             if (ints.Count == 0)
@@ -1064,21 +1064,21 @@ namespace DS4Windows
 
         private void Show_ControlsBtn(object sender, EventArgs e)
         {
-            Control[] b = Controls.Find(((Button)sender).Name.Remove(1, 1), true);
+            var b = Controls.Find(((Button)sender).Name.Remove(1, 1), true);
             if (b != null && b.Length == 1)
                 Show_ControlsBn(b[0], e);
         }
 
         private void Show_ControlsBn(object sender, EventArgs e)
         {
-            KBM360 kbm360 = new KBM360(device, this, (Button)sender);
+            var kbm360 = new KBM360(device, this, (Button)sender);
             kbm360.Icon = Icon;
             kbm360.ShowDialog();
         }        
 
         public void ChangeButtonText(Control ctrl, bool shift, KeyValuePair<object, string> tag, bool SC, bool TG, bool MC, bool MR, int sTrigger = 0)
         {
-            DS4KeyType kt = DS4KeyType.None;
+            var kt = DS4KeyType.None;
             if (SC) kt |= DS4KeyType.ScanCode;
             if (TG) kt |= DS4KeyType.Toggle;
             if (MC) kt |= DS4KeyType.Macro;
@@ -1090,7 +1090,7 @@ namespace DS4Windows
          {
              if (ctrl is Button)
              {
-                DS4KeyType kt = DS4KeyType.None;
+                var kt = DS4KeyType.None;
                 if (SC) kt |= DS4KeyType.ScanCode;
                 UpdateDS4CSetting(device, ctrl.Name, false, tag.Key, tag.Value, kt);
             }
@@ -1178,8 +1178,8 @@ namespace DS4Windows
         {
             if (sender is Color && device < 4)
             {
-                Color color = (Color)sender;
-                DS4Color dcolor = new DS4Color { red = color.R, green = color.G, blue = color.B };
+                var color = (Color)sender;
+                var dcolor = new DS4Color { red = color.R, green = color.G, blue = color.B };
                 DS4LightBar.forcedColor[device] = dcolor;
                 DS4LightBar.forcedFlash[device] = 0;
                 DS4LightBar.forcelight[device] = true;
@@ -1189,9 +1189,9 @@ namespace DS4Windows
         {
             if (tb != null)
             {
-                int value = tb.Value;
-                int sat = bgc - (value < bgc ? value : bgc);
-                int som = bgc + 11 * (int)(value * 0.0039215);
+                var value = tb.Value;
+                var sat = bgc - (value < bgc ? value : bgc);
+                var som = bgc + 11 * (int)(value * 0.0039215);
                 tb.BackColor = Color.FromArgb(tb.Name.ToLower().Contains("red") ? som : sat, tb.Name.ToLower().Contains("green") ? som : sat, tb.Name.ToLower().Contains("blue") ? som : sat);
             }
             if (type == 0) //main
@@ -1199,7 +1199,7 @@ namespace DS4Windows
                 alphacolor = Math.Max(tBRedBar.Value, Math.Max(tBGreenBar.Value, tBBlueBar.Value));
                 reg = Color.FromArgb(tBRedBar.Value, tBGreenBar.Value, tBBlueBar.Value);
                 full = HuetoRGB(reg.GetHue(), reg.GetBrightness(), reg);
-                main = Color.FromArgb((alphacolor > 205 ? 255 : (alphacolor + 50)), full);
+                main = Color.FromArgb(alphacolor > 205 ? 255 : alphacolor + 50, full);
                 btnLightbar.BackgroundImage = RecolorImage((Bitmap)btnLightbar.BackgroundImage, main);
                 if (FlashColor[device].Equals(new DS4Color { red = 0, green = 0, blue = 0 }))
                     btnFlashColor.BackColor = main;
@@ -1211,7 +1211,7 @@ namespace DS4Windows
                 alphacolor = Math.Max(tBLowRedBar.Value, Math.Max(tBLowGreenBar.Value, tBLowBlueBar.Value));
                 reg = Color.FromArgb(tBLowRedBar.Value, tBLowGreenBar.Value, tBLowBlueBar.Value);
                 full = HuetoRGB(reg.GetHue(), reg.GetBrightness(), reg);
-                lowColorChooserButton.BackColor = Color.FromArgb((alphacolor > 205 ? 255 : (alphacolor + 50)), full);
+                lowColorChooserButton.BackColor = Color.FromArgb(alphacolor > 205 ? 255 : alphacolor + 50, full);
                 LowColor[device] = new DS4Color((byte)tBLowRedBar.Value, (byte)tBLowGreenBar.Value, (byte)tBLowBlueBar.Value);
             }
             if (!saving && !loading && tb != null)
@@ -1231,10 +1231,10 @@ namespace DS4Windows
         
         public Color HuetoRGB(float hue, float light, Color rgb)
         {
-            float L = (float)Math.Max(.5, light);
-            float C = (1 - Math.Abs(2 * L - 1));
-            float X = (C * (1 - Math.Abs((hue / 60) % 2 - 1)));
-            float m = L - C / 2;
+            var L = (float)Math.Max(.5, light);
+            var C = 1 - Math.Abs(2 * L - 1);
+            var X = C * (1 - Math.Abs(hue / 60 % 2 - 1));
+            var m = L - C / 2;
             float R =0, G=0, B=0;
             if (light == 1) return Color.White;
             else if (rgb.R == rgb.G && rgb.G == rgb.B) return Color.White;
@@ -1249,20 +1249,20 @@ namespace DS4Windows
         private void rumbleBoostBar_ValueChanged(object sender, EventArgs e)
         {
             RumbleBoost[device] = (byte)nUDRumbleBoost.Value;
-            byte h = (byte)Math.Min(255, (255 * nUDRumbleBoost.Value / 100));
-            byte l = (byte)Math.Min(255, (255 * nUDRumbleBoost.Value / 100));
-            bool hB = btnRumbleHeavyTest.Text == Properties.Resources.TestLText;
-            bool lB = btnRumbleLightTest.Text == Properties.Resources.TestLText;
+            var h = (byte)Math.Min(255, 255 * nUDRumbleBoost.Value / 100);
+            var l = (byte)Math.Min(255, 255 * nUDRumbleBoost.Value / 100);
+            var hB = btnRumbleHeavyTest.Text == Properties.Resources.TestLText;
+            var lB = btnRumbleLightTest.Text == Properties.Resources.TestLText;
             Program.rootHub.setRumble((byte)(hB ? h : 0), (byte)(lB ? l : 0), device);
         }
 
         private void btnRumbleHeavyTest_Click(object sender, EventArgs e)
         {
-            DS4Device d = Program.rootHub.DS4Controllers[(int)nUDSixaxis.Value - 1];
+            var d = Program.rootHub.DS4Controllers[(int)nUDSixaxis.Value - 1];
             if (d != null)
                 if (((Button)sender).Text == Properties.Resources.TestHText)
                 {
-                    Program.rootHub.setRumble((byte)Math.Min(255, (255 * nUDRumbleBoost.Value / 100)), d.RightLightFastRumble, (int)nUDSixaxis.Value - 1);
+                    Program.rootHub.setRumble((byte)Math.Min(255, 255 * nUDRumbleBoost.Value / 100), d.RightLightFastRumble, (int)nUDSixaxis.Value - 1);
                     ((Button)sender).Text = Properties.Resources.StopHText;
                 }
                 else
@@ -1274,11 +1274,11 @@ namespace DS4Windows
 
         private void btnRumbleLightTest_Click(object sender, EventArgs e)
         {
-            DS4Device d = Program.rootHub.DS4Controllers[(int)nUDSixaxis.Value - 1];
+            var d = Program.rootHub.DS4Controllers[(int)nUDSixaxis.Value - 1];
             if (d != null)
                 if (((Button)sender).Text == Properties.Resources.TestLText)
                 {
-                    Program.rootHub.setRumble(d.LeftHeavySlowRumble, (byte)Math.Min(255, (255 * nUDRumbleBoost.Value / 100)), (int)nUDSixaxis.Value - 1);
+                    Program.rootHub.setRumble(d.LeftHeavySlowRumble, (byte)Math.Min(255, 255 * nUDRumbleBoost.Value / 100), (int)nUDSixaxis.Value - 1);
                     ((Button)sender).Text = Properties.Resources.StopLText;
                 }
                 else
@@ -1307,7 +1307,7 @@ namespace DS4Windows
             LedAsBatteryIndicator[device] = cBLightbyBattery.Checked;
             pnlLowBattery.Visible = cBLightbyBattery.Checked;
             //pnlFull.Location = new Point(pnlFull.Location.X, (cBLightbyBattery.Checked ? (int)(dpix * 42) : (pnlFull.Location.Y + pnlLowBattery.Location.Y) / 2));
-            lbFull.Text = (cBLightbyBattery.Checked ? Properties.Resources.Full + ":" : Properties.Resources.Color + ":");
+            lbFull.Text = cBLightbyBattery.Checked ? Properties.Resources.Full + ":" : Properties.Resources.Color + ":";
         }
 
         private void lowerRCOffCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -1343,7 +1343,7 @@ namespace DS4Windows
 
         private void Options_FormClosing(object sender, FormClosingEventArgs e)
         {
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
                 LoadProfile(i, false, Program.rootHub); //Refreshes all profiles in case other controllers are using the same profile
             if (olddinputcheck != cBDinput.Checked)
             {
@@ -1464,9 +1464,9 @@ namespace DS4Windows
 
         private string UpdateButtonList(Button button, bool shift =false)
         {
-            object tagO = GetDS4Action(device, button.Name, shift);
-            bool SC = GetDS4KeyType(device, button.Name, false).HasFlag(DS4KeyType.ScanCode);
-            bool extracontrol = button.Name.Contains("Gyro") || button.Name.Contains("Swipe");
+            var tagO = GetDS4Action(device, button.Name, shift);
+            var SC = GetDS4KeyType(device, button.Name, false).HasFlag(DS4KeyType.ScanCode);
+            var extracontrol = button.Name.Contains("Gyro") || button.Name.Contains("Swipe");
             if (tagO != null)
             {
                 if (tagO is int || tagO is ushort)
@@ -1605,16 +1605,16 @@ namespace DS4Windows
 
         private Bitmap GreyscaleImage(Bitmap image)
         {
-            Bitmap c = image;
-            Bitmap d = new Bitmap(c.Width, c.Height);
+            var c = image;
+            var d = new Bitmap(c.Width, c.Height);
 
-            for (int i = 0; i < c.Width; i++)
+            for (var i = 0; i < c.Width; i++)
             {
-                for (int x = 0; x < c.Height; x++)
+                for (var x = 0; x < c.Height; x++)
                 {
-                    Color oc = c.GetPixel(i, x);
-                    int grayScale = (int)((oc.R * 0.3) + (oc.G * 0.59) + (oc.B * 0.11));
-                    Color nc = Color.FromArgb(oc.A, grayScale, grayScale, grayScale);
+                    var oc = c.GetPixel(i, x);
+                    var grayScale = (int)(oc.R * 0.3 + oc.G * 0.59 + oc.B * 0.11);
+                    var nc = Color.FromArgb(oc.A, grayScale, grayScale, grayScale);
                     d.SetPixel(i, x, nc);
                 }
             }
@@ -1623,20 +1623,20 @@ namespace DS4Windows
 
         private Bitmap RecolorImage(Bitmap image, Color color)
         {
-            Bitmap c = Properties.Resources.DS4_lightbar;
-            Bitmap d = new Bitmap(c.Width, c.Height);
+            var c = Properties.Resources.DS4_lightbar;
+            var d = new Bitmap(c.Width, c.Height);
 
-            for (int i = 0; i < c.Width; i++)
-                for (int x = 0; x < c.Height; x++)
+            for (var i = 0; i < c.Width; i++)
+                for (var x = 0; x < c.Height; x++)
                     if (!nUDRainbow.Enabled)
                     {
-                        Color col = c.GetPixel(i, x);
+                        var col = c.GetPixel(i, x);
                         col = Color.FromArgb((int)(col.A * (color.A / 255f)), color.R, color.G, color.B);
                         d.SetPixel(i, x, col);
                     }
                     else
                     {
-                        Color col = HuetoRGB((i / (float)c.Width) * 360, .5f, Color.Red);
+                        var col = HuetoRGB(i / (float)c.Width * 360, .5f, Color.Red);
                         d.SetPixel(i, x, Color.FromArgb(c.GetPixel(i, x).A, col));
                     }
             return d;
@@ -1678,7 +1678,7 @@ namespace DS4Windows
         private void numUDRS_ValueChanged(object sender, EventArgs e)
         {
             nUDRS.Value = Math.Round(nUDRS.Value, 2);
-            RSDeadzone[device] = (int)Math.Round((nUDRS.Value * 127),0);
+            RSDeadzone[device] = (int)Math.Round(nUDRS.Value * 127,0);
             pnlRSTrack.BackColor = nUDRS.Value >= 0 ? Color.White : Color.Red;
             pnlRSTrack.Refresh();
         }
@@ -1687,7 +1687,7 @@ namespace DS4Windows
         {
             if (nUDRS.Value > 0)
             {
-                int value = (int)(nUDRS.Value * 125);
+                var value = (int)(nUDRS.Value * 125);
                 e.Graphics.FillEllipse(Brushes.Red,
                     (int)(dpix * 63) - value / 2,
                     (int)(dpix * 63) - value / 2,
@@ -1695,7 +1695,7 @@ namespace DS4Windows
             }
             else if (nUDRS.Value < 0)
             {
-                int value = (int)((1 + nUDRS.Value) * 125);
+                var value = (int)((1 + nUDRS.Value) * 125);
                 e.Graphics.FillEllipse(Brushes.White,
                     (int)(dpix * 63) - value / 2,
                     (int)(dpix * 63) - value / 2,
@@ -1706,7 +1706,7 @@ namespace DS4Windows
         private void numUDLS_ValueChanged(object sender, EventArgs e)
         {
             nUDLS.Value = Math.Round(nUDLS.Value, 2);
-            LSDeadzone[device] = (int)Math.Round((nUDLS.Value * 127), 0);
+            LSDeadzone[device] = (int)Math.Round(nUDLS.Value * 127, 0);
             pnlLSTrack.BackColor = nUDLS.Value >= 0 ? Color.White : Color.Red;
             pnlLSTrack.Refresh();
         }
@@ -1715,7 +1715,7 @@ namespace DS4Windows
         {
             if (nUDLS.Value > 0)
             {
-                int value = (int)(nUDLS.Value * 125);
+                var value = (int)(nUDLS.Value * 125);
                 e.Graphics.FillEllipse(Brushes.Red,
                     (int)(dpix * 63) - value / 2,
                     (int)(dpix * 63) - value / 2,
@@ -1723,7 +1723,7 @@ namespace DS4Windows
             }
             else if (nUDLS.Value < 0)
             {
-                int value = (int)((1 + nUDLS.Value) * 125);
+                var value = (int)((1 + nUDLS.Value) * 125);
                 e.Graphics.FillEllipse(Brushes.White,
                     (int)(dpix * 63) - value / 2,
                     (int)(dpix * 63) - value / 2,
@@ -1740,17 +1740,17 @@ namespace DS4Windows
         private void LightBar_MouseDown(object sender, MouseEventArgs e)
         {
             if (!saving && !loading)
-                tp.Show(((TrackBar)sender).Value.ToString(), ((TrackBar)sender), (int)(100 * dpix), 0, 2000);
+                tp.Show(((TrackBar)sender).Value.ToString(), (TrackBar)sender, (int)(100 * dpix), 0, 2000);
         }
 
         private void Lightbar_MouseUp(object sender, MouseEventArgs e)
         {
-            tp.Hide(((TrackBar)sender));
+            tp.Hide((TrackBar)sender);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void nUDflashLED_ValueChanged(object sender, EventArgs e)
@@ -1776,10 +1776,10 @@ namespace DS4Windows
         private void DrawCircle(object sender, PaintEventArgs e)
         {
             // Create pen.
-            Pen blackPen = new Pen(Color.Red);
+            var blackPen = new Pen(Color.Red);
 
             // Create rectangle for ellipse.
-            Rectangle rect = new Rectangle(0, 0, ((PictureBox)sender).Size.Width, ((PictureBox)sender).Size.Height);
+            var rect = new Rectangle(0, 0, ((PictureBox)sender).Size.Width, ((PictureBox)sender).Size.Height);
 
             // Draw ellipse to screen.
             e.Graphics.DrawEllipse(blackPen, rect);
@@ -1810,7 +1810,7 @@ namespace DS4Windows
        
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            if( openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if( openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 cBLaunchProgram.Checked = true;
                 LaunchProgram[device] = openFileDialog1.FileName;
@@ -1847,7 +1847,7 @@ namespace DS4Windows
 
         private void Items_MouseHover(object sender, EventArgs e)
         {
-            string name = ((Control)sender).Name;
+            var name = ((Control)sender).Name;
             if (name.Contains("btn") && !name.Contains("Flash") && !name.Contains("Stick") && !name.Contains("Rainbow"))
                 name = name.Remove(1, 1);
             switch (name)
@@ -1931,7 +1931,7 @@ namespace DS4Windows
 
         private void btnAddAction_Click(object sender, EventArgs e)
         {
-            SpecActions sA = new SpecActions(this);
+            var sA = new SpecActions(this);
             sA.TopLevel = false;
             sA.Dock = DockStyle.Fill;
             sA.Visible = true;
@@ -1943,7 +1943,7 @@ namespace DS4Windows
         {
             if (lVActions.SelectedIndices.Count > 0 && lVActions.SelectedIndices[0] >= 0)
             {
-                SpecActions sA = new SpecActions(this, lVActions.SelectedItems[0].Text, lVActions.SelectedIndices[0]);
+                var sA = new SpecActions(this, lVActions.SelectedItems[0].Text, lVActions.SelectedIndices[0]);
                 sA.TopLevel = false;
                 sA.Dock = DockStyle.Fill;
                 sA.Visible = true;
@@ -1963,7 +1963,7 @@ namespace DS4Windows
 
         private void lVActions_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            List<string> pactions = new List<string>();
+            var pactions = new List<string>();
             foreach (ListViewItem lvi in lVActions.Items)
                 if (lvi != null && lvi.Checked)
                     pactions.Add(lvi.Text);
@@ -1986,7 +1986,7 @@ namespace DS4Windows
         
         private void cMSPresets_Opened(object sender, EventArgs e)
         {
-            string name = cMSPresets.SourceControl.Name;
+            var name = cMSPresets.SourceControl.Name;
             if (name.Contains("btn") && !name.Contains("Stick"))
                 name = name.Remove(1, 1);
             if (name == "bnUp" || name == "bnLeft" || name == "bnRight" || name == "bnDown")
@@ -2017,13 +2017,13 @@ namespace DS4Windows
 
         private void SetPreset(object sender, EventArgs e)
         {
-            bool scancode = false;
+            var scancode = false;
             KeyValuePair<object, string> tagU;
             KeyValuePair<object, string> tagL;
             KeyValuePair<object, string> tagR;
             KeyValuePair<object, string> tagD;
-            KeyValuePair<object, string> tagM = new KeyValuePair<object, string>(null, "0,0,0,0,0,0,0,0"); ;
-            string name = ((ToolStripMenuItem)sender).Name;
+            var tagM = new KeyValuePair<object, string>(null, "0,0,0,0,0,0,0,0"); ;
+            var name = ((ToolStripMenuItem)sender).Name;
             if (name.Contains("Dpad") || name.Contains("DPad"))
             {
                 if (name.Contains("InvertedX"))
@@ -2286,12 +2286,12 @@ namespace DS4Windows
             if (sender != cMGyroTriggers.Items[cMGyroTriggers.Items.Count - 1] && ((ToolStripMenuItem)sender).Checked)
                 ((ToolStripMenuItem)cMGyroTriggers.Items[cMGyroTriggers.Items.Count - 1]).Checked = false;
             if (((ToolStripMenuItem)cMGyroTriggers.Items[cMGyroTriggers.Items.Count - 1]).Checked) //always on
-                for (int i = 0; i < cMGyroTriggers.Items.Count - 1; i++)
+                for (var i = 0; i < cMGyroTriggers.Items.Count - 1; i++)
                     ((ToolStripMenuItem)cMGyroTriggers.Items[i]).Checked = false;
 
-            List <int> ints = new List<int>();
-            List<string> s = new List<string>();
-            for (int i = 0; i < cMGyroTriggers.Items.Count - 1; i++)
+            var ints = new List<int>();
+            var s = new List<string>();
+            for (var i = 0; i < cMGyroTriggers.Items.Count - 1; i++)
                 if (((ToolStripMenuItem)cMGyroTriggers.Items[i]).Checked)
                 {
                     ints.Add(i);
@@ -2309,7 +2309,7 @@ namespace DS4Windows
 
         private void cBGyroInvert_CheckChanged(object sender, EventArgs e)
         {
-            int invert = 0;
+            var invert = 0;
             if (cBGyroInvertX.Checked)
                 invert += 2;
             if (cBGyroInvertY.Checked)

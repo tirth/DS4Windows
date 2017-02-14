@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WinProgs));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(WinProgs));
             this.bnAddPrograms = new System.Windows.Forms.Button();
             this.lBProgramPath = new System.Windows.Forms.Label();
             this.cBProfile1 = new System.Windows.Forms.ComboBox();

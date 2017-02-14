@@ -28,7 +28,7 @@ namespace DS4Windows
             {
                 System.IO.File.Copy(Global.appdatapath + "\\Profiles\\" + oldfilename + ".xml", Global.appdatapath + "\\Profiles\\" + tBProfile.Text + ".xml", true);
                 yes.RefreshProfiles();
-                this.Close();
+                Close();
             }
             else
                 MessageBox.Show(Properties.Resources.ValidName, Properties.Resources.NotValid, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);            
@@ -37,9 +37,9 @@ namespace DS4Windows
         private void tBProfile_TextChanged(object sender, EventArgs e)
         {
             if (tBProfile.Text != null && tBProfile.Text != "" && !tBProfile.Text.Contains("\\") && !tBProfile.Text.Contains("/") && !tBProfile.Text.Contains(":") && !tBProfile.Text.Contains("*") && !tBProfile.Text.Contains("?") && !tBProfile.Text.Contains("\"") && !tBProfile.Text.Contains("<") && !tBProfile.Text.Contains(">") && !tBProfile.Text.Contains("|"))
-                tBProfile.ForeColor = System.Drawing.SystemColors.WindowText;
+                tBProfile.ForeColor = SystemColors.WindowText;
             else
-                tBProfile.ForeColor = System.Drawing.SystemColors.GrayText;
+                tBProfile.ForeColor = SystemColors.GrayText;
         }
 
         private void tBProfile_Enter(object sender, EventArgs e)
@@ -56,7 +56,7 @@ namespace DS4Windows
 
         private void button2_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }
